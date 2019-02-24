@@ -22,3 +22,8 @@ Plateforme pour coder: Windows (pas de VM ou de Linux, pb de 'driver' ?) + Visua
 
 Question au prof: Demander si les lettres manuscrittes sont une lettre par une lettre, ou un mot/ article.
                 Les datatsets des autres models?
+
+Méthode pour récupérer les images d'un stream:
+
+  - https://streamlink.github.io/install.html
+  - https://www.youtube.com/watch?v=geF_i71I-ZM
