@@ -31,18 +31,6 @@ Méthode pour récupérer les images d'un stream:
 Méthode pour récupérer les images sur Google image:
   - https://github.com/hardikvasa/google-images-download
 
-```python
-from google_images_download import google_images_download
-
-response = google_images_download.googleimagesdownload()
-
-arguments = {"keywords":"League of Legends Gameplay",
-                  "limit":100,
-                  "prefix":"DOTA"}
-
-paths = response.download(arguments)   #passing the arguments to the function
-```
-
 ______________________________________________________________________________
 
 Environnement pour le scrapping d'image.
