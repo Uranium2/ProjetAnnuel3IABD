@@ -42,3 +42,24 @@ arguments = {"keywords":"League of Legends Gameplay",
 
 paths = response.download(arguments)   #passing the arguments to the function
 ```
+
+______________________________________________________________________________
+
+Environnement pour le scrapping d'image.
+
+Python3 3.6.7
+
+Créer un environnement python (windows):
+
+    py -m pip install --user virtualenv
+    py -m virtualenv env_folder
+    source env_folder/bin/activate
+
+Pour charger tous les packages requis:
+  
+    pip install -r requirements.txt
+    
+Pour quitter l'environnement:
+
+    deactivate
+    
