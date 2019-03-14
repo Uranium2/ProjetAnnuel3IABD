@@ -14,7 +14,7 @@ stephaneArtist - HOLLANDER Stéphane
 
 - Application permettant de différencier une image (screenshot) issue d'un RTS, d'un MOBA ou d'un FPS
 
-Régression :
+# Régression
 
 - Application permettant de prédire l'âge d'une personne à partir d'une photo de son visage (attention à la
 constitution du dataset)
