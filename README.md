@@ -1,8 +1,13 @@
 # ProjetAnnuel3IABD
 Projet annuel de la classe IABD 3. 2018-2019
 
+## Membres
 
-Classification :
+Uranium2 - TAVERNIER Antoine
+LittleSoap - ALLEXANDRE Matthieu
+stephaneArtist - HOLLANDER Stéphane
+
+# Classification
 
 - Application permettant de catégoriser une image (photo) soit en classe 'Chat' soit en classe 'Chien' soit
 'autre'
