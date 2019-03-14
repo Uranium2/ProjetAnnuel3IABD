@@ -53,3 +53,6 @@ Pour quitter l'environnement:
 
     deactivate
     
+# Notes
+
+Avoir un "petit" dataset au début. 3 jeux par classe. Les normaliser (ratio, resolution). Garder le set brut et tester aussi avec du grayscale ou edge detect. Resultat possible, apprentissage rapide avec du preprocess, mais surment moins précis si on apprend plus longtemps.
