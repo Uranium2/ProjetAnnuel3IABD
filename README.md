@@ -11,8 +11,6 @@ stephaneArtist - HOLLANDER Stéphane
 
 # Classification
 
-- Application permettant de catégoriser une image (photo) soit en classe 'Chat' soit en classe 'Chien' soit
-'autre'
 
 - Application permettant de différencier une image (screenshot) issue d'un RTS, d'un MOBA ou d'un FPS
 
@@ -25,10 +23,7 @@ Support Application:
   Unity (Android) ou alors Web
 
 
-Plateforme pour coder: Windows (pas de VM ou de Linux, pb de 'driver' ?) + Visual Studio Code.
-
-Question au prof: Demander si les lettres manuscrittes sont une lettre par une lettre, ou un mot/ article.
-                Les datatsets des autres models?
+Plateforme pour coder: Windows (pas de VM ou de Linux, pb de 'driver' ?) + Visual Studio Code. Visual Studio community 2017 ?
 
 Méthode pour récupérer les images d'un stream:
 
