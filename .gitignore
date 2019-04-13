@@ -6,3 +6,7 @@ src/2019-3A-IBD-MLDLL/x64/*
 *.pdb
 *.tlog
 src/2019-3A-IBD-MLDLL/x64/*
+src/.vs/*
+src/x64/*
+*/Debug/*
+*/Release/*
