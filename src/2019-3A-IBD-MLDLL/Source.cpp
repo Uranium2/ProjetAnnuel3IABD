@@ -108,7 +108,7 @@ extern "C" {
 	int main()
 	{
 		cv::Mat image;
-		image = cv::imread("C:\\Users\\Tavernier\\Documents\\ProjetAnnuel3IABD\\img\\FPS\\FPS_0000.png");
+		image = cv::imread("../../img/FPS/FPS_0000.png");
 		cv::resize(image, image, cv::Size(1, 10));
 
 		int sampleCount = 1;
