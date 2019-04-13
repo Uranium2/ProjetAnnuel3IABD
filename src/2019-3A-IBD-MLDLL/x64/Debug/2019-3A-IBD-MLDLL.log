@@ -1,0 +1,8 @@
+﻿  Source.cpp
+C:\Users\Tavernier\Documents\Cours\PA\2019-3A-IBD-MLDLL\Source.cpp(23): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+     Création de la bibliothèque C:\Users\Tavernier\Documents\Cours\PA\x64\Debug\2019-3A-IBD-MLDLL.lib et de l'objet C:\Users\Tavernier\Documents\Cours\PA\x64\Debug\2019-3A-IBD-MLDLL.exp
+  2019-3A-IBD-MLDLL.vcxproj -> C:\Users\Tavernier\Documents\Cours\PA\x64\Debug\2019-3A-IBD-MLDLL.exe
