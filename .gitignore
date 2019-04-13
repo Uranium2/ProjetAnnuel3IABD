@@ -1,0 +1,6 @@
+src/2019-3A-IBD-MLDLL/x64/*
+*.exe
+*.log
+*.obj
+*.ilk
+*.pdb
