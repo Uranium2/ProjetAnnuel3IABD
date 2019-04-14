@@ -6,7 +6,8 @@ double* folderToArr(char* pathFolder, int w, int h, int nbImg) {
 
 	for (const auto& entry : std::filesystem::directory_iterator(path))
 	{
-
+		if (pos >= nbImg)
+			break;
 		std::string path_string = entry.path().u8string();
 
 		std::vector< double > tmp = pathToArr(path_string, w, h);
