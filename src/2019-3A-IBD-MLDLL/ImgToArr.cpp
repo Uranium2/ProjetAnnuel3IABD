@@ -8,12 +8,12 @@ double* folderToArr(char* pathFolder, int w, int h, int nbImg) {
 	{
 
 		std::string path_string = entry.path().u8string();
-		std::cout << "POS: " << pos << " " << path_string << std::endl;
+
 		std::vector< double > tmp = pathToArr(path_string, w, h);
 
 		arr.reserve(arr.size() + tmp.size()); // preallocate memory
-		arr.insert(arr.end(), arr.begin(), arr.end());
 		arr.insert(arr.end(), tmp.begin(), tmp.end());
+		std::cout << "POS: " << pos << " " << path_string << "size: " << sizeof(arr[0]) * arr.size() << std::endl;
 		pos++;
 
 	}

@@ -109,7 +109,6 @@ extern "C" {
 
 	int main()
 	{
-		folderToArr("../../img/FPS/", 1,1,10);
 		int sampleCount = 1;
 		int inputCountPerSample = 1;
 		double* XTrain = folderToArr("../../img/FPS/", 1, 1, 2);
