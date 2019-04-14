@@ -52,9 +52,9 @@ double sumWeightedInput(double* weightedInput, int nbInputs, int bias)
 	return sum + bias;
 }
 
-double hyperTan(double x)
+float hyperTan(float x)
 {
-	return (double)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
+	return (float)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
 }
 
 float sigmoid(float x)

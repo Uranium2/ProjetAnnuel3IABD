@@ -3,6 +3,7 @@
 #else
 #define SUPEREXPORT 
 #endif
+#define _SILENCE_CXX17_NEGATORS_DEPRECATION_WARNING
 
 #include <random>
 #include <iostream>
@@ -10,6 +11,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "NeuralNet.h"
+#include "ImgToArr.h"
 
 
 extern "C" {
@@ -54,8 +56,8 @@ extern "C" {
 			{
 				for (int n = 0; n < nn->Layers[0]->nbNeurons; n++)
 				{
-					nn->Layers[0]->neurons[0]->output = nn->Layers[0]->neurons[n]->output + alpha * (YTrain[k] - nn->Layers[0]->neurons[n]->output) * nn->inputs[k];
-					std::cout << "n = " << n << ": " << nn->Layers[0]->neurons[n]->output << "\n";
+					nn->Layers[0]->neurons[0]->weights[0] = nn->Layers[0]->neurons[n]->weights[0] + alpha * (YTrain[k] - nn->Layers[0]->neurons[n]->output) * nn->inputs[k];
+					std::cout << "weight for neuron n = " << n << ": " << nn->Layers[0]->neurons[0]->weights[0] << "\n";
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
 				Xout[k] = nn->Layers[nbLayers - 1]->neurons[0]->output;
@@ -107,24 +109,12 @@ extern "C" {
 
 	int main()
 	{
-		cv::Mat image;
-		image = cv::imread("../../img/FPS/FPS_0000.png");
-		cv::resize(image, image, cv::Size(1, 10));
-
+		folderToArr("../../img/FPS/", 1,1,10);
 		int sampleCount = 1;
 		int inputCountPerSample = 1;
-		double* XTrain = new double[sampleCount];
-		int pos = 0;
-		for (int i = 0; i < image.rows; i++)
-		{
-			for (int j = 0; j < image.cols; j++)
-			{
-				XTrain[pos] = (int)image.at<cv::Vec3b>(i, j)[0];;
-				pos++;
-			}
-		}
+		double* XTrain = folderToArr("../../img/FPS/", 1, 1, 2);
 		double* YTrain = new double[sampleCount];
-		double alpha = 0.5;
+		double alpha = 0.05;
 		int epochs = 10;
 		auto W = create_linear_model(sampleCount);
 
