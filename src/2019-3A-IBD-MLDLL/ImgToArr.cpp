@@ -5,9 +5,8 @@ double* buildYTrain(int nbImg, int type) {
 	int i;
 	int max;
 	for (i = 0; i < nbImg * 3; i++)
-	{
 		res[i] = -1.0;
-	}
+
 	switch(type) {
 		case (1):
 				i = 0;
@@ -37,16 +36,22 @@ double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOB
 	std::vector< double > XTrainFPS = folderToArr(pathFolderFPS, w, h, nbImg);
 	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);
 	std::vector< double > XTrainMOBA = folderToArr(pathFolderMOBA, w, h, nbImg);
-	std::vector< double > arr;
 
-	arr.reserve(arr.size() + XTrainFPS.size());
-	arr.insert(arr.end(), XTrainFPS.begin(), XTrainFPS.end());
-	arr.reserve(arr.size() + XTrainRTS.size());
-	arr.insert(arr.end(), XTrainRTS.begin(), XTrainRTS.end());
-	arr.reserve(arr.size() + XTrainMOBA.size());
-	arr.insert(arr.end(), XTrainMOBA.begin(), XTrainMOBA.end());
+	double* res = new double[nbImg * 3 * w * h];
 
-	double* res = &arr[0]; // mem is continious in vector, so first pointer gets all array
+	int pos = 0;
+	for (int i = 0; i < XTrainFPS.size(); i++) {
+		res[pos] = XTrainFPS.at(i);
+		pos++;
+	}
+	for (int i = 0; i < XTrainRTS.size(); i++) {
+		res[pos] = XTrainRTS.at(i);
+		pos++;
+	}
+	for (int i = 0; i < XTrainMOBA.size(); i++) {
+		res[pos] = XTrainMOBA.at(i);
+		pos++;
+	}
 	return res;
 }
 
@@ -64,6 +69,7 @@ std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg) {
 
 		arr.reserve(arr.size() + tmp.size()); // preallocate memory
 		arr.insert(arr.end(), tmp.begin(), tmp.end());
+
 		pos++;
 
 	}
@@ -86,8 +92,9 @@ std::vector< double > imgToArr(cv::Mat image, int w, int h) {
 	{
 		for (int j = 0; j < image.cols; j++)
 		{
-			arr.push_back(((int)image.at<cv::Vec3b>(i, j)[0] + (int)image.at<cv::Vec3b>(i, j)[1] + (int)image.at<cv::Vec3b>(i, j)[2]) / 3);
-			//std::cout << "R: " << (int)image.at<cv::Vec3b>(i, j)[0] << " G: " << (int)image.at<cv::Vec3b>(i, j)[1] << " B: " << (int)image.at<cv::Vec3b>(i, j)[2] << " ";
+			arr.push_back(((int)image.at<cv::Vec3b>(i, j)[2] + (int)image.at<cv::Vec3b>(i, j)[1] + (int)image.at<cv::Vec3b>(i, j)[0]) / 3);
+			//std::cout << "R: " << (int)image.at<cv::Vec3b>(i, j)[2] << " G: " << (int)image.at<cv::Vec3b>(i, j)[1] << " B: " << (int)image.at<cv::Vec3b>(i, j)[0] << "\n";
+			//std::cout << "pixel pos " << i << " " << arr.at(i) << "\n";
 			pos++;
 		}
 		//std::cout << "\n";
