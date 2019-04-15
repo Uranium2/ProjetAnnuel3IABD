@@ -4,14 +4,14 @@
 
 double* setRandomWeights(int lower, int upper, int nbInputs)
 {
-	auto W = new double[nbInputs + 1];
+	auto W = new double[(double)nbInputs];
 	double low = -1.0;
 	double up = 1.0;
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
 
 	std::uniform_real_distribution<double> distribution(low, up);
-	for (int i = 0; i < nbInputs + 1; i++)
+	for (int i = 0; i < nbInputs; i++)
 	{
 		W[i] = distribution(generator);
 	}
@@ -22,18 +22,20 @@ double* setRandomWeights(int lower, int upper, int nbInputs)
 Neuron* createNeuron(double* inputs, int typeActivation, double bias, int Nbinputs)
 {
 	Neuron* n = (Neuron*)malloc(sizeof(Neuron));
+	if (n == NULL)
+		exit(-99);
 	n->inputs = inputs;
 	n->nbInputs = Nbinputs;
 	n->weights = (double*)malloc(sizeof(float) * Nbinputs);
 	n->typeActivation = typeActivation;
 	n->bias = bias;
-	n->weights = new double[Nbinputs + 1];
+	n->weights = new double[(double)Nbinputs];
 	return n;
 }
 
 double* getWeightedInput(double* inputs, double* weights, int nbInputs)
 {
-	double* mult = (double*)malloc(sizeof(double) * nbInputs);
+	double* mult = new double[(double)nbInputs + 1];
 	for (int i = 0; i < nbInputs; i++)
 	{
 		mult[i] = inputs[i] * weights[i];
@@ -108,10 +110,11 @@ double activateFunction(double x, int type)
 
 void feedForward(Neuron * neuron)
 {
+	auto weightedInput = getWeightedInput(neuron->inputs, neuron->weights, neuron->nbInputs);
 	neuron->output = activateFunction(
 		sumWeightedInput(
-			getWeightedInput(
-				neuron->inputs, neuron->weights, neuron->nbInputs),
+			weightedInput,
 			neuron->nbInputs, neuron->bias),
 		neuron->typeActivation);
+	free(weightedInput);
 }

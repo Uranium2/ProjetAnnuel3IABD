@@ -10,7 +10,7 @@ double* buildYTrain(int nbImg, int type) {
 	switch(type) {
 		case (1):
 				i = 0;
-				max = nbImg - 1;
+				max = nbImg;
 				break;
 		case (2):
 				i = nbImg;
@@ -26,9 +26,9 @@ double* buildYTrain(int nbImg, int type) {
 				break;
 	}
 
-	for (; i < max; i++) {
+	for (; i < max; i++)
 		res[i] = 1.0;
-	}
+
 	return res;
 }
 
@@ -92,7 +92,9 @@ std::vector< double > imgToArr(cv::Mat image, int w, int h) {
 	{
 		for (int j = 0; j < image.cols; j++)
 		{
-			arr.push_back(((int)image.at<cv::Vec3b>(i, j)[2] + (int)image.at<cv::Vec3b>(i, j)[1] + (int)image.at<cv::Vec3b>(i, j)[0]) / 3);
+			int grayscale = ((int)image.at<cv::Vec3b>(i, j)[2] + (int)image.at<cv::Vec3b>(i, j)[1] + (int)image.at<cv::Vec3b>(i, j)[0]) / 3;
+			double normGrayscale = (double)(grayscale - 0) / (255 - 0);
+			arr.push_back(normGrayscale);
 			//std::cout << "R: " << (int)image.at<cv::Vec3b>(i, j)[2] << " G: " << (int)image.at<cv::Vec3b>(i, j)[1] << " B: " << (int)image.at<cv::Vec3b>(i, j)[0] << "\n";
 			//std::cout << "pixel pos " << i << " " << arr.at(i) << "\n";
 			pos++;

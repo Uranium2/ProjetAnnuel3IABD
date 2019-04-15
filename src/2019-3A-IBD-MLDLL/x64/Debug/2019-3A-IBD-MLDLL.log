@@ -1,7 +1,9 @@
 ﻿  Source.cpp
+C:\Users\Tavernier\Documents\ESGI\ProjetAnnuel3IABD\src\2019-3A-IBD-MLDLL\Source.cpp(22): warning C4244: 'initialisation' : conversion de 'double' en 'size_t', perte possible de données
 C:\Users\Tavernier\Documents\ESGI\ProjetAnnuel3IABD\src\2019-3A-IBD-MLDLL\Source.cpp(25): warning C4244: 'initialisation' : conversion de '_Rep' en 'unsigned int', perte possible de données
           with
           [
               _Rep=std::chrono::system_clock::rep
           ]
+C:\Users\Tavernier\Documents\ESGI\ProjetAnnuel3IABD\src\2019-3A-IBD-MLDLL\Source.cpp(60): warning C4244: 'initialisation' : conversion de 'double' en 'size_t', perte possible de données
   2019-3A-IBD-MLDLL.vcxproj -> C:\Users\Tavernier\Documents\ESGI\ProjetAnnuel3IABD\src\x64\Debug\2019-3A-IBD-MLDLL.exe

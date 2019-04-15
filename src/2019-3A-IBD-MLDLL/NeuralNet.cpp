@@ -3,6 +3,8 @@
 Layer* initLayerNeuron(int nbNeurons)
 {
 	Layer* l = (Layer*)malloc(sizeof(Layer));
+	if (l == NULL)
+		exit(-99);
 	l->neurons = (Neuron**)malloc(sizeof(Neuron) * nbNeurons);
 	l->nbNeurons = nbNeurons;
 	return l;
@@ -11,6 +13,8 @@ Layer* initLayerNeuron(int nbNeurons)
 NeuralNet* initNeuralNet(double* inputs, int nbLayers, int* sizeLayers)
 {
 	NeuralNet* nn = (NeuralNet*)malloc(sizeof(NeuralNet));
+	if (nn == NULL)
+		exit(-99);
 	nn->inputs = inputs;
 	nn->nbLayers = nbLayers;
 	nn->sizeLayers = sizeLayers;
@@ -18,7 +22,7 @@ NeuralNet* initNeuralNet(double* inputs, int nbLayers, int* sizeLayers)
 	return nn;
 }
 
-NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers)
+NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbInputs)
 {
 	NeuralNet* nn = initNeuralNet(inputs, nbLayers, sizeLayers);
 	for (int i = 0; i < nbLayers; i++)
@@ -28,7 +32,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers)
 		{
 			if (i == 0)
 			{
-				l->neurons[j] = createNeuron(inputs, 2, 0, sizeLayers[i]);
+				l->neurons[j] = createNeuron(inputs, 2, 1, nbInputs);
 				feedForward(l->neurons[j]);
 				continue;
 			}
@@ -41,7 +45,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers)
 				}
 			}
 
-			l->neurons[j] = createNeuron(in, 2, 0, sizeLayers[i]);
+			l->neurons[j] = createNeuron(in, 2, 0, nbInputs);
 			feedForward(l->neurons[j]);
 		}
 		nn->Layers[i] = l;
@@ -73,7 +77,7 @@ void printNN(NeuralNet* nn)
 		{
 			system("Color 0");
 			std::cout << "x ";
-			for (int k = 0; k < nn->Layers[i]->nbNeurons; k++)
+			for (int k = 0; k < nn->Layers[i]->neurons[j]->nbInputs; k++)
 			{
 				std::cout << KRED << nn->Layers[i]->neurons[j]->inputs[k] << " ";
 				std::cout << KBLU << nn->Layers[i]->neurons[j]->weights[k] << " ";

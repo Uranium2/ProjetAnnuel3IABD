@@ -29,7 +29,7 @@ typedef struct neuralNet
 	int* sizeLayers;
 } NeuralNet;
 
-NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers);
+NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbInputs);
 
 double mse_loss(double* v_true, double* v_given, int nb_elem);
 

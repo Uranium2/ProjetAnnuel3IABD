@@ -19,58 +19,71 @@ extern "C" {
 
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample)
 	{
-		auto W = new double[inputCountPerSample + 1];
+		auto W = new double[(double)inputCountPerSample];
 		double low = -1.0;
 		double up = 1.0;
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine generator(seed);
 
 		std::uniform_real_distribution<double> distribution(low, up);
-		for (int i = 0; i < inputCountPerSample + 1; i++)
+		for (int i = 0; i < inputCountPerSample; i++)
 		{
-			W[i] = distribution(generator);
+			W[i] = 1.0; // distribution(generator);
 		}
 		// TODO : initialisation random [-1,1]
 		return W;
 	}
 
-	SUPEREXPORT void fit_classification_rosenblatt_rule(
-		double* W, 
+	SUPEREXPORT double* fit_classification_rosenblatt_rule(
+		double* W,
 		double* XTrain,
 		int sampleCount,
 		int inputCountPerSample,
 		double* YTrain,
 		double alpha, // Learning Rate
 		int epochs // Nombre d'itération
-		)
+	)
 	{
 		int* sizeLayers = new int[1];
 		sizeLayers[0] = 1;
 		int nbLayers = 1;
-		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers);
-		nn->inputs = XTrain;
-		for (auto i = 0; i < epochs; i++)
-		{
-			double* Xout = new double[sampleCount];
-			for (auto k = 0; k < sampleCount; k++)
+		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers, inputCountPerSample);
+
+		for (int i = 0; i < inputCountPerSample; i++)
+			nn->Layers[0]->neurons[0]->weights[i] = W[i];
+
+		nn->Layers[0]->neurons[0]->nbInputs = inputCountPerSample;
+
+
+		for (int e = 0; e < epochs; e++) {
+			int pos = 0;
+			double* Xout = new double[(double)sizeLayers[0]];
+			for (int k = 0; k < sampleCount; k++)
 			{
-				for (int n = 0; n < nn->Layers[0]->nbNeurons; n++)
+				for (int n = 0; pos < inputCountPerSample * k + inputCountPerSample; pos++, n++)
+					nn->Layers[0]->neurons[0]->inputs[n] = XTrain[pos];
+
+				feedForwadAll(nn);
+				for (int n = 0; n < nn->Layers[0]->neurons[0]->nbInputs; n++)
 				{
-					nn->Layers[0]->neurons[0]->weights[0] = nn->Layers[0]->neurons[n]->weights[0] + alpha * (YTrain[k] - nn->Layers[0]->neurons[n]->output) * nn->inputs[k];
-					std::cout << "weight for neuron n = " << n << ": " << nn->Layers[0]->neurons[0]->weights[0] << "\n";
+					nn->Layers[0]->neurons[0]->weights[n] = nn->Layers[0]->neurons[0]->weights[n] + alpha * (YTrain[k] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
+					//std::cout << "update w[" << n << "] " << nn->Layers[0]->neurons[0]->weights[n] << "\n";
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
-				Xout[k] = nn->Layers[nbLayers - 1]->neurons[0]->output;
+				printNN(nn);
+				Xout[0] = nn->Layers[0]->neurons[0]->output;
 
-				
-				feedForwadAll(nn);
+
 			}
-			double loss = mse_loss(YTrain, Xout, 4);
-			printf("Epoch: %d loss: %f\n", i, loss);
-			printNN(nn);
+
+			double loss = mse_loss(YTrain, Xout, sampleCount);
+			printf("Epoch: %d loss: %f\n", e, loss);
 			
 		}
+		return nn->Layers[0]->neurons[0]->weights;
 	}
+
+
 
 	SUPEREXPORT void fit_regression(
 		double* W,
@@ -91,7 +104,7 @@ extern "C" {
 	{
 		// TODO : Inférence (CF Slides !)
 		return 0.42;
-		}
+	}
 
 	SUPEREXPORT double predict_classification(
 		double* W,
@@ -109,18 +122,20 @@ extern "C" {
 
 	int main()
 	{
-		int sampleCount = 1;
-		int inputCountPerSample = 1;
-		int nbImages = 1;
-		int w = 1;
-		int h = 2;
+		int nbImages = 10;
+		int sampleCount = nbImages * 3;
+		int w = 10;
+		int h = 10;
+		int inputCountPerSample = w * h;
+
+
 		double* XTrain = buildXTrain("../../img/A/", "../../img/B/", "../../img/C/", w, h, nbImages);
-		double* YTrain = buildYTrain(nbImages, 1);
-		double alpha = 0.05;
+		double* YTrain = buildYTrain(nbImages, 2);
+		double alpha = 0.5;
 		int epochs = 10;
 		auto W = create_linear_model(inputCountPerSample);
 
-		fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		std::cin.get();
 		return 0;
