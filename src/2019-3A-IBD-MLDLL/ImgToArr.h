@@ -3,6 +3,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <filesystem>
 
+double* buildYTrain(int nbImg, int type);
+
 double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg);
 
 std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg);

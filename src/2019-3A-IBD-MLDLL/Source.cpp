@@ -111,16 +111,18 @@ extern "C" {
 	{
 		int sampleCount = 1;
 		int inputCountPerSample = 1;
-		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", 1, 1, 5);
-		double* YTrain = new double[sampleCount];
+		int nbImages = 10;
+		int w = 5;
+		int h = 5;
+		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
+		double* YTrain = buildYTrain(nbImages, 1);
 		double alpha = 0.05;
 		int epochs = 10;
 		auto W = create_linear_model(sampleCount);
 
-		YTrain[0] = 1;
 
 		fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
-		///////////////////////////////////////////////////////////////////
+
 
 		std::cin.get();
 		return 0;

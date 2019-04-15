@@ -1,5 +1,38 @@
 #include "ImgToArr.h"
 
+double* buildYTrain(int nbImg, int type) {
+	double* res = new double[nbImg * 3];
+	int i;
+	int max;
+	for (i = 0; i < nbImg * 3; i++)
+	{
+		res[i] = -1.0;
+	}
+	switch(type) {
+		case (1):
+				i = 0;
+				max = nbImg - 1;
+				break;
+		case (2):
+				i = nbImg;
+				max = nbImg * 2;
+				break;
+		case (3):
+				i = nbImg * 2;
+				max = nbImg * 3;
+				break;
+		default:
+				i = 0;
+				max = nbImg;
+				break;
+	}
+
+	for (; i < max; i++) {
+		res[i] = 1.0;
+	}
+	return res;
+}
+
 double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg){
 	std::vector< double > XTrainFPS = folderToArr(pathFolderFPS, w, h, nbImg);
 	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);
