@@ -1,9 +1,26 @@
 #include "ImgToArr.h"
-double* folderToArr(char* pathFolder, int w, int h, int nbImg) {
+
+double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg){
+	std::vector< double > XTrainFPS = folderToArr(pathFolderFPS, w, h, nbImg);
+	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);
+	std::vector< double > XTrainMOBA = folderToArr(pathFolderMOBA, w, h, nbImg);
+	std::vector< double > arr;
+
+	arr.reserve(arr.size() + XTrainFPS.size());
+	arr.insert(arr.end(), XTrainFPS.begin(), XTrainFPS.end());
+	arr.reserve(arr.size() + XTrainRTS.size());
+	arr.insert(arr.end(), XTrainRTS.begin(), XTrainRTS.end());
+	arr.reserve(arr.size() + XTrainMOBA.size());
+	arr.insert(arr.end(), XTrainMOBA.begin(), XTrainMOBA.end());
+
+	double* res = &arr[0]; // mem is continious in vector, so first pointer gets all array
+	return res;
+}
+
+std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg) {
 	std::vector< double > arr;
 	int pos = 0;
 	std::string path = pathFolder;
-
 	for (const auto& entry : std::filesystem::directory_iterator(path))
 	{
 		if (pos >= nbImg)
@@ -14,12 +31,10 @@ double* folderToArr(char* pathFolder, int w, int h, int nbImg) {
 
 		arr.reserve(arr.size() + tmp.size()); // preallocate memory
 		arr.insert(arr.end(), tmp.begin(), tmp.end());
-		std::cout << "POS: " << pos << " " << path_string << "size: " << sizeof(arr[0]) * arr.size() << std::endl;
 		pos++;
 
 	}
-	double* res = &arr[0]; // mem is continious in vector, so first pointer gets all array
-	return res;
+	return arr;
 }
 
 std::vector< double > pathToArr(std::string path, int w, int h) {

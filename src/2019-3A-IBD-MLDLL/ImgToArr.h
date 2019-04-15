@@ -3,7 +3,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <filesystem>
 
-double* folderToArr(char* pathFolder, int w, int h, int nbImg);
+double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg);
+
+std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg);
 
 std::vector< double > pathToArr(std::string path, int w, int h);
 

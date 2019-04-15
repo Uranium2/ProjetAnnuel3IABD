@@ -111,7 +111,7 @@ extern "C" {
 	{
 		int sampleCount = 1;
 		int inputCountPerSample = 1;
-		double* XTrain = folderToArr("../../img/FPS/", 1, 1, 2);
+		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", 1, 1, 5);
 		double* YTrain = new double[sampleCount];
 		double alpha = 0.05;
 		int epochs = 10;
