@@ -122,7 +122,7 @@ extern "C" {
 
 	int main()
 	{
-		int nbImages = 10;
+		int nbImages = 4;
 		int sampleCount = nbImages * 3;
 		int w = 10;
 		int h = 10;
@@ -131,8 +131,8 @@ extern "C" {
 
 		double* XTrain = buildXTrain("../../img/A/", "../../img/B/", "../../img/C/", w, h, nbImages);
 		double* YTrain = buildYTrain(nbImages, 2);
-		double alpha = 0.5;
-		int epochs = 10;
+		double alpha = 0.05;
+		int epochs = 100;
 		auto W = create_linear_model(inputCountPerSample);
 
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
