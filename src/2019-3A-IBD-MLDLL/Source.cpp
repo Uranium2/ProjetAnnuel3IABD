@@ -57,7 +57,7 @@ extern "C" {
 
 		for (int e = 0; e < epochs; e++) {
 			int pos = 0;
-			double* Xout = new double[(double)sizeLayers[0]];
+			double* Xout = new double[(double)sampleCount];
 			for (int k = 0; k < sampleCount; k++)
 			{
 				for (int n = 0; pos < inputCountPerSample * k + inputCountPerSample; pos++, n++)
@@ -71,7 +71,7 @@ extern "C" {
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
 				printNN(nn);
-				Xout[0] = nn->Layers[0]->neurons[0]->output;
+				Xout[k] = nn->Layers[0]->neurons[0]->output;
 
 
 			}
@@ -122,17 +122,17 @@ extern "C" {
 
 	int main()
 	{
-		int nbImages = 4;
+		int nbImages = 1;
 		int sampleCount = nbImages * 3;
-		int w = 10;
-		int h = 10;
+		int w = 1;
+		int h = 1;
 		int inputCountPerSample = w * h;
 
 
 		double* XTrain = buildXTrain("../../img/A/", "../../img/B/", "../../img/C/", w, h, nbImages);
 		double* YTrain = buildYTrain(nbImages, 2);
 		double alpha = 0.05;
-		int epochs = 100;
+		int epochs = 2;
 		auto W = create_linear_model(inputCountPerSample);
 
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
