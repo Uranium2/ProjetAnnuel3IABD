@@ -28,7 +28,7 @@ extern "C" {
 		std::uniform_real_distribution<double> distribution(low, up);
 		for (int i = 0; i < inputCountPerSample; i++)
 		{
-			W[i] = 1.0; // distribution(generator);
+			W[i] = distribution(generator);
 		}
 		// TODO : initialisation random [-1,1]
 		return W;
@@ -70,7 +70,7 @@ extern "C" {
 					//std::cout << "update w[" << n << "] " << nn->Layers[0]->neurons[0]->weights[n] << "\n";
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
-				printNN(nn);
+				//printNN(nn);
 				Xout[k] = nn->Layers[0]->neurons[0]->output;
 
 
@@ -112,7 +112,21 @@ extern "C" {
 		int inputCountPerSample
 	)
 	{
-		return predict_regression(W, XToPredict, inputCountPerSample) >= 0 ? 1.0 : -1.0;
+		int* sizeLayers = new int[1];
+		sizeLayers[0] = 1;
+		int nbLayers = 1;
+		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers, inputCountPerSample);
+
+		for (int i = 0; i < inputCountPerSample; i++)
+		{
+			nn->Layers[0]->neurons[0]->weights[i] = W[i];
+			nn->Layers[0]->neurons[0]->inputs[i] = XToPredict[i];
+		}
+		nn->Layers[0]->neurons[0]->nbInputs = inputCountPerSample;
+		feedForwadAll(nn);
+
+		return nn->Layers[0]->neurons[0]->output;
+		//return predict_regression(W, XToPredict, inputCountPerSample) >= 0 ? 1.0 : -1.0;
 	}
 
 	SUPEREXPORT void delete_linear_model(double* W)
@@ -122,21 +136,23 @@ extern "C" {
 
 	int main()
 	{
-		int nbImages = 1;
+		int nbImages = 5;
 		int sampleCount = nbImages * 3;
 		int w = 1;
 		int h = 1;
 		int inputCountPerSample = w * h;
 
 
-		double* XTrain = buildXTrain("../../img/A/", "../../img/B/", "../../img/C/", w, h, nbImages);
+		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
 		double* YTrain = buildYTrain(nbImages, 2);
 		double alpha = 0.05;
-		int epochs = 2;
+		int epochs = 1000;
 		auto W = create_linear_model(inputCountPerSample);
 
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
-
+		double* XPredict = new double[1];
+		XPredict[0] = 1.0;
+		std::cout << predict_classification(W, XPredict,inputCountPerSample);
 		std::cin.get();
 		return 0;
 	}

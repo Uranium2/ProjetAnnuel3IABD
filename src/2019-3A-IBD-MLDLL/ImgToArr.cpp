@@ -85,7 +85,7 @@ std::vector< double > pathToArr(std::string path, int w, int h) {
 
 std::vector< double > imgToArr(cv::Mat image, int w, int h) {
 	cv::Size size(w, h);
-	resize(image, image, size);
+	cv::resize(image, image, size);
 	std::vector< double > arr;
 	int pos = 0;
 	for (int i = 0; i < image.rows; i++)
