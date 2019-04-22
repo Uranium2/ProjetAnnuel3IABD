@@ -78,7 +78,7 @@ extern "C" {
 
 			double loss = mse_loss(YTrain, Xout, sampleCount);
 			printf("Epoch: %d loss: %f\n", e, loss);
-			
+
 		}
 		return nn->Layers[0]->neurons[0]->weights;
 	}
@@ -122,10 +122,9 @@ extern "C" {
 			nn->Layers[0]->neurons[0]->weights[i] = W[i];
 			nn->Layers[0]->neurons[0]->inputs[i] = XToPredict[i];
 		}
-		nn->Layers[0]->neurons[0]->nbInputs = inputCountPerSample;
 		feedForwadAll(nn);
-
-		return nn->Layers[0]->neurons[0]->output;
+		std::cout << nn->Layers[0]->neurons[0]->output;
+		return nn->Layers[0]->neurons[0]->output >= 0 ? 1.0 : -1.0;
 		//return predict_regression(W, XToPredict, inputCountPerSample) >= 0 ? 1.0 : -1.0;
 	}
 
@@ -136,23 +135,28 @@ extern "C" {
 
 	int main()
 	{
-		int nbImages = 5;
+		// Build param
+		int nbImages = 10;
 		int sampleCount = nbImages * 3;
-		int w = 1;
-		int h = 1;
+		int w = 100;
+		int h = 23;
 		int inputCountPerSample = w * h;
-
+		double alpha = 0.05;
+		int epochs = 100;
 
 		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
-		double* YTrain = buildYTrain(nbImages, 2);
-		double alpha = 0.05;
-		int epochs = 1000;
+		double* YTrain = buildYTrain(nbImages, 3);
+
+		// Build
 		auto W = create_linear_model(inputCountPerSample);
 
+		// Fit
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
-		double* XPredict = new double[1];
-		XPredict[0] = 1.0;
-		std::cout << predict_classification(W, XPredict,inputCountPerSample);
+
+		// Prediction
+		double* XPredict = buildXTrain("../../img/FPS_Predict/", "../../img/RTS_Predict/", "../../img/MOBA_Predict/", w, h, nbImages);
+		std::cout << predict_classification(W, XPredict, inputCountPerSample) << "\n";
+
 		std::cin.get();
 		return 0;
 	}
