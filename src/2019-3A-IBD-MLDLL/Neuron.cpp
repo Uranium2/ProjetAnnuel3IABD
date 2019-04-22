@@ -26,7 +26,7 @@ Neuron* createNeuron(double* inputs, int typeActivation, double bias, int Nbinpu
 		exit(-99);
 	n->inputs = inputs;
 	n->nbInputs = Nbinputs;
-	n->weights = (double*)malloc(sizeof(float) * Nbinputs);
+	n->weights = (double*)malloc(sizeof(double) * Nbinputs);
 	n->typeActivation = typeActivation;
 	n->bias = bias;
 	n->weights = new double[(double)Nbinputs];
@@ -39,6 +39,7 @@ double* getWeightedInput(double* inputs, double* weights, int nbInputs)
 	for (int i = 0; i < nbInputs; i++)
 	{
 		mult[i] = inputs[i] * weights[i];
+		lol
 	}
 	return mult;
 }
@@ -54,12 +55,12 @@ double sumWeightedInput(double* weightedInput, int nbInputs, int bias)
 	return sum + bias;
 }
 
-float hyperTan(float x)
+double hyperTan(double x)
 {
-	return (float)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
+	return (double)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
 }
 
-float sigmoid(float x)
+double sigmoid(double x)
 {
 	return (double)(1 / (1 + exp(-x)));
 }
@@ -82,7 +83,7 @@ double reLu(double x)
 	return linear(x);
 }
 
-float leackyReLu(float x)
+double leackyReLu(double x)
 {
 	if (x < 0)
 		return linear(x)* 0.01;
