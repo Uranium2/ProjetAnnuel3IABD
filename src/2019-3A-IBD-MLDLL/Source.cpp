@@ -137,8 +137,8 @@ extern "C" {
 		// Build param
 		int nbImages = 10;
 		int sampleCount = nbImages * 3;
-		int w = 10;
-		int h = 23;
+		int w = 100;
+		int h = 230;
 		int inputCountPerSample = w * h;
 		double alpha = 0.05;
 		int epochs = 100;
