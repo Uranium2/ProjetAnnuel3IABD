@@ -32,6 +32,19 @@ double* buildYTrain(int nbImg, int type) {
 	return res;
 }
 
+double* loadImgToPredict(char* path, int w, int h)
+{
+	std::vector< double > PredictVec = folderToArr(path, w, h, 1);
+	double* res = new double[w * h];
+	int pos = 0;
+	for (int i = 0; i < PredictVec.size(); i++) {
+		res[pos] = PredictVec.at(i);
+		pos++;
+	}
+	return res;
+}
+
+
 double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg){
 	std::vector< double > XTrainFPS = folderToArr(pathFolderFPS, w, h, nbImg);
 	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);

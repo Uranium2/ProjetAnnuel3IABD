@@ -77,7 +77,8 @@ extern "C" {
 			}
 
 			double loss = mse_loss(YTrain, Xout, sampleCount);
-			printf("Epoch: %d loss: %f\n", e, loss);
+			if (e % 10 == 0 || e == epochs - 1)
+				printf("Epoch: %d loss: %f\n", e, loss);
 
 		}
 		return nn->Layers[0]->neurons[0]->weights;
@@ -123,9 +124,7 @@ extern "C" {
 			nn->Layers[0]->neurons[0]->inputs[i] = XToPredict[i];
 		}
 		feedForwadAll(nn);
-		std::cout << nn->Layers[0]->neurons[0]->output;
 		return nn->Layers[0]->neurons[0]->output >= 0 ? 1.0 : -1.0;
-		//return predict_regression(W, XToPredict, inputCountPerSample) >= 0 ? 1.0 : -1.0;
 	}
 
 	SUPEREXPORT void delete_linear_model(double* W)
@@ -138,14 +137,15 @@ extern "C" {
 		// Build param
 		int nbImages = 10;
 		int sampleCount = nbImages * 3;
-		int w = 100;
+		int w = 10;
 		int h = 23;
 		int inputCountPerSample = w * h;
 		double alpha = 0.05;
 		int epochs = 100;
-
+		int class_ = 1; // 1 = FPS, 2 = RTS, 3 MOBA
+		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
 		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
-		double* YTrain = buildYTrain(nbImages, 3);
+		double* YTrain = buildYTrain(nbImages, class_);
 
 		// Build
 		auto W = create_linear_model(inputCountPerSample);
@@ -154,8 +154,14 @@ extern "C" {
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
-		double* XPredict = buildXTrain("../../img/FPS_Predict/", "../../img/RTS_Predict/", "../../img/MOBA_Predict/", w, h, nbImages);
-		std::cout << predict_classification(W, XPredict, inputCountPerSample) << "\n";
+		double* XPredict = loadImgToPredict("../../img/FPS/", w, h);
+		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
+
+
+		if (prediction >= 1)
+			std::cout << "I think this image is from class: " << class_ << "\n";
+		else
+			std::cout << "I don't think this image is from class: " << class_ << "\n";
 
 		std::cin.get();
 		return 0;
