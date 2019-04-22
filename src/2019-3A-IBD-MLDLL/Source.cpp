@@ -154,7 +154,7 @@ extern "C" {
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
-		double* XPredict = loadImgToPredict("../../img/FPS/", w, h);
+		double* XPredict = loadImgToPredict("../../img/FPS_Predict/", w, h);
 		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
 
 
