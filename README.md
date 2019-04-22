@@ -14,16 +14,12 @@ stephaneArtist - HOLLANDER Stéphane
 
 - Application permettant de différencier une image (screenshot) issue d'un RTS, d'un MOBA ou d'un FPS
 
-# Régression
-
-- Application permettant de prédire l'âge d'une personne à partir d'une photo de son visage (attention à la
-constitution du dataset)
-
 Support Application:
   Unity (Android) ou alors Web
 
 
-Plateforme pour coder: Windows (pas de VM ou de Linux, pb de 'driver' ?) + Visual Studio Code. Visual Studio community 2017 ?
+Plateforme pour coder: Visual Studio community 2019 - Windows 10
+Lib: OpenCV + Eigen
 
 Méthode pour récupérer les images d'un stream:
 
