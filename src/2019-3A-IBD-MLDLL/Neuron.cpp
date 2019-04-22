@@ -116,5 +116,4 @@ void feedForward(Neuron * neuron)
 			weightedInput,
 			neuron->nbInputs, neuron->bias),
 		neuron->typeActivation);
-	free(weightedInput);
 }
