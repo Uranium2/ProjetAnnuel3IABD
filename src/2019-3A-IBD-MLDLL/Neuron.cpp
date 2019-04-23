@@ -54,6 +54,13 @@ double sumWeightedInput(double* weightedInput, int nbInputs, int bias)
 	return sum + bias;
 }
 
+double sign(double x)
+{
+	if (x >= 0)
+		return x;
+	return 0;
+}
+
 double hyperTan(double x)
 {
 	return (double)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
@@ -104,7 +111,7 @@ double activateFunction(double x, int type)
 	case 4:
 		return leackyReLu(x);
 	default:
-		return sigmoid(x);
+		return sign(x);
 	}
 }
 

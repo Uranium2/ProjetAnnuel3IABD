@@ -5,7 +5,7 @@ Layer* initLayerNeuron(int nbNeurons)
 	Layer* l = (Layer*)malloc(sizeof(Layer));
 	if (l == NULL)
 		exit(-99);
-	l->neurons = (Neuron**)malloc(sizeof(Neuron) * nbNeurons);
+	l->neurons = (Neuron**)malloc(sizeof(Neuron) * nbNeurons + 1);
 	l->nbNeurons = nbNeurons;
 	return l;
 }
@@ -32,7 +32,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbI
 		{
 			if (i == 0)
 			{
-				l->neurons[j] = createNeuron(inputs, 2, 1, nbInputs);
+				l->neurons[j] = createNeuron(inputs, 20, 1, nbInputs);
 				feedForward(l->neurons[j]);
 				continue;
 			}
@@ -45,7 +45,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbI
 				}
 			}
 
-			l->neurons[j] = createNeuron(in, 2, 0, nbInputs);
+			l->neurons[j] = createNeuron(in, 20, 1, nbInputs);
 			feedForward(l->neurons[j]);
 		}
 		nn->Layers[i] = l;

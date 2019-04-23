@@ -19,7 +19,7 @@ extern "C" {
 
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample)
 	{
-		auto W = new double[(double)inputCountPerSample + 1];
+		auto W = new double[inputCountPerSample + 1];
 		double low = -1.0;
 		double up = 1.0;
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -60,13 +60,15 @@ extern "C" {
 			double* Xout = new double[(double)sampleCount];
 			for (int k = 0; k < sampleCount; k++)
 			{
-				for (int n = 0; pos < inputCountPerSample * k + inputCountPerSample; pos++, n++)
+				for (int n = 1; pos < inputCountPerSample * k + inputCountPerSample; pos++, n++)
 					nn->Layers[0]->neurons[0]->inputs[n] = XTrain[pos];
+				nn->Layers[0]->neurons[0]->inputs[0] = 1;
 
 				feedForwadAll(nn);
 				for (int n = 0; n < nn->Layers[0]->neurons[0]->nbInputs; n++)
 				{
-					nn->Layers[0]->neurons[0]->weights[n] = nn->Layers[0]->neurons[0]->weights[n] + alpha * (YTrain[k] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
+					nn->Layers[0]->neurons[0]->weights[n] = nn->Layers[0]->neurons[0]->weights[n] +
+						alpha * (YTrain[k] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
 					//std::cout << "update w[" << n << "] " << nn->Layers[0]->neurons[0]->weights[n] << "\n";
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
@@ -135,16 +137,20 @@ extern "C" {
 	int main()
 	{
 		// Build param
-		int nbImages = 10;
+		int nbImages = 1;
 		int sampleCount = nbImages * 3;
-		int w = 10;
-		int h = 20;
+		int w = 1;
+		int h = 1;
 		int inputCountPerSample = w * h;
-		double alpha = 0.05;
+		double alpha = 0.001;
 		int epochs = 100;
 		int class_ = 1; // 1 = FPS, 2 = RTS, 3 MOBA
 		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
 		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
+		for (int i = 0; i < 4; i++)
+		{
+			std::cout << XTrain[i] << "\n";
+		}
 		double* YTrain = buildYTrain(nbImages, class_);
 
 		// Build
@@ -154,7 +160,7 @@ extern "C" {
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
-		double* XPredict = loadImgToPredict("../../img/FPS/", w, h);
+		double* XPredict = loadImgToPredict("../../img/MOBA_Predict/", w, h);
 		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
 
 
