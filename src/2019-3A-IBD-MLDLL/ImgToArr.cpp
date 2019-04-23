@@ -50,7 +50,7 @@ double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOB
 	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);
 	std::vector< double > XTrainMOBA = folderToArr(pathFolderMOBA, w, h, nbImg);
 
-	double* res = new double[nbImg * 3 * w * h];
+	double* res = new double[(nbImg * 3 * w * h) + (nbImg * 3)];
 
 	int pos = 0;
 	for (int i = 0; i < XTrainFPS.size(); i++) {
@@ -100,7 +100,7 @@ std::vector< double > imgToArr(cv::Mat image, int w, int h) {
 	cv::Size size(w, h);
 	cv::resize(image, image, size);
 	std::vector< double > arr;
-	int pos = 0;
+	arr.push_back(1);
 	for (int i = 0; i < image.rows; i++)
 	{
 		for (int j = 0; j < image.cols; j++)
@@ -110,7 +110,6 @@ std::vector< double > imgToArr(cv::Mat image, int w, int h) {
 			arr.push_back(normGrayscale);
 			//std::cout << "R: " << (int)image.at<cv::Vec3b>(i, j)[2] << " G: " << (int)image.at<cv::Vec3b>(i, j)[1] << " B: " << (int)image.at<cv::Vec3b>(i, j)[0] << "\n";
 			//std::cout << "pixel pos " << i << " " << arr.at(i) << "\n";
-			pos++;
 		}
 		//std::cout << "\n";
 	}

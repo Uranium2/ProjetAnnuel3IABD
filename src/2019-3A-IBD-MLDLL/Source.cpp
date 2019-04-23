@@ -19,14 +19,14 @@ extern "C" {
 
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample)
 	{
-		auto W = new double[(double)inputCountPerSample];
+		auto W = new double[(double)inputCountPerSample + 1];
 		double low = -1.0;
 		double up = 1.0;
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine generator(seed);
 
 		std::uniform_real_distribution<double> distribution(low, up);
-		for (int i = 0; i < inputCountPerSample; i++)
+		for (int i = 0; i < inputCountPerSample + 1; i++)
 		{
 			W[i] = distribution(generator);
 		}
@@ -137,8 +137,8 @@ extern "C" {
 		// Build param
 		int nbImages = 10;
 		int sampleCount = nbImages * 3;
-		int w = 100;
-		int h = 230;
+		int w = 10;
+		int h = 20;
 		int inputCountPerSample = w * h;
 		double alpha = 0.05;
 		int epochs = 100;
@@ -154,7 +154,7 @@ extern "C" {
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
-		double* XPredict = loadImgToPredict("../../img/FPS_Predict/", w, h);
+		double* XPredict = loadImgToPredict("../../img/FPS/", w, h);
 		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
 
 
