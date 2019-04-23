@@ -39,7 +39,6 @@ double* getWeightedInput(double* inputs, double* weights, int nbInputs)
 	for (int i = 0; i < nbInputs; i++)
 	{
 		mult[i] = inputs[i] * weights[i];
-		lol
 	}
 	return mult;
 }
