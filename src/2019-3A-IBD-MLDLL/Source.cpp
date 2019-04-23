@@ -12,6 +12,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "NeuralNet.h"
 #include "ImgToArr.h"
+#include "EnumGame.h"
 
 
 extern "C" {
@@ -126,7 +127,7 @@ extern "C" {
 			nn->Layers[0]->neurons[0]->inputs[i] = XToPredict[i];
 		}
 		feedForwadAll(nn);
-		return nn->Layers[0]->neurons[0]->output >= 0 ? 1.0 : -1.0;
+		return nn->Layers[0]->neurons[0]->output;
 	}
 
 	SUPEREXPORT void delete_linear_model(double* W)
@@ -137,20 +138,17 @@ extern "C" {
 	int main()
 	{
 		// Build param
-		int nbImages = 1;
+		int nbImages = 10;
 		int sampleCount = nbImages * 3;
-		int w = 1;
-		int h = 1;
+		int w = 100;
+		int h = 200;
 		int inputCountPerSample = w * h;
 		double alpha = 0.001;
 		int epochs = 100;
-		int class_ = 1; // 1 = FPS, 2 = RTS, 3 MOBA
+		auto class_ = FPS;
 		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
 		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
-		for (int i = 0; i < 4; i++)
-		{
-			std::cout << XTrain[i] << "\n";
-		}
+
 		double* YTrain = buildYTrain(nbImages, class_);
 
 		// Build
@@ -160,14 +158,13 @@ extern "C" {
 		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
-		double* XPredict = loadImgToPredict("../../img/MOBA_Predict/", w, h);
+		double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
 		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
 
-
 		if (prediction >= 1)
-			std::cout << "I think this image is from class: " << class_ << "\n";
+			std::cout << "I think this image is from class: " << getGame(class_) << "\n";
 		else
-			std::cout << "I don't think this image is from class: " << class_ << "\n";
+			std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
 
 		std::cin.get();
 		return 0;

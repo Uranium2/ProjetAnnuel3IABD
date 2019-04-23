@@ -19,7 +19,7 @@ double* setRandomWeights(int lower, int upper, int nbInputs)
 	return W;
 }
 
-Neuron* createNeuron(double* inputs, int typeActivation, double bias, int Nbinputs)
+Neuron* createNeuron(double* inputs, ACTIVATION typeActivation, double bias, int Nbinputs)
 {
 	Neuron* n = (Neuron*)malloc(sizeof(Neuron));
 	if (n == NULL)
@@ -63,7 +63,7 @@ double sign(double x)
 
 double hyperTan(double x)
 {
-	return (double)((1 - exp(-2 * x)) / (1 + exp(-2 * x)));
+	return std::tanh(x);
 }
 
 double sigmoid(double x)
@@ -96,20 +96,18 @@ double leackyReLu(double x)
 	return linear(x);
 }
 
-double activateFunction(double x, int type)
+double activateFunction(double x, ACTIVATION type)
 {
 	switch (type)
 	{
-	case 0:
+	case LINEAR:
 		return linear(x);
-	case 1:
+	case SIGN:
+		return sign(x);
+	case SIGMOID:
 		return sigmoid(x);
-	case 2:
+	case TANH:
 		return hyperTan(x);
-	case 3:
-		return reLu(x);
-	case 4:
-		return leackyReLu(x);
 	default:
 		return sign(x);
 	}

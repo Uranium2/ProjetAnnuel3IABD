@@ -130,6 +130,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EnumGame.h" />
     <ClInclude Include="ImgToArr.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="Neuron.h" />

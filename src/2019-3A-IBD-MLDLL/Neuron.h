@@ -8,17 +8,24 @@
 #include <random>
 
 
+typedef enum {
+	LINEAR,
+	SIGN,
+	SIGMOID,
+	TANH
+} ACTIVATION;
+
 typedef struct neuron
 {
 	double* inputs;
 	double* weights;
 	double output;
 	int nbInputs;
-	int typeActivation;
+	ACTIVATION typeActivation;
 	double bias;
 } Neuron;
 
-Neuron* createNeuron(double* inputs, int typeActivation, double bias, int Nbinputs);
+Neuron* createNeuron(double* inputs, ACTIVATION typeActivation, double bias, int Nbinputs);
 
 void feedForward(Neuron* neuron);
 

@@ -32,7 +32,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbI
 		{
 			if (i == 0)
 			{
-				l->neurons[j] = createNeuron(inputs, 20, 1, nbInputs);
+				l->neurons[j] = createNeuron(inputs, SIGN, 1, nbInputs);
 				feedForward(l->neurons[j]);
 				continue;
 			}
@@ -45,7 +45,7 @@ NeuralNet* buildNeuralNet(double* inputs, int nbLayers, int* sizeLayers, int nbI
 				}
 			}
 
-			l->neurons[j] = createNeuron(in, 20, 1, nbInputs);
+			l->neurons[j] = createNeuron(in, SIGN, 1, nbInputs);
 			feedForward(l->neurons[j]);
 		}
 		nn->Layers[i] = l;
