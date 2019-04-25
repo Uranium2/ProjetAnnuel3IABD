@@ -6,6 +6,7 @@
 #define _SILENCE_CXX17_NEGATORS_DEPRECATION_WARNING
 
 #include <random>
+#include <algorithm>
 #include <iostream>
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
@@ -50,6 +51,14 @@ extern "C" {
 		int nbLayers = 1;
 		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers, inputCountPerSample);
 
+		std::vector<int> myImageIndex;
+		auto rng = std::default_random_engine{};
+
+		for (int i = 0; i < sampleCount; i++) // Create ordered vector
+			myImageIndex.push_back(i);
+
+		std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng);
+
 		for (int i = 0; i < inputCountPerSample; i++)
 			nn->Layers[0]->neurons[0]->weights[i] = W[i];
 
@@ -57,24 +66,23 @@ extern "C" {
 
 
 		for (int e = 0; e < epochs; e++) {
-			int pos = 0;
+			
 			double* Xout = new double[(double)sampleCount];
 			for (int k = 0; k < sampleCount; k++)
 			{
-				for (int n = 1; pos < inputCountPerSample * k + inputCountPerSample; pos++, n++)
-					nn->Layers[0]->neurons[0]->inputs[n] = XTrain[pos];
-				nn->Layers[0]->neurons[0]->inputs[0] = 1;
+				for (int n = 1; n < inputCountPerSample + 1; n++) // Shuffle index
+					nn->Layers[0]->neurons[0]->inputs[n] = XTrain[inputCountPerSample * myImageIndex[k]];
+				nn->Layers[0]->neurons[0]->inputs[0] = 1; // add bias
 
 				feedForwadAll(nn);
 				for (int n = 0; n < nn->Layers[0]->neurons[0]->nbInputs; n++)
 				{
 					nn->Layers[0]->neurons[0]->weights[n] = nn->Layers[0]->neurons[0]->weights[n] +
-						alpha * (YTrain[k] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
-					//std::cout << "update w[" << n << "] " << nn->Layers[0]->neurons[0]->weights[n] << "\n";
+						alpha * (YTrain[myImageIndex[k]] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
 					// W = W + a(Yk - g(Xk)) + Xk
 				}
 				//printNN(nn);
-				Xout[k] = nn->Layers[0]->neurons[0]->output;
+				Xout[myImageIndex[k]] = nn->Layers[0]->neurons[0]->output;
 
 
 			}
@@ -138,16 +146,16 @@ extern "C" {
 	int main()
 	{
 		// Build param
-		int nbImages = 10;
+		int nbImages = 1;
 		int sampleCount = nbImages * 3;
-		int w = 100;
-		int h = 200;
+		int w = 1;
+		int h = 1;
 		int inputCountPerSample = w * h;
 		double alpha = 0.001;
-		int epochs = 100;
+		int epochs = 1;
 		auto class_ = FPS;
 		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
-		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
+		double* XTrain = buildXTrain("../../img/A/", "../../img/B/", "../../img/C/", w, h, nbImages);
 
 		double* YTrain = buildYTrain(nbImages, class_);
 
