@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iostream>
 #include <Eigen/Dense>
+#include <Eigen/QR>    
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "NeuralNet.h"
@@ -109,9 +110,9 @@ extern "C" {
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			vec_W(i) = W[i];
 
-		Eigen::VectorXd vec_Y(sampleCount);
+		Eigen::MatrixXd mat_Y(sampleCount, 1);
 		for (int i = 0; i < sampleCount; i++)
-			vec_Y(i) = YTrain[i];
+			mat_Y(i) = YTrain[i];
 
 		Eigen::MatrixXd mat_XTrain(inputCountPerSample + 1, sampleCount);
 		int pos = 0;
@@ -122,12 +123,20 @@ extern "C" {
 				if (y == 0)
 					mat_XTrain(y, x) = 1;
 				else
-				{
+			 	{
 					mat_XTrain(y, x) = XTrain[pos];
 					pos++;
 				}
 			}
 		}
+
+		Eigen::MatrixXd mult = mat_XTrain.transpose() * mat_XTrain;
+		auto pseudo_inv = mult.completeOrthogonalDecomposition().pseudoInverse();
+		auto mult_trans = pseudo_inv * mat_XTrain.transpose();
+
+		std::cout << mat_XTrain << "\n";
+		std::cout << mat_Y << "\n";
+		//auto final_res = mult_trans * mat_Y;
 		return W;
 		// TODO : entrainement (correction des W, cf slides !)
 	}
