@@ -108,6 +108,11 @@ extern "C" {
 		Eigen::VectorXd vec_W(inputCountPerSample + 1);
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			vec_W(i) = W[i];
+
+		Eigen::VectorXd vec_Y(sampleCount);
+		for (int i = 0; i < sampleCount; i++)
+			vec_Y(i) = YTrain[i];
+
 		Eigen::MatrixXd mat_XTrain(inputCountPerSample + 1, sampleCount);
 		int pos = 0;
 		for (int x = 0; x < sampleCount; x++)
