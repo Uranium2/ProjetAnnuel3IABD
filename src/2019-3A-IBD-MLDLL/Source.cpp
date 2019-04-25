@@ -36,7 +36,7 @@ extern "C" {
 		return W;
 	}
 
-	SUPEREXPORT double* fit_classification_rosenblatt_rule(
+	SUPEREXPORT double* fit_classification(
 		double* W,
 		double* XTrain,
 		int sampleCount,
@@ -163,7 +163,7 @@ extern "C" {
 		auto W = create_linear_model(inputCountPerSample);
 
 		// Fit
-		W = fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
 		// Prediction
 		double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
