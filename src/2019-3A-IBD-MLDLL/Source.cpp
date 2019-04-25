@@ -97,7 +97,6 @@ extern "C" {
 	}
 
 
-
 	SUPEREXPORT double* fit_regression(
 		double* W,
 		double* XTrain,
@@ -114,31 +113,39 @@ extern "C" {
 		for (int i = 0; i < sampleCount; i++)
 			mat_Y(i) = YTrain[i];
 
-		Eigen::MatrixXd mat_XTrain(inputCountPerSample + 1, sampleCount);
+		Eigen::MatrixXd mat_XTrain(inputCountPerSample, sampleCount);
 		int pos = 0;
 		for (int x = 0; x < sampleCount; x++)
 		{
-			for (int y = 0; y < inputCountPerSample + 1; y++)
+			for (int y = 0; y < inputCountPerSample; y++)
 			{
-				if (y == 0)
-					mat_XTrain(y, x) = 1;
-				else
-			 	{
-					mat_XTrain(y, x) = XTrain[pos];
-					pos++;
-				}
+				mat_XTrain(y, x) = XTrain[pos];
+				pos++;
 			}
 		}
 
-		Eigen::MatrixXd mult = mat_XTrain.transpose() * mat_XTrain;
-		auto pseudo_inv = mult.completeOrthogonalDecomposition().pseudoInverse();
-		auto mult_trans = pseudo_inv * mat_XTrain.transpose();
-
 		std::cout << mat_XTrain << "\n";
 		std::cout << mat_Y << "\n";
-		//auto final_res = mult_trans * mat_Y;
+
+		Eigen::MatrixXd transpose = mat_XTrain.transpose();
+		std::cout << " transpose:\n " << transpose << "\n";
+		Eigen::MatrixXd mult = transpose * mat_XTrain;
+		std::cout << " mult:\n "<< mult << "\n";
+		Eigen::MatrixXd pseudo_inv = mult.completeOrthogonalDecomposition().pseudoInverse();
+		std::cout << " pseudo_inv:\n " << pseudo_inv << "\n";
+		Eigen::MatrixXd mult_trans = pseudo_inv * transpose;
+		std::cout << " mult_trans:\n " << mult_trans << "\n";
+
+		Eigen::MatrixXd final_res = mult_trans * mat_Y;
+		std::cout << " final_res:\n " << final_res << "\n";
+		//for (int i = 0; i < sampleCount; ++i) {
+		//	for (int j = 0; j < inputCountPerSample; ++j) {
+		//		std::cout << final_res(i, j) << " " << i << " " << j << "\n";
+		//	}
+		//}
+		//return final_res.data();
 		return W;
-		// TODO : entrainement (correction des W, cf slides !)
+		//// TODO : entrainement (correction des W, cf slides !)
 	}
 
 	SUPEREXPORT double predict_regression(
@@ -181,7 +188,7 @@ extern "C" {
 		// Build param
 		int nbImages = 2;
 		int sampleCount = nbImages * 3;
-		int w = 1;
+		int w = 2;
 		int h = 1;
 		int inputCountPerSample = w * h;
 		double alpha = 0.001;
@@ -198,7 +205,10 @@ extern "C" {
 		// Fit
 		//W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 		W = fit_regression(W, XTrain, sampleCount, inputCountPerSample, YTrain);
-
+		for (int i = 0; i < inputCountPerSample; i++)
+		{
+			//std::cout << W[i] << "\n";
+		}
 		// Prediction
 		//double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
 		//auto prediction = predict_classification(W, XPredict, inputCountPerSample);
