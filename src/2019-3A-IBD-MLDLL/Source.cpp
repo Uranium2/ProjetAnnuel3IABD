@@ -97,14 +97,33 @@ extern "C" {
 
 
 
-	SUPEREXPORT void fit_regression(
+	SUPEREXPORT double* fit_regression(
 		double* W,
 		double* XTrain,
-		int SampleCount,
+		int sampleCount,
 		int inputCountPerSample,
 		double* YTrain
 	)
 	{
+		Eigen::VectorXd vec_W(inputCountPerSample + 1);
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			vec_W(i) = W[i];
+		Eigen::MatrixXd mat_XTrain(inputCountPerSample + 1, sampleCount);
+		int pos = 0;
+		for (int x = 0; x < sampleCount; x++)
+		{
+			for (int y = 0; y < inputCountPerSample + 1; y++)
+			{
+				if (y == 0)
+					mat_XTrain(y, x) = 1;
+				else
+				{
+					mat_XTrain(y, x) = XTrain[pos];
+					pos++;
+				}
+			}
+		}
+		return W;
 		// TODO : entrainement (correction des W, cf slides !)
 	}
 
@@ -146,7 +165,7 @@ extern "C" {
 	int main()
 	{
 		// Build param
-		int nbImages = 1;
+		int nbImages = 2;
 		int sampleCount = nbImages * 3;
 		int w = 1;
 		int h = 1;
@@ -163,16 +182,17 @@ extern "C" {
 		auto W = create_linear_model(inputCountPerSample);
 
 		// Fit
-		W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		//W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		W = fit_regression(W, XTrain, sampleCount, inputCountPerSample, YTrain);
 
 		// Prediction
-		double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
-		auto prediction = predict_classification(W, XPredict, inputCountPerSample);
+		//double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
+		//auto prediction = predict_classification(W, XPredict, inputCountPerSample);
 
-		if (prediction >= 1)
-			std::cout << "I think this image is from class: " << getGame(class_) << "\n";
-		else
-			std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
+		//if (prediction >= 1)
+		//	std::cout << "I think this image is from class: " << getGame(class_) << "\n";
+		//else
+		//	std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
 
 		std::cin.get();
 		return 0;
