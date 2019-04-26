@@ -105,6 +105,12 @@ extern "C" {
 		double* YTrain
 	)
 	{
+		if (W[0] == W[inputCountPerSample]) // maybe Colline
+		{
+			W[0] -= 0.0000001; // Remove collinarity can break if W[0] = 0
+			W[inputCountPerSample] += 0.0000001; // Remove collinarity can break if W[inputCountPerSample] = 1
+		}
+
 		Eigen::VectorXd vec_W(inputCountPerSample + 1);
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			vec_W(i) = W[i];
