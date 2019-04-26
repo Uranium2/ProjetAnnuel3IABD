@@ -106,15 +106,11 @@ extern "C" {
 		double* YTrain
 	)
 	{
-		if (W[0] == W[inputCountPerSample]) // maybe Colline
+		if (W[0] == W[inputCountPerSample]) // maybe Collinear
 		{
-			W[0] -= 0.0000001; // Remove collinarity can break if W[0] = 0
-			W[inputCountPerSample] += 0.0000001; // Remove collinarity can break if W[inputCountPerSample] = 1
+			W[0] -= 0.01; // Remove collinarity can break if W[0] = 0
+			W[inputCountPerSample] += 0.01; // Remove collinarity can break if W[inputCountPerSample] = 1
 		}
-
-		Eigen::VectorXd vec_W(inputCountPerSample + 1);
-		for (int i = 0; i < inputCountPerSample + 1; i++)
-			vec_W(i) = W[i];
 
 		Eigen::MatrixXd mat_Y(sampleCount, 1);
 		for (int i = 0; i < sampleCount; i++)
@@ -189,9 +185,9 @@ extern "C" {
 		Eigen::initParallel();
 		Eigen::setNbThreads(4);
 		// Build param
-		int nbImages = 1000;
+		int nbImages = 100;
 		int sampleCount = nbImages * 3;
-		int w = 15;
+		int w = 20;
 		int h = 20;
 		int inputCountPerSample = w * h;
 		double alpha = 0.001;
@@ -226,7 +222,7 @@ extern "C" {
 			std::cout << "I think this image is from class: " << getGame(class_) << "\n";
 		else
 			std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
-
+		delete_linear_model(W);
 		std::cin.get();
 		return 0;
 	}
