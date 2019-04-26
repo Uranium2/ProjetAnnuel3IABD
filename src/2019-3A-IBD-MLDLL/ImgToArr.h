@@ -9,8 +9,8 @@ double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOB
 
 double* loadImgToPredict(char* path, int w, int h);
 
-std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg);
+void folderToArr(char* pathFolder, int w, int h, int nbImg, int* index, double* imgs);
 
-std::vector< double > pathToArr(std::string path, int w, int h);
+void pathToArr(std::string path, int w, int h, int* index, double* imgs);
 
-std::vector< double > imgToArr(cv::Mat image, int w, int h);
+void imgToArr(cv::Mat image, int w, int h, int* index, double* imgs);

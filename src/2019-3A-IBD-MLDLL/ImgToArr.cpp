@@ -7,23 +7,23 @@ double* buildYTrain(int nbImg, int type) {
 	for (i = 0; i < nbImg * 3; i++)
 		res[i] = -1.0;
 
-	switch(type) {
-		case (1):
-				i = 0;
-				max = nbImg;
-				break;
-		case (2):
-				i = nbImg;
-				max = nbImg * 2;
-				break;
-		case (3):
-				i = nbImg * 2;
-				max = nbImg * 3;
-				break;
-		default:
-				i = 0;
-				max = nbImg;
-				break;
+	switch (type) {
+	case (1):
+		i = 0;
+		max = nbImg;
+		break;
+	case (2):
+		i = nbImg;
+		max = nbImg * 2;
+		break;
+	case (3):
+		i = nbImg * 2;
+		max = nbImg * 3;
+		break;
+	default:
+		i = 0;
+		max = nbImg;
+		break;
 	}
 
 	for (; i < max; i++)
@@ -34,42 +34,25 @@ double* buildYTrain(int nbImg, int type) {
 
 double* loadImgToPredict(char* path, int w, int h)
 {
-	std::vector< double > PredictVec = folderToArr(path, w, h, 1);
+	int index = 0;
 	double* res = new double[w * h];
-	int pos = 0;
-	for (int i = 0; i < PredictVec.size(); i++) {
-		res[pos] = PredictVec.at(i);
-		pos++;
-	}
+	folderToArr(path, w, h, 1, &index, res);
 	return res;
 }
 
 
-double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS,char* pathFolderMOBA, int w, int h, int nbImg){
-	std::vector< double > XTrainFPS = folderToArr(pathFolderFPS, w, h, nbImg);
-	std::vector< double > XTrainRTS = folderToArr(pathFolderRTS, w, h, nbImg);
-	std::vector< double > XTrainMOBA = folderToArr(pathFolderMOBA, w, h, nbImg);
+double* buildXTrain(char* pathFolderFPS, char* pathFolderRTS, char* pathFolderMOBA, int w, int h, int nbImg) {
+	int index = 0;
+	double* imgs = new double[nbImg * 3 * w * h];
+	imgs[10] == 1.0;
+	folderToArr(pathFolderFPS, w, h, nbImg, &index, imgs);
+	folderToArr(pathFolderRTS, w, h, nbImg, &index, imgs);
+	folderToArr(pathFolderMOBA, w, h, nbImg, &index, imgs);
 
-	double* res = new double[(nbImg * 3 * w * h)];
-
-	int pos = 0;
-	for (int i = 0; i < XTrainFPS.size(); i++) {
-		res[pos] = XTrainFPS.at(i);
-		pos++;
-	}
-	for (int i = 0; i < XTrainRTS.size(); i++) {
-		res[pos] = XTrainRTS.at(i);
-		pos++;
-	}
-	for (int i = 0; i < XTrainMOBA.size(); i++) {
-		res[pos] = XTrainMOBA.at(i);
-		pos++;
-	}
-	return res;
+	return imgs;
 }
 
-std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg) {
-	std::vector< double > arr;
+void folderToArr(char* pathFolder, int w, int h, int nbImg, int* index, double* imgs) {
 	int pos = 0;
 	std::string path = pathFolder;
 	for (const auto& entry : std::filesystem::directory_iterator(path))
@@ -77,40 +60,32 @@ std::vector< double > folderToArr(char* pathFolder, int w, int h, int nbImg) {
 		if (pos >= nbImg)
 			break;
 		std::string path_string = entry.path().u8string();
-
-		std::vector< double > tmp = pathToArr(path_string, w, h);
-
-		arr.reserve(arr.size() + tmp.size()); // preallocate memory
-		arr.insert(arr.end(), tmp.begin(), tmp.end());
-
 		pos++;
+		pathToArr(path_string, w, h, index, imgs);
 
 	}
-	return arr;
 }
 
-std::vector< double > pathToArr(std::string path, int w, int h) {
+void pathToArr(std::string path, int w, int h, int* index, double* imgs) {
 	cv::Mat image = cv::imread(path);
-	std::vector< double > res = imgToArr(image, w, h);
+	imgToArr(image, w, h, index, imgs);
 	image.release();
-	return res;
 }
 
-std::vector< double > imgToArr(cv::Mat image, int w, int h) {
+void imgToArr(cv::Mat image, int w, int h, int* index, double* imgs) {
 	cv::Size size(w, h);
 	cv::resize(image, image, size);
-	std::vector< double > arr;
 	for (int i = 0; i < image.rows; i++)
 	{
 		for (int j = 0; j < image.cols; j++)
 		{
 			int grayscale = ((int)image.at<cv::Vec3b>(i, j)[2] + (int)image.at<cv::Vec3b>(i, j)[1] + (int)image.at<cv::Vec3b>(i, j)[0]) / 3;
 			double normGrayscale = (double)(grayscale - 0) / (255 - 0);
-			arr.push_back(normGrayscale);
+			imgs[*index] = normGrayscale;
+			*index = *index + 1;
 			//std::cout << "R: " << (int)image.at<cv::Vec3b>(i, j)[2] << " G: " << (int)image.at<cv::Vec3b>(i, j)[1] << " B: " << (int)image.at<cv::Vec3b>(i, j)[0] << "\n";
 			//std::cout << "pixel pos " << i << " " << arr.at(i) << "\n";
 		}
 		//std::cout << "\n";
 	}
-	return arr;
 }

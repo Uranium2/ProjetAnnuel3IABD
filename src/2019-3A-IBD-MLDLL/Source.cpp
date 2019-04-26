@@ -5,6 +5,7 @@
 #endif
 #define _SILENCE_CXX17_NEGATORS_DEPRECATION_WARNING
 
+#include <chrono>
 #include <random>
 #include <algorithm>
 #include <iostream>
@@ -153,16 +154,6 @@ extern "C" {
 		int inputCountPerSample
 	)
 	{
-		// TODO : Inférence (CF Slides !)
-		return 0.42;
-	}
-
-	SUPEREXPORT double predict_classification(
-		double* W,
-		double* XToPredict,
-		int inputCountPerSample
-	)
-	{
 		int* sizeLayers = new int[1];
 		sizeLayers[0] = 1;
 		int nbLayers = 1;
@@ -177,6 +168,17 @@ extern "C" {
 		return nn->Layers[0]->neurons[0]->output;
 	}
 
+	SUPEREXPORT double predict_classification(
+		double* W,
+		double* XToPredict,
+		int inputCountPerSample
+	)
+	{
+		if (predict_regression(W, XToPredict, inputCountPerSample) >= 0)
+			return 1;
+		return -1;
+	}
+
 	SUPEREXPORT void delete_linear_model(double* W)
 	{
 		delete[] W;
@@ -184,35 +186,46 @@ extern "C" {
 
 	int main()
 	{
+		Eigen::initParallel();
+		Eigen::setNbThreads(4);
 		// Build param
-		int nbImages = 20;
+		int nbImages = 1000;
 		int sampleCount = nbImages * 3;
-		int w = 20;
-		int h = 10;
+		int w = 15;
+		int h = 20;
 		int inputCountPerSample = w * h;
 		double alpha = 0.001;
 		int epochs = 1;
 		auto class_ = FPS;
+		auto start = std::chrono::steady_clock::now();
 		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
 		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
-
+		auto end = std::chrono::steady_clock::now();
+		std::cout << "Elapsed time in seconds : "
+			<< std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
+			<< " sec";
 		double* YTrain = buildYTrain(nbImages, class_);
 
 		// Build
 		auto W = create_linear_model(inputCountPerSample);
 
+		std::cout << "Training\n";
+		auto startTraining = std::chrono::steady_clock::now();
 		// Fit
 		//W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 		W = fit_regression(W, XTrain, sampleCount, inputCountPerSample, YTrain);
-
+		auto endTraining = std::chrono::steady_clock::now();
+		std::cout << "Elapsed time in seconds : "
+			<< std::chrono::duration_cast<std::chrono::seconds>(endTraining - startTraining).count()
+			<< " sec";
 		// Prediction
-		//double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
-		//auto prediction = predict_classification(W, XPredict, inputCountPerSample);
-
-		//if (prediction >= 1)
-		//	std::cout << "I think this image is from class: " << getGame(class_) << "\n";
-		//else
-		//	std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
+		double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
+		auto prediction = predict_regression(W, XPredict, inputCountPerSample);
+		std::cout << prediction << "\n";
+		if (prediction >= 1)
+			std::cout << "I think this image is from class: " << getGame(class_) << "\n";
+		else
+			std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
 
 		std::cin.get();
 		return 0;
