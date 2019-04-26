@@ -135,23 +135,16 @@ extern "C" {
 			}
 		}
 
-		//std::cout << mat_XTrain << "\n";
-		//std::cout << mat_Y << "\n";
-
 		Eigen::MatrixXd transpose = mat_XTrain.transpose();
-
-
 		Eigen::MatrixXd mult = transpose * mat_XTrain;
-		//std::cout << " mult:\n "<< mult << "\n";
 		Eigen::MatrixXd pseudo_inv = mult.completeOrthogonalDecomposition().pseudoInverse();
-		//std::cout << " pseudo_inv:\n " << pseudo_inv << "\n";
 		Eigen::MatrixXd mult_trans = pseudo_inv * transpose;
-		//std::cout << " mult_trans:\n " << mult_trans << "\n";
-
 		Eigen::MatrixXd final_res = mult_trans * mat_Y;
-		std::cout << " final_res:\n " << final_res << "\n";
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+		{
+			W[i] = final_res(i);
+		}
 		return W;
-		//// TODO : entrainement (correction des W, cf slides !)
 	}
 
 	SUPEREXPORT double predict_regression(
