@@ -10,7 +10,6 @@
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "NeuralNet.h"
 
 SUPEREXPORT double* create_linear_model(int inputCountPerSample);
 
@@ -20,6 +19,7 @@ SUPEREXPORT void fit_classification_rosenblatt_rule(
 	int sampleCount,
 	int inputCountPerSample,
 	double* YTrain,
-	double alpha, // Learning Rate
-	int epochs // Nombre d'itération
+	double alpha,
+	int epochs
 );
+SUPEREXPORT double predict_regression(double* X, double* W, int inputCountPerSample);
