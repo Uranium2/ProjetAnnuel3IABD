@@ -54,7 +54,7 @@ extern "C" {
 		return std::tanh(result);
 	}
 
-	SUPEREXPORT double predict_regression(double* X, double* W, int inputCountPerSample)
+	SUPEREXPORT double predict_regression(double* W, double* X, int inputCountPerSample)
 	{
 		double* Xnew = new double[inputCountPerSample + 1];
 		Xnew[0] = 1;
@@ -114,7 +114,7 @@ extern "C" {
 		int inputCountPerSample = 2;
 		double YTrain[4] = { -1, 1, 1, 1 };
 		double alpha = 0.01;
-		int epochs = 2000;
+		int epochs = 200;
 		double* W = create_linear_model(inputCountPerSample);
 		fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 
@@ -122,10 +122,10 @@ extern "C" {
 		double input1[2] = { 0, 1 };
 		double input2[2] = { 1, 0 };
 		double input3[2] = { 1, 1 };
-		std::cout << predict_regression(input0, W, inputCountPerSample) << "\n";
-		std::cout << predict_regression(input1, W, inputCountPerSample) << "\n";
-		std::cout << predict_regression(input2, W, inputCountPerSample) << "\n";
-		std::cout << predict_regression(input3, W, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input0, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input1, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input2, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input3, inputCountPerSample) << "\n";
 		std::cin.get();
 		return 0;
 	}

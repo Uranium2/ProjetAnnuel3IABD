@@ -22,4 +22,4 @@ SUPEREXPORT void fit_classification_rosenblatt_rule(
 	double alpha,
 	int epochs
 );
-SUPEREXPORT double predict_regression(double* X, double* W, int inputCountPerSample);
+SUPEREXPORT double predict_regression(double* W, double* X, int inputCountPerSample);
