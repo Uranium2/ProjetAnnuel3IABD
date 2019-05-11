@@ -26,6 +26,47 @@ extern "C" {
 		}
 	}
 
+	double predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput) {
+
+		double** X = new double* [layer_count + 1];
+
+		for (int l = 0; l < layer_count + 1; l++)
+		{
+			if (l == 0)
+			{
+				X[l] = new double[inputCountPerSample + 1];
+				int pos = 0;
+				for (int input = 1; input < inputCountPerSample + 1; input++)
+					X[l][input] = Xinput[pos++];
+			}
+			else
+				X[l] = new double[layers[l - 1] + 1];
+			X[l][0] = 1;
+		}
+
+		for (int l = 1; l < (layer_count + 1); l++) {
+			//std::cout << "l = " << l << "\n";;
+			//std::cout << "X[" << l << "][" << 0 << "] = " << X[l][0] << "\n";
+			for (int j = 1; j < (layers[l - 1] + 1); j++) {
+				int y = 0;
+				if (l == 1)
+					y = inputCountPerSample + 1;
+				else
+					y = layers[l - 2] + 1;
+				double res = 0.0;
+				//std::cout << "\tj = " << j << " y = " << y << "\n";;
+				for (int i = 0; i < y; i++) {
+					//std::cout << "\t\ti = " << i << "\n";;
+					res += W[l][i][j] * X[l - 1][i];
+				}
+				X[l][j] = std::tanh(res);
+				//std::cout << "X[" << l << "][" << j << "] = " << X[l][j] << " ";
+			}
+			//std::cout << "\n";
+		}
+		return X[layer_count][layers[layer_count - 1]];
+	}
+
 	void feedForward(double*** W, int* layers, int layer_count, int inputCountPerSample, double** X) {
 
 		for (int l = 1; l < (layer_count + 1); l++) {
@@ -63,17 +104,17 @@ extern "C" {
 				double res = 0.0;
 				for (int j = 1; j < (layers[l - 1] + 1); j++) {
 					res += W[l][i][j] * delta[l][j];
-					std::cout << "res delta[" << l << "][" << j << "] : " << delta[l][j] << "\n\n";
+					//std::cout << "res delta[" << l << "][" << j << "] : " << delta[l][j] << "\n\n";
 				}
 				delta[l - 1][i] = res;
-				std::cout << "delta[" << l - 1 << "][" << i << "] : " << delta[l - 1][i] << "\n";
+				//std::cout << "delta[" << l - 1 << "][" << i << "] : " << delta[l - 1][i] << "\n";
 			}
 		}
 
 	}
 
-	void update_W(double*** W, double** X, int* layers, int layer_count, int inputCountPerSample, double** delta, int alpha) {
-		for (int l = 1; l < layer_count + 1; l++) {
+	void update_W(double*** W, double** X, int* layers, int layer_count, int inputCountPerSample, double** delta, double alpha) {
+		for (int l = 1; l < layer_count + 2; l++) {
 			int y = 0;
 			if (l == 1)
 				y = inputCountPerSample + 1;
@@ -81,22 +122,25 @@ extern "C" {
 				y = layers[l - 2] + 1;
 			for (int i = 0; i < y; i++) {
 				for (int j = 1; j < (layers[l - 1] + 1); j++) {
+					//std::cout << "W["<< l << "][" << i << "][" << j << "] ";
+					//std::cout << W[l][i][j] << " - " << alpha << " * " << X[l - 1][i] << " * " << delta[l][j] << "\n";
 					W[l][i][j] = W[l][i][j] - alpha * (X[l - 1][i] * delta[l][j]);
-					std::cout << "W[l][i][j] = " << W[l][i][j] << "\n";
-					std::cout << alpha << " * " << X[l - 1][i] << " * " << delta[l][j] << "\n";
+					//std::cout << W[l][i][j] << " \n";
+
+					//std::cout << alpha << " * " << X[l - 1][i] << " * " << delta[l][j] << "\n";
 				}
-				std::cout << "\n";
+				//std::cout << "\n";
 			}
-			std::cout << "\n";
+			//std::cout << "\n";
 		}
 	}
 
 	void get_last_delta(double** X, int* layers, int layer_count, int* Y, double** delta) {
 
-		int L = layer_count - 1;
-		for (int j = 1; j < (layers[L]) + 1; j++) {
+		int L = layer_count;
+		for (int j = 1; j < (layers[L - 1]) + 1; j++) {
 			delta[L][j] = (1 - std::pow(X[L][j], 2)) * (X[L][j] * Y[j - 1]);
-			std::cout << "get_last_delta delta[" << L << "][" << j << "] : " << delta[L][j] << "\n";
+			//std::cout << "get_last_delta delta[" << L << "][" << j << "] : " << delta[L][j] << "\n";
 		}
 
 	}
@@ -135,6 +179,7 @@ extern "C" {
 			int posY = 0;
 			for (int img = 0; img < sampleCount; img++)
 			{
+				std::cout << "IMAGE : " << img << "\n";
 				// Cahrger Xtrain => X[0]
 
 				for (int n = 1; n < (inputCountPerSample + 1); n++)
@@ -155,14 +200,12 @@ extern "C" {
 				}
 
 				for (int subimg = 0; subimg < layers[layer_count - 1]; subimg++)
-				{
 					y[subimg] = YTrain[posY++];
-					std::cout << y[subimg] << " ";
-				}
+
 
 				get_last_delta(X, layers, layer_count, y, delta);
 				update_delta(W, X, layers, layer_count, delta, inputCountPerSample);
-				//update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
+				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
 				//FeedForward (Mise a jour des X)
 				//
 				// Calcul des delta
@@ -191,8 +234,8 @@ extern "C" {
 			for (int i = 0; i < y; i++) {
 				W[l][i] = new double[layers[l - 1] + 1];
 				for (int j = 1; j < (layers[l - 1] + 1); j++) {
-					W[l][i][j] = distribution(generator);
-					//W[l][i][j] = k++;
+					//W[l][i][j] = distribution(generator);
+					W[l][i][j] = 0.5;
 				}
 			}
 		}
@@ -212,6 +255,16 @@ extern "C" {
 		int sampleCount = 4;
 		double*** W = create_mlp_model(layers, layer_count, inputCountPerSample);
 		fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epoch);
+
+		double X1[2] = { 0, 0 };
+		double X2[2] = { 0, 1 };
+		double X3[2] = { 1, 0 };
+		double X4[2] = { 1, 1 };
+
+		std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X1) << "\n";
+		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X2) << "\n";
+		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X3) << "\n";
+		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X4) << "\n";
 		std::cin.get();
 		return 0;
 	}
