@@ -8,6 +8,21 @@
 #include <iostream>
 extern "C" {
 
+	double squared_error(double v_true, double v_given)
+	{
+		return pow(v_true - v_given, 2);
+	}
+
+	double mse_loss(double* v_true, double* v_given, int nb_elem)
+	{
+		double res = 0.0;
+		for (int i = 0; i < nb_elem; i++)
+		{
+			res += squared_error(v_true[i], v_given[i]);
+		}
+		return res / nb_elem;
+	}
+
 	SUPEREXPORT void printArrayPython3D(double*** W, int* layers, int layer_count, int inputCountPerSample)
 	{
 		for (int l = 1; l < (layer_count + 1); l++) {
@@ -106,7 +121,7 @@ extern "C" {
 					res += W[l][i][j] * delta[l][j];
 					//std::cout << "res delta[" << l << "][" << j << "] : " << delta[l][j] << "\n\n";
 				}
-				delta[l - 1][i] = res;
+				delta[l - 1][i] = (1 - std::pow(X[l - 1][i], 2)) * res;
 				//std::cout << "delta[" << l - 1 << "][" << i << "] : " << delta[l - 1][i] << "\n";
 			}
 		}
@@ -124,7 +139,7 @@ extern "C" {
 				for (int j = 1; j < (layers[l - 1] + 1); j++) {
 					//std::cout << "W["<< l << "][" << i << "][" << j << "] ";
 					//std::cout << W[l][i][j] << " - " << alpha << " * " << X[l - 1][i] << " * " << delta[l][j] << "\n";
-					W[l][i][j] = W[l][i][j] - alpha * (X[l - 1][i] * delta[l][j]);
+					W[l][i][j] = W[l][i][j] - (alpha * X[l - 1][i] * delta[l][j]);
 					//std::cout << W[l][i][j] << " \n";
 
 					//std::cout << alpha << " * " << X[l - 1][i] << " * " << delta[l][j] << "\n";
@@ -138,8 +153,9 @@ extern "C" {
 	void get_last_delta(double** X, int* layers, int layer_count, int* Y, double** delta) {
 
 		int L = layer_count;
-		for (int j = 1; j < (layers[L - 1]) + 1; j++) {
-			delta[L][j] = (1 - std::pow(X[L][j], 2)) * (X[L][j] * Y[j - 1]);
+		for (int j = 1; j < layers[L - 1] + 1; j++) {
+			delta[L][j] = (1 - std::pow(X[L][j], 2)) * (X[L][j] - Y[j - 1]);
+			//std::cout << "Y[j - 1] " << Y[j - 1] << "\n";
 			//std::cout << "get_last_delta delta[" << L << "][" << j << "] : " << delta[L][j] << "\n";
 		}
 
@@ -177,9 +193,10 @@ extern "C" {
 		{
 			int position = 0;
 			int posY = 0;
+			double* Xout = new double[sampleCount];
 			for (int img = 0; img < sampleCount; img++)
 			{
-				std::cout << "IMAGE : " << img << "\n";
+				//std::cout << "IMAGE : " << img << "\n";
 				// Cahrger Xtrain => X[0]
 
 				for (int n = 1; n < (inputCountPerSample + 1); n++)
@@ -204,13 +221,20 @@ extern "C" {
 
 
 				get_last_delta(X, layers, layer_count, y, delta);
+
 				update_delta(W, X, layers, layer_count, delta, inputCountPerSample);
+
+				Xout[img] = X[layer_count][layers[layer_count - 1]];
+
 				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
-				//FeedForward (Mise a jour des X)
-				//
-				// Calcul des delta
-				// mise jour des poids W
 			}
+			double* YT = new double[sampleCount];
+			for (int k = 0; k < sampleCount; k++)
+				YT[k] = (double)YTrain[k];
+
+			double loss = mse_loss(YT, Xout, sampleCount);
+			if (e % 10 == 0 || e == epochs - 1)
+				printf("Epoch: %d loss: %f\n", e, loss);
 		}
 
 	}
@@ -234,8 +258,8 @@ extern "C" {
 			for (int i = 0; i < y; i++) {
 				W[l][i] = new double[layers[l - 1] + 1];
 				for (int j = 1; j < (layers[l - 1] + 1); j++) {
-					//W[l][i][j] = distribution(generator);
-					W[l][i][j] = 0.5;
+					W[l][i][j] = distribution(generator);
+					//W[l][i][j] = 0.5;
 				}
 			}
 		}
@@ -245,10 +269,10 @@ extern "C" {
 
 
 	int main() {
-		int epoch = 1;
-		double alpha = 0.01;
+		int epoch = 10000;
+		double alpha = 0.02;
 		double XTrain[8] = { 0, 0, 0, 1, 1, 0, 1, 1 };
-		int YTrain[4] = { -1, -1, -1, 1 };
+		int YTrain[4] = { 1, -1, -1, 1 };
 		int layers[2] = { 2, 1 };
 		int layer_count = 2;
 		int inputCountPerSample = 2;
@@ -262,9 +286,9 @@ extern "C" {
 		double X4[2] = { 1, 1 };
 
 		std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X1) << "\n";
-		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X2) << "\n";
-		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X3) << "\n";
-		//std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X4) << "\n";
+		std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X2) << "\n";
+		std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X3) << "\n";
+		std::cout << predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X4) << "\n";
 		std::cin.get();
 		return 0;
 	}
