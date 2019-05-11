@@ -93,7 +93,7 @@ extern "C" {
 
 	void get_last_delta(double** X, int* layers, int layer_count, int* Y, double** delta) {
 
-		int L = layer_count - 1;
+		int L = layer_count;
 		for (int j = 1; j < (layers[L]) + 1; j++) {
 			delta[L][j] = (1 - std::pow(X[L][j], 2)) * (X[L][j] * Y[j - 1]);
 			std::cout << "get_last_delta delta[" << L << "][" << j << "] : " << delta[L][j] << "\n";
