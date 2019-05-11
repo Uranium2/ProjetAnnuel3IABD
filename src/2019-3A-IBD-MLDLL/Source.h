@@ -12,6 +12,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 SUPEREXPORT double* create_linear_model(int inputCountPerSample);
+SUPEREXPORT double* test_python_array(double* W, int inputCountPerSample);
 
 SUPEREXPORT void fit_classification_rosenblatt_rule(
 	double* W,
