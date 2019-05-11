@@ -4,7 +4,7 @@ from flask import Flask, request, render_template, send_from_directory
 
 __author__ = 'Group6 3IABD'
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/templates')
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,6 +28,18 @@ def upload():
         file.save(dest)
     
     return render_template("complete.html")
+
+@app.route("/unity")
+def unity():
+    return render_template("index.html")
+
+@app.route('/templates/Build/<path:path>')
+def send_Buildjs(path):
+    return send_from_directory('templates/Build', path)
+
+@app.route('/templates/TemplateData/<path:path>')
+def send_Templatejs(path):
+    return send_from_directory('templates/TemplateData', path)
 
 if __name__ == "__main__":
     app.run(port=4555, debug=True)
