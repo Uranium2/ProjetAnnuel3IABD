@@ -3,33 +3,21 @@ import tensorflow.keras as tf
 
 
 if __name__ == "__main__":
-    print("multi layer perceptron")
+    print("linear multiple model ")
 
-    x = np.array([
-        [1, 1],
-        [2, 3],
-        [3, 3]
-    ])
-    y = np.array([
-        1,
-        -1,
-        -1
-    ])
+    # DATASET
+    x = np.concatenate(
+        [np.random.random((50, 2)) * 0.9 + np.array([1, 1]), np.random.random((50, 2)) * 0.9 + np.array([2, 2])])
+    y = np.concatenate(
+        [np.ones((50, 2)), np.ones((50, 2)) * -1.0])
 
-
-
+    # MODEL
     model = tf.Sequential()
 
-    model.add(tf.layers.Dense(1, input_dim=20, activation='relu'))
-    model.add(tf.layers.Dense(1, activation='relu'))
-    model.add(tf.layers.Dense(1, activation='sigmoid'))
+    # LAYERS
 
-    model.compile(loss='binary_crossentropy',
-                  optimizer='SGD',
-                  metrics=['accuracy'])
 
-    if model.fit(x, y, epochs=100):
-        model.fit(x, y, epochs=100)
-        print("\nmlp works successfully")
-    else:
-        print("error")
+    # COMPILE
+
+
+    # FIT

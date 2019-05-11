@@ -16,20 +16,15 @@ if __name__ == "__main__":
         -1
     ])
 
-
-
     model = tf.Sequential()
 
-    model.add(tf.layers.Dense(1, input_dim=20, activation='relu'))
-    model.add(tf.layers.Dense(1, activation='relu'))
+    model.add(tf.layers.Dense(64, input_dim=20, activation='relu'))
+    model.add(tf.layers.Dense(64, activation='relu'))
     model.add(tf.layers.Dense(1, activation='sigmoid'))
 
     model.compile(loss='binary_crossentropy',
-                  optimizer='SGD',
+                  optimizer='sgd',
                   metrics=['accuracy'])
 
-    if model.fit(x, y, epochs=100):
-        model.fit(x, y, epochs=100)
-        print("\nmlp works successfully")
-    else:
-        print("error")
+    model.fit(x, y, epochs=100)
+
