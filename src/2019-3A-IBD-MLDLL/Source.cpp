@@ -106,6 +106,7 @@ extern "C" {
 
 	int main()
 	{
+
 		double XTrain[8] = { 0,0,
 							0,1,
 							1,0,
