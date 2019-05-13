@@ -121,7 +121,11 @@ extern "C" {
 				if (y == 0)
 					X(x, y) = 1;
 				else
+				{
 					X(x, y) = XTrain[pos++];
+					if (x == y)
+						X(x, y) += 0.00001;
+				}
 			}
 		}
 
@@ -154,17 +158,17 @@ extern "C" {
 							3, 3 };
 		int sampleCount = 4;
 		int inputCountPerSample = 2;
-		double YTrain[3] = { 2,3, 2.5 };
+		double YTrain[3] = { 2, 3, 3 };
 		double alpha = 0.01;
 		int epochs = 200;
 		//double* W = create_linear_model(inputCountPerSample);
 		//fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
 		double* W = fit_regression(XTrain, sampleCount, inputCountPerSample, YTrain);
 
-		double input0[2] = { 0.5, 0.5 };
-		double input1[2] = { 1, 2 };
-		double input2[2] = { 3, 0.8 };
-		double input3[2] = { 6.2, 3 };
+		double input0[2] = { 1, 0.8 };
+		double input1[2] = { 1.1, 1 };
+		double input2[2] = { 3, 3.1 };
+		double input3[2] = { 3.2, 3 };
 		std::cout << predict_regression(W, input0, inputCountPerSample) << "\n";
 		std::cout << predict_regression(W, input1, inputCountPerSample) << "\n";
 		std::cout << predict_regression(W, input2, inputCountPerSample) << "\n";
