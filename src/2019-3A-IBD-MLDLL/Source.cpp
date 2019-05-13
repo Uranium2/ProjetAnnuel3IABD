@@ -66,7 +66,7 @@ extern "C" {
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			result += Xnew[i] * W[i];
 
-		return std::tanh(result);
+		return result;
 	}
 
 	SUPEREXPORT void fit_classification_rosenblatt_rule(
@@ -103,26 +103,68 @@ extern "C" {
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
 	}
+	SUPEREXPORT double* fit_regression(
+		double* XTrain,
+		int sampleCount,
+		int inputCountPerSample,
+		double* YTrain
+	)
+	{
+		Eigen::MatrixXd X(sampleCount, inputCountPerSample + 1);
+		Eigen::MatrixXd Y(sampleCount, 1);
+
+		int pos = 0;
+		for (int x = 0; x < sampleCount; x++)
+		{
+			for (int y = 0; y < inputCountPerSample + 1; y++)
+			{
+				if (y == 0)
+					X(x, y) = 1;
+				else
+					X(x, y) = XTrain[pos++];
+			}
+		}
+
+		for (int x = 0; x < sampleCount; x++)
+			Y(x, 0) = YTrain[x];
+
+
+		Eigen::MatrixXd W(inputCountPerSample + 1, 1);
+		Eigen::MatrixXd transposeX = X.transpose();
+		Eigen::MatrixXd multX = transposeX * X;
+		Eigen::MatrixXd pseudo_inverse = multX.completeOrthogonalDecomposition().pseudoInverse();
+		Eigen::MatrixXd mult_inv_trans = pseudo_inverse * transposeX;
+		W = mult_inv_trans * Y;
+
+
+		double* Wmat = new double[inputCountPerSample + 1];
+
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			Wmat[i] = W(i);
+
+		return Wmat;
+
+	}
 
 	int main()
 	{
 
-		double XTrain[8] = { 0,0,
-							0,1,
-							1,0,
-							1,1 };
+		double XTrain[8] = { 1, 1,
+							2, 2,
+							3, 3 };
 		int sampleCount = 4;
 		int inputCountPerSample = 2;
-		double YTrain[4] = { -1, 1, 1, 1 };
+		double YTrain[3] = { 2,3, 2.5 };
 		double alpha = 0.01;
 		int epochs = 200;
-		double* W = create_linear_model(inputCountPerSample);
-		fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		//double* W = create_linear_model(inputCountPerSample);
+		//fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		double* W = fit_regression(XTrain, sampleCount, inputCountPerSample, YTrain);
 
-		double input0[2] = { 0, 0 };
-		double input1[2] = { 0, 1 };
-		double input2[2] = { 1, 0 };
-		double input3[2] = { 1, 1 };
+		double input0[2] = { 0.5, 0.5 };
+		double input1[2] = { 1, 2 };
+		double input2[2] = { 3, 0.8 };
+		double input3[2] = { 6.2, 3 };
 		std::cout << predict_regression(W, input0, inputCountPerSample) << "\n";
 		std::cout << predict_regression(W, input1, inputCountPerSample) << "\n";
 		std::cout << predict_regression(W, input2, inputCountPerSample) << "\n";
