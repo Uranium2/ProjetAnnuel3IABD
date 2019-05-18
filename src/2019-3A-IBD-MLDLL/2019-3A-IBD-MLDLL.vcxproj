@@ -90,6 +90,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opencv_world401d.lib;opencv_world401.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -116,6 +117,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -124,17 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ImgToArr.cpp" />
-    <ClCompile Include="NeuralNet.cpp" />
-    <ClCompile Include="Neuron.cpp" />
     <ClCompile Include="Source.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EnumGame.h" />
-    <ClInclude Include="ImgToArr.h" />
-    <ClInclude Include="NeuralNet.h" />
-    <ClInclude Include="Neuron.h" />
-    <ClInclude Include="Source.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

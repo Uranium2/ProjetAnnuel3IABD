@@ -13,17 +13,11 @@
 #include <Eigen/QR>    
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "NeuralNet.h"
-#include "ImgToArr.h"
-#include "EnumGame.h"
 
 
 extern "C" {
-
-
-	SUPEREXPORT double* create_linear_model(int inputCountPerSample)
-	{
-		auto W = new double[inputCountPerSample + 1];
+	SUPEREXPORT double* create_linear_model(int inputCountPerSample) {
+		double* W = new double[inputCountPerSample + 1];
 		double low = -1.0;
 		double up = 1.0;
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -34,11 +28,48 @@ extern "C" {
 		{
 			W[i] = distribution(generator);
 		}
-		// TODO : initialisation random [-1,1]
 		return W;
 	}
+	double squared_error(double v_true, double v_given)
+	{
+		return pow(v_true - v_given, 2);
+	}
 
-	SUPEREXPORT double* fit_classification(
+	double mse_loss(double* v_true, double* v_given, int nb_elem)
+	{
+		double res = 0.0;
+		for (int i = 0; i < nb_elem; i++)
+		{
+			res += squared_error(v_true[i], v_given[i]);
+		}
+		return res / nb_elem;
+	}
+	double feedForward(double* X, double* W, int inputCountPerSample)
+	{
+		double result = 0;
+		for (int i = 0; i < inputCountPerSample; i++)
+		{
+			result += X[i] * W[i];
+		}
+		return std::tanh(result);
+	}
+
+	SUPEREXPORT double predict_regression(double* W, double* X, int inputCountPerSample)
+	{
+		double* Xnew = new double[inputCountPerSample + 1];
+		Xnew[0] = 1;
+		int pos = 0;
+		for (int i = 1; i < inputCountPerSample + 1; i++)
+			Xnew[i] = X[pos++];
+
+		double result = 0;
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			result += Xnew[i] * W[i];
+
+		return result;
+	}
+
+	SUPEREXPORT void fit_classification_rosenblatt_rule(
 		double* W,
 		double* XTrain,
 		int sampleCount,
@@ -48,181 +79,100 @@ extern "C" {
 		int epochs // Nombre d'itération
 	)
 	{
-		int* sizeLayers = new int[1];
-		sizeLayers[0] = 1;
-		int nbLayers = 1;
-		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers, inputCountPerSample);
-
-		std::vector<int> myImageIndex;
-		auto rng = std::default_random_engine{};
-
-		for (int i = 0; i < sampleCount; i++) // Create ordered vector
-			myImageIndex.push_back(i);
-
-		std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng);
-
-		for (int i = 0; i < inputCountPerSample; i++)
-			nn->Layers[0]->neurons[0]->weights[i] = W[i];
-
-		nn->Layers[0]->neurons[0]->nbInputs = inputCountPerSample;
-
-
-		for (int e = 0; e < epochs; e++) {
-			
+		double output = 0.0;
+		double* Xactual = new double[inputCountPerSample + 1];
+		Xactual[0] = 1;
+		for (int e = 1; e < epochs + 1; e++)
+		{
 			double* Xout = new double[(double)sampleCount];
-			for (int k = 0; k < sampleCount; k++)
+			int pos = 0;
+			for (int img = 0; img < sampleCount; img++)
 			{
-				for (int n = 1; n < inputCountPerSample + 1; n++) // Shuffle index
-					nn->Layers[0]->neurons[0]->inputs[n] = XTrain[inputCountPerSample * myImageIndex[k]];
-				nn->Layers[0]->neurons[0]->inputs[0] = 1; // add bias
+				for (int input = 1; input < inputCountPerSample + 1; input++)
+					Xactual[input] = XTrain[pos++];
 
-				feedForwadAll(nn);
-				for (int n = 0; n < nn->Layers[0]->neurons[0]->nbInputs; n++)
-				{
-					nn->Layers[0]->neurons[0]->weights[n] = nn->Layers[0]->neurons[0]->weights[n] +
-						alpha * (YTrain[myImageIndex[k]] - nn->Layers[0]->neurons[0]->output) * nn->Layers[0]->neurons[0]->inputs[n];
-					// W = W + a(Yk - g(Xk)) + Xk
-				}
-				//printNN(nn);
-				Xout[myImageIndex[k]] = nn->Layers[0]->neurons[0]->output;
+				output = feedForward(Xactual, W, inputCountPerSample + 1);
+				Xout[img] = output;
 
+				for (int i = 0; i < inputCountPerSample + 1; i++)
+					W[i] = W[i] + alpha * (YTrain[img] - output) * Xactual[i];
 
 			}
-
 			double loss = mse_loss(YTrain, Xout, sampleCount);
 			if (e % 10 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
-
 		}
-		return nn->Layers[0]->neurons[0]->weights;
 	}
-
-
 	SUPEREXPORT double* fit_regression(
-		double* W,
 		double* XTrain,
 		int sampleCount,
 		int inputCountPerSample,
 		double* YTrain
 	)
 	{
-		if (W[0] == W[inputCountPerSample]) // maybe Collinear
-		{
-			W[0] -= 0.01; // Remove collinarity can break if W[0] = 0
-			W[inputCountPerSample] += 0.01; // Remove collinarity can break if W[inputCountPerSample] = 1
-		}
+		Eigen::MatrixXd X(sampleCount, inputCountPerSample + 1);
+		Eigen::MatrixXd Y(sampleCount, 1);
 
-		Eigen::MatrixXd mat_Y(sampleCount, 1);
-		for (int i = 0; i < sampleCount; i++)
-			mat_Y(i) = YTrain[i];
-
-		Eigen::MatrixXd mat_XTrain(sampleCount, inputCountPerSample + 1);
 		int pos = 0;
-		for (int x = 0; x < inputCountPerSample + 1; x++)
+		for (int x = 0; x < sampleCount; x++)
 		{
-			for (int y = 0; y < sampleCount; y++)
+			for (int y = 0; y < inputCountPerSample + 1; y++)
 			{
-				if (x == 0)
-					mat_XTrain(y, x) = 1;
+				if (y == 0)
+					X(x, y) = 1;
 				else
 				{
-					mat_XTrain(y, x) = XTrain[pos];
-					pos++;
+					X(x, y) = XTrain[pos++];
+					if (x == y)
+						X(x, y) += 0.00001;
 				}
 			}
 		}
 
-		Eigen::MatrixXd transpose = mat_XTrain.transpose();
-		Eigen::MatrixXd mult = transpose * mat_XTrain;
-		Eigen::MatrixXd pseudo_inv = mult.completeOrthogonalDecomposition().pseudoInverse();
-		Eigen::MatrixXd mult_trans = pseudo_inv * transpose;
-		Eigen::MatrixXd final_res = mult_trans * mat_Y;
+		for (int x = 0; x < sampleCount; x++)
+			Y(x, 0) = YTrain[x];
+
+
+		Eigen::MatrixXd W(inputCountPerSample + 1, 1);
+		Eigen::MatrixXd transposeX = X.transpose();
+		Eigen::MatrixXd multX = transposeX * X;
+		Eigen::MatrixXd pseudo_inverse = multX.completeOrthogonalDecomposition().pseudoInverse();
+		Eigen::MatrixXd mult_inv_trans = pseudo_inverse * transposeX;
+		W = mult_inv_trans * Y;
+
+
+		double* Wmat = new double[inputCountPerSample + 1];
+
 		for (int i = 0; i < inputCountPerSample + 1; i++)
-		{
-			W[i] = final_res(i);
-		}
-		return W;
-	}
+			Wmat[i] = W(i);
 
-	SUPEREXPORT double predict_regression(
-		double* W,
-		double* XToPredict,
-		int inputCountPerSample
-	)
-	{
-		int* sizeLayers = new int[1];
-		sizeLayers[0] = 1;
-		int nbLayers = 1;
-		NeuralNet* nn = buildNeuralNet(W, nbLayers, sizeLayers, inputCountPerSample);
+		return Wmat;
 
-		for (int i = 0; i < inputCountPerSample; i++)
-		{
-			nn->Layers[0]->neurons[0]->weights[i] = W[i];
-			nn->Layers[0]->neurons[0]->inputs[i] = XToPredict[i];
-		}
-		feedForwadAll(nn);
-		return nn->Layers[0]->neurons[0]->output;
-	}
-
-	SUPEREXPORT double predict_classification(
-		double* W,
-		double* XToPredict,
-		int inputCountPerSample
-	)
-	{
-		if (predict_regression(W, XToPredict, inputCountPerSample) >= 0)
-			return 1;
-		return -1;
-	}
-
-	SUPEREXPORT void delete_linear_model(double* W)
-	{
-		delete[] W;
 	}
 
 	int main()
 	{
-		Eigen::initParallel();
-		Eigen::setNbThreads(4);
-		// Build param
-		int nbImages = 100;
-		int sampleCount = nbImages * 3;
-		int w = 20;
-		int h = 20;
-		int inputCountPerSample = w * h;
-		double alpha = 0.001;
-		int epochs = 1;
-		auto class_ = FPS;
-		auto start = std::chrono::steady_clock::now();
-		std::cout << "Please wait until we load " << nbImages * 3 << " images of size " << w << "x" << h << "\n";
-		double* XTrain = buildXTrain("../../img/FPS/", "../../img/RTS/", "../../img/MOBA/", w, h, nbImages);
-		auto end = std::chrono::steady_clock::now();
-		std::cout << "Elapsed time in seconds : "
-			<< std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
-			<< " sec";
-		double* YTrain = buildYTrain(nbImages, class_);
 
-		// Build
-		auto W = create_linear_model(inputCountPerSample);
+		double XTrain[8] = { 1, 1,
+							2, 2,
+							3, 3 };
+		int sampleCount = 4;
+		int inputCountPerSample = 2;
+		double YTrain[3] = { 2, 3, 3 };
+		double alpha = 0.01;
+		int epochs = 200;
+		//double* W = create_linear_model(inputCountPerSample);
+		//fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		double* W = fit_regression(XTrain, sampleCount, inputCountPerSample, YTrain);
 
-		std::cout << "Training\n";
-		auto startTraining = std::chrono::steady_clock::now();
-		// Fit
-		//W = fit_classification(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
-		W = fit_regression(W, XTrain, sampleCount, inputCountPerSample, YTrain);
-		auto endTraining = std::chrono::steady_clock::now();
-		std::cout << "Elapsed time in seconds : "
-			<< std::chrono::duration_cast<std::chrono::seconds>(endTraining - startTraining).count()
-			<< " sec";
-		// Prediction
-		double* XPredict = loadImgToPredict("../../img/MOBA_Test/", w, h);
-		auto prediction = predict_regression(W, XPredict, inputCountPerSample);
-		std::cout << prediction << "\n";
-		if (prediction >= 1)
-			std::cout << "I think this image is from class: " << getGame(class_) << "\n";
-		else
-			std::cout << "I don't think this image is from class: " << getGame(class_) << "\n";
-		delete_linear_model(W);
+		double input0[2] = { 1, 0.8 };
+		double input1[2] = { 1.1, 1 };
+		double input2[2] = { 3, 3.1 };
+		double input3[2] = { 3.2, 3 };
+		std::cout << predict_regression(W, input0, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input1, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input2, inputCountPerSample) << "\n";
+		std::cout << predict_regression(W, input3, inputCountPerSample) << "\n";
 		std::cin.get();
 		return 0;
 	}
