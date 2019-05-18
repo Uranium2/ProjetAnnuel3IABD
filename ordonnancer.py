@@ -13,7 +13,7 @@ if __name__ == "__main__":
     XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
 
 
-    myDll = CDLL("C:/Users/Tavernier/Documents/ProjetAnnuel3IABD/src/x64/Debug/2019-3A-IBD-MLDLL.dll")
+    myDll = CDLL("C:/Users/Tavernier/Documents/ESGI/ProjetAnnuel3IABD/src/x64/Debug/2019-3A-IBD-MLDLL.dll")
     myDll.create_linear_model.argtypes = [ct.c_int]
     myDll.create_linear_model.restype = ct.POINTER(ct.c_double * 3)
     myDll.fit_classification_rosenblatt_rule.argtypes = [ct.POINTER(ct.c_double * 3), ct.POINTER(ct.c_double * len(pyXTrain)), ct.c_int, ct.c_int, ct.POINTER(ct.c_double), ct.c_double, ct.c_int]
