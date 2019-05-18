@@ -1,19 +1,4 @@
-﻿#if _WIN32
-#define SUPEREXPORT __declspec(dllexport)
-#else
-#define SUPEREXPORT 
-#endif
-#define _SILENCE_CXX17_NEGATORS_DEPRECATION_WARNING
-
-#include <chrono>
-#include <random>
-#include <algorithm>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/QR>    
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+﻿#include "Linear.h"
 
 extern "C" {
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample) {
@@ -54,7 +39,7 @@ extern "C" {
 		return std::tanh(result);
 	}
 
-	SUPEREXPORT double predict_regression(double* W, double* X, int inputCountPerSample)
+	SUPEREXPORT double predict_classification_rosenblatt(double* W, double* X, int inputCountPerSample)
 	{
 		double* Xnew = new double[inputCountPerSample + 1];
 		Xnew[0] = 1;
@@ -75,9 +60,8 @@ extern "C" {
 		int sampleCount,
 		int inputCountPerSample,
 		double* YTrain,
-		double alpha, // Learning Rate
-		int epochs // Nombre d'it�ration
-	)
+		double alpha,
+		int epochs)
 	{
 		double output = 0.0;
 		double* Xactual = new double[inputCountPerSample + 1];
@@ -104,29 +88,64 @@ extern "C" {
 		}
 	}
 
-	int main()
+	SUPEREXPORT double* fit_regression(
+		double* XTrain,
+		int sampleCount,
+		int inputCountPerSample,
+		double* YTrain
+	)
 	{
-		double XTrain[8] = { 0,0,
-							0,1,
-							1,0,
-							1,1 };
-		int sampleCount = 4;
-		int inputCountPerSample = 2;
-		double YTrain[4] = { -1, 1, 1, 1 };
-		double alpha = 0.01;
-		int epochs = 200;
-		double* W = create_linear_model(inputCountPerSample);
-		fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs);
+		Eigen::MatrixXd X(sampleCount, inputCountPerSample + 1);
+		Eigen::MatrixXd Y(sampleCount, 1);
 
-		double input0[2] = { 0, 0 };
-		double input1[2] = { 0, 1 };
-		double input2[2] = { 1, 0 };
-		double input3[2] = { 1, 1 };
-		std::cout << predict_regression(W, input0, inputCountPerSample) << "\n";
-		std::cout << predict_regression(W, input1, inputCountPerSample) << "\n";
-		std::cout << predict_regression(W, input2, inputCountPerSample) << "\n";
-		std::cout << predict_regression(W, input3, inputCountPerSample) << "\n";
-		std::cin.get();
-		return 0;
+		int pos = 0;
+		for (int x = 0; x < sampleCount; x++)
+		{
+			for (int y = 0; y < inputCountPerSample + 1; y++)
+			{
+				if (y == 0)
+					X(x, y) = 1;
+				else
+				{
+					X(x, y) = XTrain[pos++];
+					if (x == y)
+						X(x, y) += 0.00001;
+				}
+			}
+		}
+
+		for (int x = 0; x < sampleCount; x++)
+			Y(x, 0) = YTrain[x];
+
+
+		Eigen::MatrixXd W(inputCountPerSample + 1, 1);
+		Eigen::MatrixXd transposeX = X.transpose();
+		Eigen::MatrixXd multX = transposeX * X;
+		Eigen::MatrixXd pseudo_inverse = multX.completeOrthogonalDecomposition().pseudoInverse();
+		Eigen::MatrixXd mult_inv_trans = pseudo_inverse * transposeX;
+		W = mult_inv_trans * Y;
+
+
+		double* Wmat = new double[inputCountPerSample + 1];
+
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			Wmat[i] = W(i);
+
+		return Wmat;
+	}
+
+	SUPEREXPORT double predict_regression(double* W, double* X, int inputCountPerSample)
+	{
+		double* Xnew = new double[inputCountPerSample + 1];
+		Xnew[0] = 1;
+		int pos = 0;
+		for (int i = 1; i < inputCountPerSample + 1; i++)
+			Xnew[i] = X[pos++];
+
+		double result = 0;
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			result += Xnew[i] * W[i];
+
+		return result;
 	}
 }
