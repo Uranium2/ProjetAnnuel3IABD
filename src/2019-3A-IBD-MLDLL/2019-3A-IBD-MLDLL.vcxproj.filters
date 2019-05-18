@@ -21,5 +21,8 @@
     <ClCompile Include="Linear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mlp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

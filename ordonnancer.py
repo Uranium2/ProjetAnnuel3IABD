@@ -38,3 +38,17 @@ if __name__ == "__main__":
     print(myDll.predict_regression(W, X2, inputCountPerSample))
     print(myDll.predict_regression(W, X3, inputCountPerSample))
     print(myDll.predict_regression(W, X4, inputCountPerSample))
+
+    layers_count = ct.c_int(2)
+    inputCountPerSample = ct.c_int(2)
+
+    myDll.create_mlp_model.argtypes = [ct.POINTER(ct.c_int), ct.c_int, ct.c_int]
+    myDll.create_mlp_model.restype = ct.POINTER(ct.POINTER(ct.POINTER(ct.c_double)))
+    #myDll.printArrayPython3D.argtypes = [ct.POINTER(ct.c_double), ct.POINTER(ct.c_int * 2), ct.c_int, ct.c_int]
+    #myDll.printArrayPython3D.restype = c_void_p
+
+    pyLayers = [2, 1]
+    Layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    
+    W =  myDll.create_mlp_model(Layers, layers_count, inputCountPerSample)
+
