@@ -60,8 +60,8 @@ def predict_2D(W, inputCountPerSample):
     x2 = []
     y1 = []
     y2 = []
-    for x in range(0, 100):
-        for y in range(0, 100):
+    for x in range(0, 200):
+        for y in range(0, 200):
             dot = []
             dot.append(x / 100)
             dot.append(y / 100)

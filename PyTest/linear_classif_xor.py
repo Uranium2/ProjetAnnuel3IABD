@@ -1,6 +1,3 @@
-from ctypes import *
-from ctypes.wintypes import *
-import ctypes as ct
 from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule, predict_2D
 
 if __name__ == "__main__":
