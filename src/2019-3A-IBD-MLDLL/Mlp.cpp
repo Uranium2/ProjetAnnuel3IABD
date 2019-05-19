@@ -88,7 +88,6 @@ extern "C" {
 		return X[layer_count][layers[layer_count - 1]];
 	}
 
-
 	void feedForward_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double** X) {
 
 		for (int l = 1; l < (layer_count + 1); l++) {

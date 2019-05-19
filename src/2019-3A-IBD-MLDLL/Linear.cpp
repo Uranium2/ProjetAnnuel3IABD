@@ -51,7 +51,11 @@ extern "C" {
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			result += Xnew[i] * W[i];
 
-		return std::tanh(result);
+		auto res = std::tanh(result);
+
+		if (res >= 0)
+			return 1;
+		return -1;
 	}
 
 	SUPEREXPORT void fit_classification_rosenblatt_rule(
