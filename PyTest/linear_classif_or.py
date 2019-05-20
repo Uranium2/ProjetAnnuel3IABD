@@ -1,4 +1,4 @@
-from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule, predict_2D
+from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule, predict_2D_OR
 
 if __name__ == "__main__":
     sampleCount = 4
@@ -12,4 +12,4 @@ if __name__ == "__main__":
 
     fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
 
-    predict_2D(W, inputCountPerSample)
+    predict_2D_OR(W, inputCountPerSample)
