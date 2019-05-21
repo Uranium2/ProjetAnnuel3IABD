@@ -21,6 +21,7 @@ myDll.predict_classification_rosenblatt.restype = ct.c_double
 
 # fit_regression
 myDll.fit_regression.argtypes = [ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
+myDll.fit_regression.restype = ct.c_void_p
 
 # predict_regression
 myDll.predict_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int]
@@ -48,6 +49,15 @@ def predict_classification_rosenblatt(W, pyX, pyInputCountPerSample):
     X = (ct.c_double * len(pyX))(*pyX)
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     return myDll.predict_classification_rosenblatt(W, X, inputCountPerSample)
+
+
+def fit_regression(pyXTrain, pySampleCount, pyInputCountPerSample, pyYTrain):
+    sampleCount = ct.c_int(pySampleCount)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    YTrain = (ct.c_double * len(pyYTrain))(*pyYTrain)
+    XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
+    return myDll.fit_regression(XTrain, sampleCount, inputCountPerSample, YTrain)
+
 
 def predict_regression(W, pyX, pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)

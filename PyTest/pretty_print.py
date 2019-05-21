@@ -1,6 +1,46 @@
 from dll_load import predict_regression
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+def predict_3D_reg(W, inputCountPerSample, x2, z2):
+    x1 = []
+    y1 = []
+    z1 = []
+
+    for x in range(0, 16):
+        for y in range(0, 16):
+            dot = []
+            dot.append(x / 4)
+            dot.append(y / 4)
+            res = predict_regression(W, dot, inputCountPerSample)
+            x1.append(x / 4)
+            y1.append(y / 4)
+            z1.append(res)
+
+    x22 = x2[0::2]
+    y22 = x2[1::2]
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x22, y22, z2,'filled', s= 100, c= 'red')
+    ax.scatter(x1, y1, z1,  c = 'green', s=1)
+    
+    
+    plt.show()
+
+
+def predict_2D_reg(W, inputCountPerSample, x2, y2):
+    x1 = []
+    y1 = []
+    for x in range(0, 300):
+        dot = []
+        dot.append(x / 100)
+        res = predict_regression(W, dot, inputCountPerSample)
+        y1.append(res)
+        x1.append(x / 100)
+   
+    plt.scatter(x1, y1, c = 'green')
+    plt.scatter(x2, y2, c = 'blue')
+    plt.show()
 
 
 def predict_2D(W, inputCountPerSample):
