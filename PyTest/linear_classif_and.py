@@ -1,4 +1,5 @@
-from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule, predict_2D_AND
+from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule
+from pretty_print import predict_2D_AND
 
 if __name__ == "__main__":
     sampleCount = 4
