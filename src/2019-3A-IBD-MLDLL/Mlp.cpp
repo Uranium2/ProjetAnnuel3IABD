@@ -17,7 +17,7 @@ extern "C" {
 		return res / nb_elem;
 	}
 
-	SUPEREXPORT double predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput) {
+	SUPEREXPORT double* predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput) {
 
 		double** X = new double* [layer_count + 1];
 
@@ -48,10 +48,10 @@ extern "C" {
 				X[l][j] = std::tanh(res);
 			}
 		}
-		return X[layer_count][layers[layer_count - 1]];
+		return X[layer_count];
 	}
 
-	SUPEREXPORT double predict_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput) {
+	SUPEREXPORT double* predict_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput) {
 
 		double** X = new double* [layer_count + 1];
 
@@ -85,7 +85,7 @@ extern "C" {
 					X[l][j] = std::tanh(res);
 			}
 		}
-		return X[layer_count][layers[layer_count - 1]];
+		return X[layer_count];
 	}
 
 	void feedForward_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double** X) {
@@ -203,17 +203,27 @@ extern "C" {
 			X[l][0] = 1;
 		}
 
+		std::vector<int> myImageIndex;
+		auto rng = std::default_random_engine{};
+
+		for (int i = 0; i < sampleCount; i++) // Create ordered vector
+			myImageIndex.push_back(i);
+
+		std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images
+
 		for (int e = 0; e < epochs; e++)
 		{
-			int position = 0;
+			
 			int posY = 0;
 			double* Xout = new double[sampleCount];
 			for (int img = 0; img < sampleCount; img++)
 			{
 				// Charger Xtrain => X[0]
-
+				int pos = 0;
 				for (int n = 1; n < (inputCountPerSample + 1); n++)
-					X[0][n] = Xtrain[position++];
+				{
+					X[0][n] = Xtrain[(inputCountPerSample * myImageIndex[img]) + n - 1];
+				}
 
 
 				feedForward_mlp(W, layers, layer_count, inputCountPerSample, X);
@@ -230,14 +240,16 @@ extern "C" {
 				}
 
 				for (int subimg = 0; subimg < layers[layer_count - 1]; subimg++)
-					y[subimg] = YTrain[posY++];
+				{
+					y[subimg] = YTrain[(layers[layer_count - 1] * myImageIndex[img]) + subimg];
+				}
 
 
 				get_last_delta(X, layers, layer_count, y, delta);
 
 				update_delta(W, X, layers, layer_count, delta, inputCountPerSample);
 
-				Xout[img] = X[layer_count][layers[layer_count - 1]];
+				Xout[myImageIndex[img]] = X[layer_count][layers[layer_count - 1]];
 
 				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
 			}
@@ -246,7 +258,7 @@ extern "C" {
 				YT[k] = (double)YTrain[k];
 
 			double loss = mse_loss_mlp(YT, Xout, sampleCount);
-			if (e % 10 == 0 || e == epochs - 1)
+			if (e % 1000 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
 

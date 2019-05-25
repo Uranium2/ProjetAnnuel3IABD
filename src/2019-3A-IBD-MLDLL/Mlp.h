@@ -32,7 +32,7 @@ extern "C" {
 		double alpha,
 		int epochs);
 
-	SUPEREXPORT double predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput);
+	SUPEREXPORT double* predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput);
 
-	SUPEREXPORT double predict_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput);
+	SUPEREXPORT double* predict_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput);
 }

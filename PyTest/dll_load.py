@@ -40,11 +40,11 @@ myDll.fit_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c
 
 # predict_mlp_classification
 myDll.predict_mlp_classification.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
-myDll.predict_mlp_classification.restype = ct.c_double
+myDll.predict_mlp_classification.restype = POINTER(ct.c_double)
 
 # predict_mlp_regression
 myDll.predict_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
-myDll.predict_mlp_regression.restype = ct.c_double
+myDll.predict_mlp_regression.restype = POINTER(ct.c_double)
 
 
 def create_linear_model(pyInputCountPerSample):
@@ -101,4 +101,6 @@ def predict_mlp_classification(W, pyLayers, pyLayer_count, pyInputCountPerSample
     layer_count = ct.c_int(pyLayer_count)
     X = (ct.c_double * len(pyX))(*pyX)
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
-    return myDll.predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X)
+    res = myDll.predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X)
+    l = [res[i] for i in range(4)]
+    return l
