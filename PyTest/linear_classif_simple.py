@@ -1,4 +1,4 @@
-from dll_load import myDll, create_linear_model, fit_classification_rosenblatt_rule
+from dll_load import create_linear_model, fit_classification_rosenblatt_rule
 from pretty_print import predict_2D
 import numpy as np
 import random

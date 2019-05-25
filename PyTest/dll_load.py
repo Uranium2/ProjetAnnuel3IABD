@@ -31,6 +31,21 @@ myDll.predict_regression.restype = ct.c_double
 myDll.create_mlp_model.argtypes = [ct.c_void_p, ct.c_int, ct.c_int]
 myDll.create_mlp_model.restype = ct.c_void_p
 
+# fit_mlp_classification
+myDll.fit_mlp_classification.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
+
+# fit_mlp_regression
+myDll.fit_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
+
+
+# predict_mlp_classification
+myDll.predict_mlp_classification.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
+myDll.predict_mlp_classification.restype = ct.c_double
+
+# predict_mlp_regression
+myDll.predict_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
+myDll.predict_mlp_regression.restype = ct.c_double
+
 
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -63,3 +78,29 @@ def predict_regression(W, pyX, pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     X = (ct.c_double * len(pyX))(*pyX)
     return myDll.predict_regression(W,  X, inputCountPerSample)
+
+def create_mlp_model(pyLayers, pyLayer_count, pyInputCountPerSample):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    return myDll.create_mlp_model(layers, layer_count, inputCountPerSample)
+
+def fit_mlp_classification(W, pyXTrain, pyYTrain, pyLayers, pyLayer_count, pySampleCount, pyInputCountPerSample, pyAlpha, pyEpochs):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    sampleCount = ct.c_int(pySampleCount)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    alpha = ct.c_double(pyAlpha)
+    epochs = ct.c_int(pyEpochs)
+    YTrain = (ct.c_double * len(pyYTrain))(*pyYTrain)
+    XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
+    print(hex(id(XTrain)))
+    print(hex(id(YTrain)))
+    myDll.fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
+
+def predict_mlp_classification(W, pyLayers, pyLayer_count, pyInputCountPerSample, pyX):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    X = (ct.c_double * len(pyX))(*pyX)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    return myDll.predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X)

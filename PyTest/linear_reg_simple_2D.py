@@ -1,4 +1,4 @@
-from dll_load import myDll, create_linear_model, fit_regression
+from dll_load import create_linear_model, fit_regression
 from pretty_print import predict_2D_reg
 
 if __name__ == "__main__":
