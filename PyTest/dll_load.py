@@ -32,7 +32,7 @@ myDll.create_mlp_model.argtypes = [ct.c_void_p, ct.c_int, ct.c_int]
 myDll.create_mlp_model.restype = ct.c_void_p
 
 # fit_mlp_classification
-myDll.fit_mlp_classification.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
+myDll.fit_mlp_classification.argtypes = [ct.c_void_p , ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
 
 # fit_mlp_regression
 myDll.fit_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
@@ -92,10 +92,8 @@ def fit_mlp_classification(W, pyXTrain, pyYTrain, pyLayers, pyLayer_count, pySam
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     alpha = ct.c_double(pyAlpha)
     epochs = ct.c_int(pyEpochs)
-    YTrain = (ct.c_double * len(pyYTrain))(*pyYTrain)
+    YTrain = (ct.c_int * len(pyYTrain))(*pyYTrain)
     XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
-    print(hex(id(XTrain)))
-    print(hex(id(YTrain)))
     myDll.fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
 
 def predict_mlp_classification(W, pyLayers, pyLayer_count, pyInputCountPerSample, pyX):
