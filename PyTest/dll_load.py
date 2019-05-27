@@ -2,7 +2,7 @@ from ctypes import *
 from ctypes.wintypes import *
 import ctypes as ct
 import os
-
+from collections.abc import Iterable
 
 dll_name = "..\\src\\x64\\Debug\\2019-3A-IBD-MLDLL.dll"
 dllabspath = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + dll_name
@@ -104,3 +104,12 @@ def predict_mlp_classification(W, pyLayers, pyLayer_count, pyInputCountPerSample
     res = myDll.predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X)
     l = [res[i] for i in range(4)]
     return l
+
+def flatten(items):
+    """Yield items from any nested iterable; see Reference."""
+    for x in items:
+        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
+            for sub_x in flatten(x):
+                yield sub_x
+        else:
+            yield x

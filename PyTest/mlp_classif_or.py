@@ -8,7 +8,7 @@ if __name__ == "__main__":
     inputCountPerSample = 2
     alpha = 0.02
     epochs = 1000
-    YTrain = [-1, -1, -1, 1]
+    YTrain = [-1, 1, 1, 1]
     XTrain = [0, 0, 0, 1, 1, 0, 1, 1]
 
     W = create_mlp_model(layers, layer_count, inputCountPerSample)

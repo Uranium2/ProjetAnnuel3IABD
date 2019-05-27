@@ -1,5 +1,5 @@
 from dll_load import create_linear_model, fit_classification_rosenblatt_rule
-from pretty_print import predict_2D_XOR
+from pretty_print import predict_2D
 
 if __name__ == "__main__":
     sampleCount = 4
@@ -13,4 +13,4 @@ if __name__ == "__main__":
 
     fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
 
-    predict_2D_XOR(W, inputCountPerSample)
+    predict_2D(W, inputCountPerSample, XTrain, YTrain, 0, 1)

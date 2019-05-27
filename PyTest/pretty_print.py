@@ -43,13 +43,33 @@ def predict_2D_reg(W, inputCountPerSample, x2, y2):
     plt.show()
 
 
-def predict_2D(W, inputCountPerSample):
+def predict_2D(W, inputCountPerSample, XTrain, YTrain, low, up):
     x1 = []
     x2 = []
     y1 = []
     y2 = []
-    for x in range(0, 200):
-        for y in range(0, 200):
+    
+    #given point true
+    x11 = []
+    y11 = []
+
+    #given point fasle
+    x12 = []
+    y12 = []
+    pos = 0
+    for y in YTrain:
+        if y == 1:
+            x11.append(XTrain[pos])
+            pos = pos + 1
+            y11.append(XTrain[pos])
+            pos = pos + 1
+        else:
+            x12.append(XTrain[pos])
+            pos = pos + 1
+            y12.append(XTrain[pos])
+            pos = pos + 1
+    for x in range(100 * low, 100 * up):
+        for y in range(100 * low, 100 * up):
             dot = []
             dot.append(x / 100)
             dot.append(y / 100)
@@ -63,96 +83,9 @@ def predict_2D(W, inputCountPerSample):
 
     plt.scatter(x1, y1, c = 'green')
     plt.scatter(x2, y2, c = 'red')
+    plt.scatter(x11, y11, c = 'magenta')
+    plt.scatter(x12, y12, c = 'yellow')
     plt.show()
-
-
-def predict_2D_OR(W, inputCountPerSample):
-    x1 = []
-    x2 = []
-    y1 = []
-    y2 = []
-    for x in range(0, 100):
-        for y in range(0, 100):
-            dot = []
-            dot.append(x / 100)
-            dot.append(y / 100)
-            res = predict_regression(W, dot, inputCountPerSample)
-            if ( res > 0):
-                x1.append(x / 100)
-                y1.append(y / 100)
-            else:
-                x2.append(x / 100)
-                y2.append(y / 100)
-
-
-    x3 = [0]
-    y3 = [0]
-    x4 = [0, 1, 1]
-    y4 = [1, 0, 1]
-    plt.scatter(x1, y1, c = 'green')
-    plt.scatter(x2, y2, c = 'red')
-    plt.scatter(x3, y3, c = 'yellow')
-    plt.scatter(x4, y4, c = 'magenta')
-    plt.show()
-
-def predict_2D_XOR(W, inputCountPerSample):
-    x1 = []
-    x2 = []
-    y1 = []
-    y2 = []
-    for x in range(0, 100):
-        for y in range(0, 100):
-            dot = []
-            dot.append(x / 100)
-            dot.append(y / 100)
-            res = predict_regression(W, dot, inputCountPerSample)
-            if ( res > 0):
-                x1.append(x / 100)
-                y1.append(y / 100)
-            else:
-                x2.append(x / 100)
-                y2.append(y / 100)
-
-
-    x3 = [0, 1]
-    y3 = [0, 1]
-    x4 = [0, 1]
-    y4 = [1, 0]
-    plt.scatter(x1, y1, c = 'green')
-    plt.scatter(x2, y2, c = 'red')
-    plt.scatter(x3, y3, c = 'yellow')
-    plt.scatter(x4, y4, c = 'magenta')
-    plt.show()
-
-def predict_2D_AND(W, inputCountPerSample):
-    x1 = []
-    x2 = []
-    y1 = []
-    y2 = []
-    for x in range(0, 100):
-        for y in range(0, 100):
-            dot = []
-            dot.append(x / 100)
-            dot.append(y / 100)
-            res = predict_regression(W, dot, inputCountPerSample)
-            if ( res > 0):
-                x1.append(x / 100)
-                y1.append(y / 100)
-            else:
-                x2.append(x / 100)
-                y2.append(y / 100)
-
-
-    x3 = [0, 0, 1]
-    y3 = [0, 1, 0]
-    x4 = [1]
-    y4 = [1]
-    plt.scatter(x1, y1, c = 'green')
-    plt.scatter(x2, y2, c = 'red')
-    plt.scatter(x3, y3, c = 'yellow')
-    plt.scatter(x4, y4, c = 'magenta')
-    plt.show()
-
 
 def predict_2D_3Class(W1, W2, W3, inputCountPerSample,x3, y3, x4, y4, x5, y5):
     x11 = []
@@ -224,38 +157,7 @@ def predict_2D_3Class_individual(W, inputCountPerSample,x3, y3, x4, y4, x5, y5):
     plt.scatter(x5, y5, c = 'blue')
     plt.show()
 
-def predict_mlp_2D_AND(W, layers, layer_count, inputCountPerSample):
-    x1 = []
-    x2 = []
-    y1 = []
-    y2 = []
-    for x in range(0, 100):
-        for y in range(0, 100):
-            dot = []
-            dot.append(x / 100)
-            dot.append(y / 100)
-            result = predict_mlp_classification(W, layers, layer_count, inputCountPerSample, dot)
-            res = result[1:]
-            maxi = res.index(max(res))
-            if ( maxi == 0):
-                x1.append(x / 100)
-                y1.append(y / 100)
-            elif ( maxi == 1):
-                x2.append(x / 100)
-                y2.append(y / 100)
-
-
-    x3 = [0, 0, 1]
-    y3 = [0, 1, 0]
-    x4 = [1]
-    y4 = [1]
-    plt.scatter(x1, y1, c = 'green')
-    plt.scatter(x2, y2, c = 'red')
-    plt.scatter(x3, y3, c = 'yellow')
-    plt.scatter(x4, y4, c = 'magenta')
-    plt.show()
-
-def predict_2D_mlp(W,  layers, layer_count, inputCountPerSample, XTrain, YTrain):
+def predict_2D_mlp(W,  layers, layer_count, inputCountPerSample, XTrain, YTrain, low, up):
     x1 = []
     x2 = []
     y1 = []
@@ -283,8 +185,8 @@ def predict_2D_mlp(W,  layers, layer_count, inputCountPerSample, XTrain, YTrain)
 
 
 
-    for x in range(-100, 100):
-        for y in range(-100, 100):
+    for x in range(100 * low, 100 * up):
+        for y in range(100 * low, 100 * up):
             dot = []
             dot.append(x / 100)
             dot.append(y / 100)
