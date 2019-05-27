@@ -16,8 +16,8 @@ def flatten(items):
             yield x
 
 if __name__ == "__main__":
-    layers = [2, 8, 8, 3]
-    layer_count = 4
+    layers = [2, 24, 16, 8, 4, 3]
+    layer_count = 6
     sampleCount = 1000
     inputCountPerSample = 2
     alpha = 0.01
