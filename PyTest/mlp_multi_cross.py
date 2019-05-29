@@ -1,23 +1,11 @@
-from dll_load import create_mlp_model, fit_mlp_classification
+from dll_load import create_mlp_model, fit_mlp_classification, flatten
 from pretty_print import predict_2D_mlp_multi
 import numpy as np
 import random
-import matplotlib.pyplot as plt
-from collections.abc import Iterable
-
-
-def flatten(items):
-    """Yield items from any nested iterable; see Reference."""
-    for x in items:
-        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
-            for sub_x in flatten(x):
-                yield sub_x
-        else:
-            yield x
 
 if __name__ == "__main__":
-    layers = [2, 24, 16, 8, 4, 3]
-    layer_count = 6
+    layers = [2, 8, 8, 3]
+    layer_count = 4
     sampleCount = 1000
     inputCountPerSample = 2
     alpha = 0.01

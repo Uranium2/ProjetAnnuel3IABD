@@ -1,4 +1,4 @@
-from dll_load import predict_regression, predict_mlp_classification
+from dll_load import predict_regression, predict_mlp_classification, predict_mlp_regression
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -23,8 +23,6 @@ def predict_3D_reg(W, inputCountPerSample, x2, z2):
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(x22, y22, z2,'filled', s= 100, c= 'red')
     ax.scatter(x1, y1, z1,  c = 'green', s=1)
-    
-    
     plt.show()
 
 
@@ -192,11 +190,11 @@ def predict_2D_mlp(W,  layers, layer_count, inputCountPerSample, XTrain, YTrain,
             dot.append(y / 100)
             result = predict_mlp_classification(W, layers, layer_count, inputCountPerSample, dot)
             res = result[1:]
-            maxi = res.index(max(res))
-            if ( maxi == 0):
+            maxi = max(res)
+            if ( maxi >= 0):
                 x1.append(x / 100)
                 y1.append(y / 100)
-            elif ( maxi == 1):
+            else:
                 x2.append(x / 100)
                 y2.append(y / 100)
 
@@ -269,4 +267,43 @@ def predict_2D_mlp_multi(W,  layers, layer_count, inputCountPerSample, XTrain, Y
     plt.scatter(x11, y11, c = 'magenta')
     plt.scatter(x12, y12, c = 'yellow')
     plt.scatter(x13, y13, c = 'black')
+    plt.show()
+
+def predict_3D_mlp_reg(W, layers, layer_count, inputCountPerSample, XTrain, YTrain, low , up):
+    x1 = []
+    y1 = []
+    z1 = []
+
+    #given point true
+    x11 = []
+    y11 = []
+    z11 = []
+
+    posX = 0
+    posY = 0
+    for y in YTrain:
+        x11.append(XTrain[posX])
+        posX = posX + 1
+        y11.append(XTrain[posX])
+        posX = posX + 1
+        z11.append(YTrain[posY])
+        posY = posY + 1
+
+    for x in range(50 * low, 50 * up):
+        for y in range(50 * low, 50 * up):
+            dot = []
+            dot.append(x / 20)
+            dot.append(y / 20)
+            result = predict_mlp_regression(W, layers, layer_count, inputCountPerSample, dot)
+            res = result[1:]
+            x1.append(x / 20)
+            y1.append(y / 20)
+            z1.append(res)
+            
+
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x11, y11, z11,'filled', s= 100, c= 'red')
+    ax.scatter(x1, y1, z1,  c = 'green', s=1)
     plt.show()

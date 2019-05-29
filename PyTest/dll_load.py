@@ -35,7 +35,7 @@ myDll.create_mlp_model.restype = ct.c_void_p
 myDll.fit_mlp_classification.argtypes = [ct.c_void_p , ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
 
 # fit_mlp_regression
-myDll.fit_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
+myDll.fit_mlp_regression.argtypes = [ct.c_void_p , ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_int]
 
 
 # predict_mlp_classification
@@ -101,8 +101,30 @@ def predict_mlp_classification(W, pyLayers, pyLayer_count, pyInputCountPerSample
     layer_count = ct.c_int(pyLayer_count)
     X = (ct.c_double * len(pyX))(*pyX)
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
-    res = myDll.predict_mlp_classification(W, layers, layer_count, inputCountPerSample, X)
-    l = [res[i] for i in range(4)]
+    res = myDll.predict_mlp_classification(W,
+    layers, layer_count, inputCountPerSample, X)
+    l = [res[i] for i in range(pyLayers[-1] + 1)]
+    return l
+
+
+def fit_mlp_regression(W, pyXTrain, pyYTrain, pyLayers, pyLayer_count, pySampleCount, pyInputCountPerSample, pyAlpha, pyEpochs):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    sampleCount = ct.c_int(pySampleCount)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    alpha = ct.c_double(pyAlpha)
+    epochs = ct.c_int(pyEpochs)
+    YTrain = (ct.c_int * len(pyYTrain))(*pyYTrain)
+    XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
+    myDll.fit_mlp_regression(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
+
+def predict_mlp_regression(W, pyLayers, pyLayer_count, pyInputCountPerSample, pyX):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    X = (ct.c_double * len(pyX))(*pyX)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    res = myDll.predict_mlp_regression(W, layers, layer_count, inputCountPerSample, X)
+    l = [res[i] for i in range(pyLayers[-1] + 1)]
     return l
 
 def flatten(items):

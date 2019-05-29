@@ -2,7 +2,6 @@ from dll_load import create_mlp_model, fit_mlp_classification, flatten
 from pretty_print import predict_2D_mlp
 import numpy as np
 import random
-import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     layers = [2, 4 , 1]
@@ -10,7 +9,7 @@ if __name__ == "__main__":
     sampleCount = 500
     inputCountPerSample = 2
     alpha = 0.01
-    epochs = 5000
+    epochs = 10000
 
     X = np.random.random((500, 2)) * 2.0 - 1.0
     Y = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in X])

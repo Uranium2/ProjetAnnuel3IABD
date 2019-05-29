@@ -254,7 +254,7 @@ extern "C" {
 			if (e % 1000 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
-		delete[] X, myImageIndex, Xout, YT;
+		delete[] X, myImageIndex, Xout, YT, delta;
 	}
 
 	SUPEREXPORT void fit_mlp_regression(double*** W,
@@ -289,6 +289,7 @@ extern "C" {
 		int* y = new int[layers[layer_count - 1]];
 
 		double** delta = new double* [layer_count + 1];
+
 		for (int l = 0; l < layer_count + 1; l++)
 		{
 			if (l == 0)
@@ -310,16 +311,17 @@ extern "C" {
 				for (int n = 1; n < (inputCountPerSample + 1); n++)
 					X[0][n] = Xtrain[(inputCountPerSample * myImageIndex[img]) + n - 1];
 
+
 				feedForward_mlp_regression(W, layers, layer_count, inputCountPerSample, X);
 
-				for (int subimg = 0; subimg < layers[layer_count - 1]; subimg++)
+				for (int subimg = 0; subimg < layers[layer_count - 1]; subimg++) // Load Random Image
 					y[subimg] = YTrain[(layers[layer_count - 1] * myImageIndex[img]) + subimg];
 
 				get_last_delta_regression(X, layers, layer_count, y, delta);
 
 				update_delta(W, X, layers, layer_count, delta, inputCountPerSample);
 
-				Xout[img] = X[layer_count][layers[layer_count - 1]];
+				Xout[myImageIndex[img]] = X[layer_count][layers[layer_count - 1]];
 
 				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
 			}
@@ -328,7 +330,7 @@ extern "C" {
 				YT[k] = (double)YTrain[k];
 
 			double loss = mse_loss_mlp(YT, Xout, sampleCount);
-			if (e % 10 == 0 || e == epochs - 1)
+			if (e % 1000 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
 		delete[] X, myImageIndex, Xout, YT, delta;
