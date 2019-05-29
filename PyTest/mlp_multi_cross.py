@@ -2,9 +2,6 @@ from dll_load import create_mlp_model, fit_mlp_classification, flatten
 from pretty_print import predict_2D_mlp_multi
 import numpy as np
 import random
-import matplotlib.pyplot as plt
-from collections.abc import Iterable
-
 
 if __name__ == "__main__":
     layers = [2, 8, 8, 3]

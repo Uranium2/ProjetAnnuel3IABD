@@ -191,7 +191,7 @@ def predict_2D_mlp(W,  layers, layer_count, inputCountPerSample, XTrain, YTrain,
             result = predict_mlp_classification(W, layers, layer_count, inputCountPerSample, dot)
             res = result[1:]
             maxi = max(res)
-            if ( maxi <= 0):
+            if ( maxi >= 0):
                 x1.append(x / 100)
                 y1.append(y / 100)
             else:
