@@ -13,7 +13,7 @@ stephaneArtist - HOLLANDER Stéphane
 
 - Application permettant de différencier une image (screenshot) issue d'un RTS, d'un MOBA ou d'un FPS
 
-# environnement pour Python (Test case + Web)
+# Environnement pour Python (Test case + Web)
 
 Créer un environnement python (windows):
 
@@ -27,7 +27,10 @@ Charger tous les packages requis:
 Pour quitter l'environnement:
 
     deactivate
-    
+
+# Generate DLL
+
+Avant de lancer les cas de tests, lancez la solution du projet pour générer la dll
 
 # Test Case
 
