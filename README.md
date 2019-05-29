@@ -13,7 +13,7 @@ stephaneArtist - HOLLANDER Stéphane
 
 - Application permettant de différencier une image (screenshot) issue d'un RTS, d'un MOBA ou d'un FPS
 
-# Serveur Web
+# Environnement pour Python (Test case + Web)
 
 Créer un environnement python (windows):
 
@@ -23,7 +23,24 @@ Créer un environnement python (windows):
 Charger tous les packages requis:
 
     pip install -r requirements.txt
-    
+   
+Pour quitter l'environnement:
+
+    deactivate
+
+# Generate DLL
+
+Avant de lancer les cas de tests, lancez la solution du projet pour générer la dll
+
+# Test Case
+
+Pour lancer un test case, il faut se positionner dans le dossier `PyTest`, puis lancer fichier test avec python:
+
+    cd PyTest\
+    py linear_classif_and.py
+
+# Web
+
 Lancer le back/front en Flask
 
     py web\app.py
@@ -32,6 +49,4 @@ Ouvrir le serveur Web:
 
     http://127.0.0.1:4555/
     
-Pour quitter l'environnement:
 
-    deactivate
