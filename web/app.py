@@ -33,13 +33,5 @@ def upload():
 def unity():
     return render_template("index.html")
 
-@app.route('/templates/Build/<path:path>')
-def send_Buildjs(path):
-    return send_from_directory('templates/Build', path)
-
-@app.route('/templates/TemplateData/<path:path>')
-def send_Templatejs(path):
-    return send_from_directory('templates/TemplateData', path)
-
 if __name__ == "__main__":
     app.run(port=4555, debug=True)
