@@ -1,4 +1,4 @@
-﻿#include "Linear.h"
+#include "Linear.h"
 
 extern "C" {
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample) {
