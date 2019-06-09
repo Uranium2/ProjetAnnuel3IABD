@@ -11,9 +11,7 @@
 #include <algorithm>
 #include <iostream>
 #include <Eigen/Dense>
-#include <Eigen/QR>    
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <Eigen/QR>
 
 extern "C" {
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample);
