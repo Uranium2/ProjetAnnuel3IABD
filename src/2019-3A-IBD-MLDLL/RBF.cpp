@@ -1,7 +1,7 @@
 #include "RBF.h"
 
-
 extern "C" {
+
 
 	double gauss(double* Xpredict, double* Xn, double gamma, int inputCountPerSample) {
 		double dist = get_distance(Xpredict, Xn, inputCountPerSample);
@@ -10,12 +10,18 @@ extern "C" {
 		double exp = std::exp(gam_pow);
 	}
 
-	double get_distance(double* Xpredict, double* Xn, int inputCountPerSample) {
-		double res = 1;
+	SUPEREXPORT double get_distance(double* Xpredict, double* Xn, int inputCountPerSample) {
+		
+		// l2-norm
+		double accum = 0.;
 
-		for (int i = 0; i < inputCountPerSample; i++)
-			res *= Xpredict[i] - Xn[i];
-		return std::sqrt(res);
+		for (int i = 0; i < inputCountPerSample; ++i) {
+			double res = Xpredict[i] - Xn[i];
+			accum += res * res;
+		}
+
+		double norm = sqrt(accum);
+		return norm;
 	}
 
 	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N) {
