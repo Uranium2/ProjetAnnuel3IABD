@@ -4,9 +4,11 @@
 #else
 #define SUPEREXPORT 
 #endif
-#include <cmath>	
+#include <cmath>
+#include <Eigen/Dense>
+#include <Eigen/QR>
 
 
 extern "C" {
-	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma);
+	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N);
 }
