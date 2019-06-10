@@ -8,21 +8,28 @@ dll_name = "..\\src\\x64\\Debug\\2019-3A-IBD-MLDLL.dll"
 dllabspath = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + dll_name
 myDll = CDLL(dllabspath)
 
-#Get distance
+#fit_reg_RBF_naive
+myDll.fit_reg_RBF_naive.argtypes = [ct.c_void_p, ct.c_double,  ct.c_void_p, ct.c_int, ct.c_int]
+myDll.fit_reg_RBF_naive.restypes = ct.c_void_p
 
-myDll.get_distance.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int]
-myDll.get_distance.restypes = ct.c_double
-
+#predict_reg_RBF_naive
+myDll.predict_reg_RBF_naive.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_double, ct.c_int]
+myDll.predict_reg_RBF_naive.restypes = ct.c_double
+gamma = 50
+sampleCount = 2
 inputCountPerSample = 3
+XTrain = [1.0, 1.0, 1.0, 3.0, 3.0, 3.0]
+YTrain = [-1.0, 1.0]
 
-XPredict = [
-    1, 1, 1
-]
-
-Xn = [3, 3, 3]
-
+XTrain = (ct.c_double * len(XTrain))(*XTrain)
+YTrain = (ct.c_double * len(YTrain))(*YTrain)
 inputCountPerSample = ct.c_int(inputCountPerSample)
-XPredict = (ct.c_double * len(XPredict))(*XPredict)
-Xn = (ct.c_double * len(Xn))(*Xn)
+sampleCount = ct.c_int(sampleCount)
+gamma = ct.c_double(gamma)
 
-myDll.get_distance(XPredict, Xn, inputCountPerSample)
+Xpredict = [1.0, 1.0, 1.0]
+Xpredict = (ct.c_double * len(Xpredict))(*Xpredict)
+
+W = myDll.fit_reg_RBF_naive(XTrain, gamma, YTrain, sampleCount, inputCountPerSample)
+print(id(W))
+myDll.predict_reg_RBF_naive(W, XTrain, Xpredict,inputCountPerSample, gamma, sampleCount)
