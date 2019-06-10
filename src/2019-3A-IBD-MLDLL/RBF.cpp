@@ -8,10 +8,11 @@ extern "C" {
 		double pow = std::pow(dist, 2);
 		double gam_pow = -gamma * pow;
 		double exp = std::exp(gam_pow);
+		return exp;
 	}
 
-	SUPEREXPORT double get_distance(double* Xpredict, double* Xn, int inputCountPerSample) {
-		
+	double get_distance(double* Xpredict, double* Xn, int inputCountPerSample) {
+
 		// l2-norm
 		double accum = 0.;
 
@@ -26,13 +27,19 @@ extern "C" {
 
 	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N) {
 		double* Xn = new double[inputCountPerSample];
+		std::cout << "PREDICT " << W << "\n";
 		double w_sum = 0;
-		for (int n = 1; n < N; n = n + inputCountPerSample)
-		{
-			for (int i = n; i < inputCountPerSample; i++)
-				Xn[i - 1] = X[n + i];
 
+		for (int n = 0; n < N; n++)
+		{
+			for (int i = 0; i < inputCountPerSample; i++)
+			{
+				std::cout << "TEST " << i << "\n";
+				Xn[i] = X[(inputCountPerSample * n) + i];
+			}
+			std::cout << "TEST2\n";
 			w_sum += W[n] * gauss(Xpredict, Xn, gamma, inputCountPerSample);
+			std::cout << "TEST3\n";
 		}
 		return w_sum;
 	}
@@ -41,32 +48,44 @@ extern "C" {
 		Eigen::MatrixXd phi(sampleCount, sampleCount);
 		Eigen::MatrixXd Y(sampleCount, 1);
 
-		int pos = 0;
 		double* Xn1 = new double[inputCountPerSample];
 		double* Xn2 = new double[inputCountPerSample];
-		for (int x = 0; x < sampleCount; x += inputCountPerSample)
+		for (int x = 0; x < sampleCount; x++)
 		{
-			for (int y = 0; y < sampleCount; y += inputCountPerSample)
+			for (int y = 0; y < sampleCount; y++)
 			{
-				for (int i = x; i < inputCountPerSample; i++)
-					Xn1[i - 1] = phi[x + i];
-				for (int i = y; i < inputCountPerSample; i++)
-					Xn2[i - 1] = phi[y + i];
+				for (int i = 0; i < inputCountPerSample; i++)
+				{
+					Xn1[i] = XTrain[ (inputCountPerSample * x) + i];
+				}
+				for (int i = 0; i < inputCountPerSample; i++)
+				{
+					Xn2[i] = XTrain[(inputCountPerSample * y) + i];
+				}
 				phi(x, y) = gauss(Xn1, Xn2, gamma, inputCountPerSample);
 			}
 		}
 
 		for (int x = 0; x < sampleCount; x++)
 			Y(x, 0) = YTrain[x];
+		std::cout << Y << " \n\n";
 
-		Eigen::MatrixXd W(inputCountPerSample + 1, 1);
-		W = phi.inverse() * Y;
+		Eigen::MatrixXd W(inputCountPerSample, 1);
+		auto inv = phi.inverse();
+		W = inv * Y;
 
-		double* Wmat = new double[inputCountPerSample + 1];
 
-		for (int i = 0; i < inputCountPerSample + 1; i++)
+		double* Wmat = new double[sampleCount];
+
+		
+
+		for (int i = 0; i < sampleCount; i++)
+		{
 			Wmat[i] = W(i);
+			std::cout << Wmat[i] << " " << W(i) << "\n";
+		}
 
+		std::cout << "AFTER FIT " <<  Wmat << "\n";
 		return Wmat;
 	}
 }
