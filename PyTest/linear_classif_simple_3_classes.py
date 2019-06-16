@@ -36,13 +36,12 @@ if __name__ == "__main__":
         y2.append(tmp)
 
     for x in np.arange(0, sampleCount / 3):
-        tmp = random.uniform(0.5 , 1.5) * 0.9
+        tmp = random.uniform(0.5, 1.5) * 0.9
         XTrain.append(tmp)
         x3.append(tmp)
         tmp = random.uniform(1.5, 2) * 0.9
         XTrain.append(tmp)
         y3.append(tmp)
-
 
     for val in np.arange(0, sampleCount / 3):
         YTrain1.append(1)
@@ -65,10 +64,16 @@ if __name__ == "__main__":
     W2 = create_linear_model(inputCountPerSample)
     W3 = create_linear_model(inputCountPerSample)
 
-    fit_classification_rosenblatt_rule(W1, XTrain, sampleCount, inputCountPerSample, YTrain1, alpha, epochs)
-    fit_classification_rosenblatt_rule(W2, XTrain, sampleCount, inputCountPerSample, YTrain2, alpha, epochs)
-    fit_classification_rosenblatt_rule(W3, XTrain, sampleCount, inputCountPerSample, YTrain3, alpha, epochs)
-    
+    fit_classification_rosenblatt_rule(
+        W1, XTrain, sampleCount, inputCountPerSample, YTrain1, alpha, epochs
+    )
+    fit_classification_rosenblatt_rule(
+        W2, XTrain, sampleCount, inputCountPerSample, YTrain2, alpha, epochs
+    )
+    fit_classification_rosenblatt_rule(
+        W3, XTrain, sampleCount, inputCountPerSample, YTrain3, alpha, epochs
+    )
+
     predict_2D_3Class_individual(W1, inputCountPerSample, x1, y1, x2, y2, x3, y3)
     predict_2D_3Class_individual(W2, inputCountPerSample, x1, y1, x2, y2, x3, y3)
     predict_2D_3Class_individual(W3, inputCountPerSample, x1, y1, x2, y2, x3, y3)

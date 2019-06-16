@@ -12,13 +12,31 @@ if __name__ == "__main__":
     epochs = 5000
 
     X = np.random.random((1000, 2)) * 2.0 - 1.0
-    Y = np.array([[1, 0, 0] if abs(p[0] % 0.5) <= 0.25 and abs(p[1] % 0.5) > 0.25 else [0, 1, 0] if abs(p[0] % 0.5) > 0.25 and abs(p[1] % 0.5) <= 0.25 else [0, 0, 1] for p in X])
-    XTrain = list(flatten(X)) 
+    Y = np.array(
+        [
+            [1, 0, 0]
+            if abs(p[0] % 0.5) <= 0.25 and abs(p[1] % 0.5) > 0.25
+            else [0, 1, 0]
+            if abs(p[0] % 0.5) > 0.25 and abs(p[1] % 0.5) <= 0.25
+            else [0, 0, 1]
+            for p in X
+        ]
+    )
+    XTrain = list(flatten(X))
     YTrain = list(flatten(Y))
-
 
     W = create_mlp_model(layers, layer_count, inputCountPerSample)
 
-    fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
+    fit_mlp_classification(
+        W,
+        XTrain,
+        YTrain,
+        layers,
+        layer_count,
+        sampleCount,
+        inputCountPerSample,
+        alpha,
+        epochs,
+    )
 
     predict_2D_mlp_multi(W, layers, layer_count, inputCountPerSample, XTrain, Y)

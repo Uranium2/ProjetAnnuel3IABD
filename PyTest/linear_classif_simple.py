@@ -12,12 +12,12 @@ if __name__ == "__main__":
     XTrain = []
 
     for x in np.arange(0, sampleCount / 2):
-            XTrain.append(random.uniform(0, 1) * 0.9)
-            XTrain.append(random.uniform(0, 1) * 0.9)
+        XTrain.append(random.uniform(0, 1) * 0.9)
+        XTrain.append(random.uniform(0, 1) * 0.9)
 
     for x in np.arange(0, sampleCount / 2):
-            XTrain.append(random.uniform(1, 2) * 0.9)
-            XTrain.append(random.uniform(1, 2) * 0.9)
+        XTrain.append(random.uniform(1, 2) * 0.9)
+        XTrain.append(random.uniform(1, 2) * 0.9)
 
     for val in np.arange(0, sampleCount / 2):
         YTrain.append(-1)
@@ -26,6 +26,8 @@ if __name__ == "__main__":
 
     W = create_linear_model(inputCountPerSample)
 
-    fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
+    fit_classification_rosenblatt_rule(
+        W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs
+    )
 
     predict_2D(W, inputCountPerSample, XTrain, YTrain, 0, 2)

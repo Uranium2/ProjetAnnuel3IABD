@@ -4,7 +4,7 @@ import numpy as np
 import random
 
 if __name__ == "__main__":
-    layers = [2, 4 , 1]
+    layers = [2, 4, 1]
     layer_count = 3
     sampleCount = 500
     inputCountPerSample = 2
@@ -14,12 +14,21 @@ if __name__ == "__main__":
     X = np.random.random((500, 2)) * 2.0 - 1.0
     Y = np.array([1 if abs(p[0]) <= 0.3 or abs(p[1]) <= 0.3 else -1 for p in X])
 
-    XTrain = list(flatten(X)) 
+    XTrain = list(flatten(X))
     YTrain = list(flatten(Y))
-
 
     W = create_mlp_model(layers, layer_count, inputCountPerSample)
 
-    fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
+    fit_mlp_classification(
+        W,
+        XTrain,
+        YTrain,
+        layers,
+        layer_count,
+        sampleCount,
+        inputCountPerSample,
+        alpha,
+        epochs,
+    )
 
-    predict_2D_mlp(W, layers, layer_count, inputCountPerSample, XTrain, YTrain, -1 , 1)
+    predict_2D_mlp(W, layers, layer_count, inputCountPerSample, XTrain, YTrain, -1, 1)

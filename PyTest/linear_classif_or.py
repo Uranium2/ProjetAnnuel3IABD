@@ -11,6 +11,8 @@ if __name__ == "__main__":
 
     W = create_linear_model(inputCountPerSample)
 
-    fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
+    fit_classification_rosenblatt_rule(
+        W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs
+    )
 
     predict_2D(W, inputCountPerSample, XTrain, YTrain, 0, 1)
