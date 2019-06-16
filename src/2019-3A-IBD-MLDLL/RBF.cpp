@@ -2,15 +2,6 @@
 
 extern "C" {
 
-
-	double gauss(double* Xpredict, double* Xn, double gamma, int inputCountPerSample) {
-		double dist = get_distance(Xpredict, Xn, inputCountPerSample);
-		double pow = std::pow(dist, 2);
-		double gam_pow = -gamma * pow;
-		double exp = std::exp(gam_pow);
-		return exp;
-	}
-
 	double get_distance(double* Xpredict, double* Xn, int inputCountPerSample) {
 
 		// l2-norm
@@ -25,21 +16,25 @@ extern "C" {
 		return norm;
 	}
 
+	double gauss(double* Xpredict, double* Xn, double gamma, int inputCountPerSample) {
+		double dist = get_distance(Xpredict, Xn, inputCountPerSample);
+		double pow = std::pow(dist, 2);
+		double gam_pow = -gamma * pow;
+		double exp = std::exp(gam_pow);
+		return exp;
+	}
+
 	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N) {
 		double* Xn = new double[inputCountPerSample];
-		std::cout << "PREDICT " << W << "\n";
 		double w_sum = 0;
 
 		for (int n = 0; n < N; n++)
 		{
 			for (int i = 0; i < inputCountPerSample; i++)
 			{
-				std::cout << "TEST " << i << "\n";
 				Xn[i] = X[(inputCountPerSample * n) + i];
 			}
-			std::cout << "TEST2\n";
 			w_sum += W[n] * gauss(Xpredict, Xn, gamma, inputCountPerSample);
-			std::cout << "TEST3\n";
 		}
 		return w_sum;
 	}
@@ -68,7 +63,6 @@ extern "C" {
 
 		for (int x = 0; x < sampleCount; x++)
 			Y(x, 0) = YTrain[x];
-		std::cout << Y << " \n\n";
 
 		Eigen::MatrixXd W(inputCountPerSample, 1);
 		auto inv = phi.inverse();
@@ -80,12 +74,8 @@ extern "C" {
 		
 
 		for (int i = 0; i < sampleCount; i++)
-		{
 			Wmat[i] = W(i);
-			std::cout << Wmat[i] << " " << W(i) << "\n";
-		}
 
-		std::cout << "AFTER FIT " <<  Wmat << "\n";
 		return Wmat;
 	}
 }
