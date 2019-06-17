@@ -8,5 +8,5 @@
 
 
 extern "C" {
-	SUPEREXPORT double* get_Kmeans(int K, double* Xtrain, int sampleCount, int inputCountperSample);
+	SUPEREXPORT double* get_Kmeans(int K, double* Xtrain, int sampleCount, int inputCountperSample, int epochs);
 }

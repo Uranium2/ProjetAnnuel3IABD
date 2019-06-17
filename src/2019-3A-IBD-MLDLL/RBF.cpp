@@ -24,6 +24,12 @@ extern "C" {
 		return exp;
 	}
 
+	SUPEREXPORT int predict_class_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N) {
+		if (predict_reg_RBF_naive(W, X, Xpredict, inputCountPerSample, gamma, N) >= 0)
+			return 1;
+		return -1;
+	}
+
 	SUPEREXPORT double predict_reg_RBF_naive(double* W, double* X, double* Xpredict, int inputCountPerSample, double gamma, int N) {
 		double* Xn = new double[inputCountPerSample];
 		double w_sum = 0;
@@ -51,7 +57,7 @@ extern "C" {
 			{
 				for (int i = 0; i < inputCountPerSample; i++)
 				{
-					Xn1[i] = XTrain[ (inputCountPerSample * x) + i];
+					Xn1[i] = XTrain[(inputCountPerSample * x) + i];
 				}
 				for (int i = 0; i < inputCountPerSample; i++)
 				{
@@ -71,7 +77,7 @@ extern "C" {
 
 		double* Wmat = new double[sampleCount];
 
-		
+
 
 		for (int i = 0; i < sampleCount; i++)
 			Wmat[i] = W(i);
