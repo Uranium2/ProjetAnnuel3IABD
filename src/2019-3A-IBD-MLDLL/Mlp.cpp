@@ -238,7 +238,7 @@ extern "C" {
 		for (int i = 0; i < sampleCount; i++) // Create ordered vector
 			myImageIndex.push_back(i);
 
-		std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images
+		
 
 		int* y = new int[layers[layer_count - 1]];
 
@@ -250,6 +250,8 @@ extern "C" {
 
 		for (int e = 0; e < epochs; e++)
 		{
+
+			std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images at each epoch
 
 			for (int img = 0; img < sampleCount; img++)
 			{
