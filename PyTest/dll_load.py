@@ -28,7 +28,7 @@ myDll.predict_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int]
 myDll.predict_regression.restype = ct.c_double
 
 # create_mlp_model
-myDll.create_mlp_model.argtypes = [ct.c_void_p, ct.c_int, ct.c_int]
+myDll.create_mlp_model.argtypes = [ct.c_void_p, ct.c_int]
 myDll.create_mlp_model.restype = ct.c_void_p
 
 # fit_mlp_classification
@@ -79,11 +79,10 @@ def predict_regression(W, pyX, pyInputCountPerSample):
     X = (ct.c_double * len(pyX))(*pyX)
     return myDll.predict_regression(W,  X, inputCountPerSample)
 
-def create_mlp_model(pyLayers, pyLayer_count, pyInputCountPerSample):
+def create_mlp_model(pyLayers, pyLayer_count):
     layers = (ct.c_int * len(pyLayers))(*pyLayers)
     layer_count = ct.c_int(pyLayer_count)
-    inputCountPerSample = ct.c_int(pyInputCountPerSample)
-    return myDll.create_mlp_model(layers, layer_count, inputCountPerSample)
+    return myDll.create_mlp_model(layers, layer_count)
 
 def fit_mlp_classification(W, pyXTrain, pyYTrain, pyLayers, pyLayer_count, pySampleCount, pyInputCountPerSample, pyAlpha, pyEpochs):
     layers = (ct.c_int * len(pyLayers))(*pyLayers)

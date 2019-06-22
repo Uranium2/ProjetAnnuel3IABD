@@ -18,7 +18,6 @@ extern "C" {
 
 	SUPEREXPORT double* predict_mlp_classification(double*** W, int* layers, int layer_count, int inputCountPerSample, double* Xinput)
 	{
-
 		double** X = new double* [layer_count];
 
 		for (int l = 0; l < layer_count; l++)
@@ -36,21 +35,14 @@ extern "C" {
 		}
 
 
-		for (int l = 1; l < (layer_count); l++)
+		for (int l = 1; l < layer_count; l++)
 		{
 			for (int j = 1; j < (layers[l] + 1); j++)
 			{
-				int y = 0;
-				if (l == 1)
-					y = inputCountPerSample + 1;
-				else
-					y = layers[l - 1] + 1;
 				double res = 0.0;
-				for (int i = 0; i < y; i++)
-				{
-					//std::cout << "X[" << l - 1 << "][" << i << "] " << X[l - 1][i] << "\n";
-					res += W[l][i][j] * X[l - 1][i];
-				}
+				for (int i = 0; i < layers[l - 1] + 1; i++)
+					res += W[l][j][i] * X[l - 1][i];
+
 				X[l][j] = std::tanh(res);
 			}
 		}
@@ -64,24 +56,26 @@ extern "C" {
 		for (int l = 0; l < layer_count; l++)
 		{
 			if (l == 0)
+			{
 				X[l] = new double[inputCountPerSample + 1];
+				int pos = 0;
+				for (int input = 1; input < inputCountPerSample + 1; input++)
+					X[l][input] = Xinput[pos++];
+			}
 			else
 				X[l] = new double[layers[l] + 1];
 			X[l][0] = 1;
 		}
 
-		for (int l = 1; l < (layer_count); l++)
+
+		for (int l = 1; l < layer_count; l++)
 		{
 			for (int j = 1; j < (layers[l] + 1); j++)
 			{
-				int y = 0;
-				if (l == 1)
-					y = inputCountPerSample + 1;
-				else
-					y = layers[l - 1] + 1;
 				double res = 0.0;
-				for (int i = 0; i < y; i++)
-					res += W[l][i][j] * X[l - 1][i];
+				for (int i = 0; i < layers[l - 1] + 1; i++)
+					res += W[l][j][i] * X[l - 1][i];
+
 				if (l == layer_count)
 					X[l][j] = res;
 				else
@@ -93,44 +87,30 @@ extern "C" {
 
 	void feedForward_mlp(double*** W, int* layers, int layer_count, int inputCountPerSample, double** X)
 	{
-		for (int l = 1; l < (layer_count); l++)
+		for (int l = 1; l < layer_count; l++)
 		{
 			for (int j = 1; j < (layers[l] + 1); j++)
 			{
-				int y = 0;
-				if (l == 1)
-					y = inputCountPerSample + 1;
-				else
-					y = layers[l - 1] + 1;
 				double res = 0.0;
-				for (int i = 0; i < y; i++)
-				{
-					res += W[l][i][j] * X[l - 1][i];
-					//std::cout << "feedforward = " << "W[" << l << "][" << i << "][" << j << "] " << W[l][i][j] << " * " <<
-					//	"X[" << l - 1 << "][" << i << "] " << X[l - 1][i] << "\n";
-				}
+				for (int i = 0; i < layers[l - 1] + 1; i++)
+					res += W[l][j][i] * X[l - 1][i];
 				
 				X[l][j] = std::tanh(res);
-				//std::cout << "X[" << l << "][" << j << "] " << X[l][j]  <<"\n";
 			}
 		}
 	}
 
 	void feedForward_mlp_regression(double*** W, int* layers, int layer_count, int inputCountPerSample, double** X)
 	{
-		for (int l = 1; l < (layer_count); l++)
+		for (int l = 1; l < layer_count; l++)
 		{
 			for (int j = 1; j < (layers[l] + 1); j++)
 			{
-				int y = 0;
-				if (l == 1)
-					y = inputCountPerSample + 1;
-				else
-					y = layers[l - 1] + 1;
 				double res = 0.0;
-				for (int i = 0; i < y; i++)
-					res += W[l][i][j] * X[l - 1][i];
-				if (l == layer_count)
+				for (int i = 0; i < layers[l - 1] + 1; i++)
+					res += W[l][j][i] * X[l - 1][i];
+
+				if (l == layer_count - 1)
 					X[l][j] = res;
 				else
 					X[l][j] = std::tanh(res);
@@ -140,29 +120,16 @@ extern "C" {
 
 	void update_delta(double*** W, double** X, int* layers, int layer_count, double** delta, int inputCountPerSample)
 	{
-		for (int l = layer_count - 1; l > 0; l--)
+		for (int l = layer_count - 1; l > 1; l--)
 		{
-			//std::cout << "l = " << l << "\n";
-			int y = 0;
-			if (l == 1)
-				y = inputCountPerSample + 1;
-			else
-				y = layers[l - 1] + 1;
-			//std::cout << "y = " << y << "\n";
-			for (int i = 1; i < y; i++)
+
+			for (int i = 1; i < layers[l - 1] + 1; i++)
 			{
 				double res = 0.0;
 				for (int j = 1; j < (layers[l] + 1); j++)
-				{
-					res += W[l][i][j] * delta[l][j];
-					//std::cout << "delta[l] in update delta l = " << l << "delta " << delta[l][i] << "\n";
-					//std::cout << "updateDelta = " << W[l][i][j] << " * " << delta[l][i] << "\n";
-				}
-				//std::cout << "\n";
+					res += W[l][j][i] * delta[l][j];
 
 				delta[l - 1][i] = (1 - std::pow(X[l - 1][i], 2)) * res;
-				//std::cout << "delta[" << l - 1 << "][" << i << "]" << delta[l -1][i] << "\n";
-
 			}
 		}
 	}
@@ -170,21 +137,10 @@ extern "C" {
 	void update_W(double*** W, double** X, int* layers, int layer_count, int inputCountPerSample, double** delta, double alpha) {
 		for (int l = 1; l < layer_count; l++) {
 
-			//std::cout << "l = " << l << "\n";
 			for (int j = 1; j < layers[l] + 1; j++)
 			{
-				int y = 0;
-				if (l == 1)
-					y = inputCountPerSample + 1;
-				else
-					y = layers[l - 1] + 1;
-				//std::cout << "\t i = " << i << "\n";
-				for (int i = 0; i < y; i++)
-				{
-					//std::cout << "\t\t j = " << j << "\n";
-					W[l][i][j] = W[l][i][j] - (alpha * X[l - 1][i] * delta[l][j]);
-					//std::cout << "UpdateW " << W[l][i][j] << " - " << delta[l][j] << "\n";
-				}
+				for (int i = 0; i < layers[l - 1] + 1; i++)
+					W[l][j][i] -= alpha * X[l - 1][i] * delta[l][j];
 			}
 		}
 	}
@@ -192,16 +148,13 @@ extern "C" {
 	void get_last_delta(double** X, int* layers, int layer_count, int* Y, double** delta) {
 		int L = layer_count - 1;
 		for (int j = 1; j < layers[L] + 1; j++)
-		{
-			delta[L][j] = (1 - std::pow(X[L][j], 2)) * (X[L][j] - Y[j - 1]);
-			//std::cout << "delta[" << L << "][" << j << "]"  << delta[L][j] << "\n";
-		}
+			delta[L][j] = ((1 - std::pow(X[L][j], 2)) * (X[L][j] - Y[j - 1]));
 	}
 
 	void get_last_delta_regression(double** X, int* layers, int layer_count, int* Y, double** delta) {
 		int L = layer_count - 1;
 		for (int j = 1; j < layers[L] + 1; j++)
-			delta[L][j] = (X[L][j] - Y[j - 1]);
+			delta[L][j] = X[L][j] - Y[j - 1];
 	}
 
 	SUPEREXPORT void fit_mlp_classification(double*** W,
@@ -219,17 +172,11 @@ extern "C" {
 
 		for (int l = 0; l < layer_count; l++)
 		{
-			if (l == 0)
-			{
-				X[l] = new double[inputCountPerSample + 1];
-				delta[l] = new double[inputCountPerSample + 1];
-			}
-			else
-			{
-				X[l] = new double[layers[l] + 1];
-				delta[l] = new double[layers[l] + 1];
-			}
+			X[l] = new double[layers[l] + 1];
 			X[l][0] = 1;
+
+			if (l > 0)
+				delta[l] = new double[layers[l] + 1];
 		}
 
 		std::vector<int> myImageIndex;
@@ -237,8 +184,6 @@ extern "C" {
 
 		for (int i = 0; i < sampleCount; i++) // Create ordered vector
 			myImageIndex.push_back(i);
-
-		
 
 		int* y = new int[layers[layer_count - 1]];
 
@@ -257,21 +202,13 @@ extern "C" {
 			{
 				// Load Inputs
 				for (int n = 1; n < (inputCountPerSample + 1); n++)
-				{
 					X[0][n] = Xtrain[(inputCountPerSample * myImageIndex[img]) + n - 1];
-					//std::cout << "X[0][" << 1 << "]" << X[0][n] << "\n";
-				}
-				//std::cout << "\n";
-
 
 
 				feedForward_mlp(W, layers, layer_count, inputCountPerSample, X);
 
 				for (int subimg = 0; subimg < layers[layer_count - 1]; subimg++) // Load Random Image
-				{
 					y[subimg] = YTrain[(layers[layer_count - 1] * myImageIndex[img]) + subimg];
-					//std::cout << y[subimg] << "\n";
-				}
 
 				get_last_delta(X, layers, layer_count, y, delta);
 
@@ -315,17 +252,11 @@ extern "C" {
 
 		for (int l = 0; l < layer_count; l++)
 		{
-			if (l == 0)
-			{
-				X[l] = new double[inputCountPerSample + 1];
-				delta[l] = new double[inputCountPerSample + 1];
-			}
-			else
-			{
-				X[l] = new double[layers[l] + 1];
-				delta[l] = new double[layers[l] + 1];
-			}
+			X[l] = new double[layers[l] + 1];
 			X[l][0] = 1;
+
+			if (l > 0)
+				delta[l] = new double[layers[l] + 1];
 		}
 
 		std::vector<int> myImageIndex;
@@ -334,7 +265,6 @@ extern "C" {
 		for (int i = 0; i < sampleCount; i++) // Create ordered vector
 			myImageIndex.push_back(i);
 
-		std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images
 
 		int* y = new int[layers[layer_count - 1]];
 
@@ -344,6 +274,7 @@ extern "C" {
 
 		for (int e = 0; e < epochs; e++)
 		{
+			std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images
 
 			for (int img = 0; img < sampleCount; img++)
 			{
@@ -377,7 +308,7 @@ extern "C" {
 	}
 
 
-	SUPEREXPORT double*** create_mlp_model(int* layers, int layer_count, int inputCountPerSample)
+	SUPEREXPORT double*** create_mlp_model(int* layers, int layer_count)
 	{
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine generator(seed);
@@ -386,30 +317,16 @@ extern "C" {
 		double*** W = new double** [layer_count];
 
 		int k = 0;
-		for (int l = 1; l < (layer_count); l++)
+		for (int l = 1; l < layer_count; l++)
 		{
-			int y = 0;
-			if (l == 1)
-				y = inputCountPerSample + 1;
-			else
-				y = layers[l - 1] + 1;
-			W[l] = new double* [y];
-			//std::cout << "l = " << l << "\n";
-			for (int i = 0; i < y; i++)
+			W[l] = new double*[layers[l] + 1];
+			for (int j = 1; j < layers[l] + 1; j++)
 			{
-				//std::cout << "\ti = " << i << "\n";
-				W[l][i] = new double[layers[l] + 1];
-				for (int j = 1; j < (layers[l] + 1); j++)
-				{
-					//std::cout << "\t\tj = " << j << "\n";
-					W[l][i][j] = distribution(generator);
-					//std::cout << "W[" << l << "][" << i << "][" << j << "] = " << W[l][i][j] << " ";
-				}
-				//std::cout << "\n";
+				W[l][j] = new double[layers[l - 1] + 1];
+				for (int i = 0; i < (layers[l - 1] + 1); i++)
+					W[l][j][i] = distribution(generator);
 			}
-			//std::cout << "\n";
 		}
-
 		return W;
 	}
 }

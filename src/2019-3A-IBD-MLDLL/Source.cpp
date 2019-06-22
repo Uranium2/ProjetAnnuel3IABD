@@ -13,7 +13,7 @@ int main() {
 	int epochs = 1000;
 	int layer_count = 3;
 	int inputCountPerSample = 2;
-	auto W = create_mlp_model(layers, layer_count, inputCountPerSample);
+	auto W = create_mlp_model(layers, layer_count);
 	fit_mlp_classification(W, Xtrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs);
 
 	double Xpredict0[2] = { 0, 0 };

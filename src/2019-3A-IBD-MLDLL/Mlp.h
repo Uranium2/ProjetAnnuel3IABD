@@ -10,7 +10,7 @@
 
 
 extern "C" {
-	SUPEREXPORT double*** create_mlp_model(int* layers, int layer_count, int inputCountPerSample);
+	SUPEREXPORT double*** create_mlp_model(int* layers, int layer_count);
 
 	SUPEREXPORT void fit_mlp_classification(double*** W,
 		double* Xtrain,

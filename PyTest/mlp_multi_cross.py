@@ -4,11 +4,11 @@ import numpy as np
 import random
 
 if __name__ == "__main__":
-    layers = [2, 8, 8, 3]
+    layers = [2, 16, 16, 3]
     layer_count = 4
     sampleCount = 1000
     inputCountPerSample = 2
-    alpha = 0.01
+    alpha = 0.04
     epochs = 5000
 
     X = np.random.random((1000, 2)) * 2.0 - 1.0
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     YTrain = list(flatten(Y))
 
 
-    W = create_mlp_model(layers, layer_count, inputCountPerSample)
+    W = create_mlp_model(layers, layer_count)
 
     fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
 
