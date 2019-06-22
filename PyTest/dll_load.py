@@ -46,6 +46,9 @@ myDll.predict_mlp_classification.restype = POINTER(ct.c_double)
 myDll.predict_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
 myDll.predict_mlp_regression.restype = POINTER(ct.c_double)
 
+# saveModel
+myDll.saveModel.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_void_p]
+
 
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -135,3 +138,11 @@ def flatten(items):
                 yield sub_x
         else:
             yield x
+
+def saveModel(W, pyLayers, pyLayer_count, pyFileName):
+    layers = (ct.c_int * len(pyLayers))(*pyLayers)
+    layer_count = ct.c_int(pyLayer_count)
+    #fileName = (ct.c_char * len(pyFileName))(*pyFileName)
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    myDll.saveModel(W, layers, layer_count, fileName)
+

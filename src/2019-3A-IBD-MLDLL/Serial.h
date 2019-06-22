@@ -9,5 +9,5 @@
 
 
 extern "C" {
-	SUPEREXPORT void saveModel(void* model);
+	SUPEREXPORT void saveModel(double*** W, int* layers, int layer_count, char* fileName);
 }
