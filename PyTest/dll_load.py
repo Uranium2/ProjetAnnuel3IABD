@@ -49,6 +49,10 @@ myDll.predict_mlp_regression.restype = POINTER(ct.c_double)
 # saveModel
 myDll.saveModel.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_void_p]
 
+# loadModel
+myDll.loadModel.argtypes = [ct.c_void_p]
+myDll.loadModel.restype = ct.c_void_p
+
 
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -146,3 +150,6 @@ def saveModel(W, pyLayers, pyLayer_count, pyFileName):
     fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
     myDll.saveModel(W, layers, layer_count, fileName)
 
+def loadModel(pyFileName):
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    return myDll.loadModel(fileName)
