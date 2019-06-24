@@ -1,16 +1,13 @@
+from flask import Flask, request, render_template, send_from_directory
 import os
 
-from flask import Flask, request, render_template, send_from_directory
-
-__author__ = 'Group6 3IABD'
-
-app = Flask(__name__, static_url_path='/templates')
+app = Flask(__name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("upload.html")
+    return render_template('index.html')
 
 @app.route("/upload", methods=['POST'])
 def upload():
@@ -27,19 +24,20 @@ def upload():
         print(dest)
         file.save(dest)
     
-    return render_template("complete.html")
+    # Lancer une prédiction avec le bon model.
+    # return le bon template (if [1,0,0] return FPS, [0,1,0] MOBA stc)
+    return render_template("resultFPS.html")
 
-@app.route("/unity")
-def unity():
-    return render_template("index.html")
+@app.route('/handle_data', methods=['POST'])
+def handle_data():
+    alpha = request.form['Alpha']
+    epochs = request.form['Epochs']
+    dataSetSize = request.form['Data set size']
+    imageSize = request.form['Image size']
 
-@app.route('/templates/Build/<path:path>')
-def send_Buildjs(path):
-    return send_from_directory('templates/Build', path)
+    # Lancer un train
+    return render_template("trained.html")
+    
 
-@app.route('/templates/TemplateData/<path:path>')
-def send_Templatejs(path):
-    return send_from_directory('templates/TemplateData', path)
-
-if __name__ == "__main__":
-    app.run(port=4555, debug=True)
+if __name__ == '__main__':
+   app.run()
