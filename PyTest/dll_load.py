@@ -107,6 +107,15 @@ myDll.predict_reg_RBF_naive.argtypes = [
 ]
 myDll.predict_reg_RBF_naive.restype = ct.c_double
 
+# get_Kmeans
+myDll.get_Kmeans.argtypes = [
+    ct.c_int,
+    ct.c_void_p,
+    ct.c_int,
+    ct.c_int,
+    ct.c_int,
+]
+myDll.get_Kmeans.restype =  ct.c_void_p   
 
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -274,3 +283,11 @@ def predict_reg_RBF_naive(
     return myDll.predict_reg_RBF_naive(
         W, XTrain, Xpredict, inputCountPerSample, gamma, sampleCount
     )
+
+def get_Kmeans(pyK, pyXTrain, pySampleCount, pyInputCountPerSample, pyEpochs):
+    K = ct.c_int(pyK)
+    XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    sampleCount = ct.c_int(pySampleCount)
+    epochs = ct.c_int(pyEpochs)
+    return myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
