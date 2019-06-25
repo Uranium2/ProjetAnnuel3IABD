@@ -66,6 +66,7 @@ def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     return myDll.create_linear_model(inputCountPerSample)
 
+
 def fit_classification_rosenblatt_rule(W, pyXTrain, pySampleCount, pyInputCountPerSample, pyYTrain, pyAlpha, pyEpochs):
     sampleCount = ct.c_int(pySampleCount)
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -74,6 +75,7 @@ def fit_classification_rosenblatt_rule(W, pyXTrain, pySampleCount, pyInputCountP
     YTrain = (ct.c_double * len(pyYTrain))(*pyYTrain)
     XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
     myDll.fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
+
 
 def predict_classification_rosenblatt(W, pyX, pyInputCountPerSample):
     X = (ct.c_double * len(pyX))(*pyX)
