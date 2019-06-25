@@ -46,6 +46,17 @@ myDll.predict_mlp_classification.restype = POINTER(ct.c_double)
 myDll.predict_mlp_regression.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_void_p]
 myDll.predict_mlp_regression.restype = POINTER(ct.c_double)
 
+# saveLinearModel
+myDll.saveLinearModel.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
+
+# getInputCountPerSample
+myDll.getInputCountPerSample.argtypes = [ct.c_void_p]
+myDll.getInputCountPerSample.restype = ct.c_int
+
+# loadLinearModel
+myDll.loadLinearModel.argtypes = [ct.c_void_p]
+myDll.loadLinearModel.restype = POINTER(ct.c_double)
+
 # saveModel
 myDll.saveModel.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_void_p]
 
@@ -152,6 +163,21 @@ def flatten(items):
                 yield sub_x
         else:
             yield x
+
+def saveLinearModel(W, pyInputCountPerSample, pyFileName):
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    myDll.saveLinearModel(W, inputCountPerSample, fileName)
+
+def getInputCountPerSample(pyFileName):
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    return myDll.getInputCountPerSample(fileName)
+
+def loadLinearModel(pyFileName):
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    inputCountPerSampleC = getInputCountPerSample(pyFileName)
+    inputCountPerSample = int(inputCountPerSampleC)
+    return inputCountPerSample, myDll.loadLinearModel(fileName)
 
 def saveModel(W, pyLayers, pyLayer_count, pyFileName):
     layers = (ct.c_int * len(pyLayers))(*pyLayers)

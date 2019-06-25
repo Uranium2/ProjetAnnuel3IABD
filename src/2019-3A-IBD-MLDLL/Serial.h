@@ -11,6 +11,9 @@
 
 
 extern "C" {
+	SUPEREXPORT void saveLinearModel(double* W, int inputCountPerSample, char* fileName);
+	SUPEREXPORT int getInputCountPerSample(char* fileName);
+	SUPEREXPORT double* loadLinearModel(char* fileName);
 	SUPEREXPORT void saveModel(double*** W, int* layers, int layer_count, char* fileName);
 	SUPEREXPORT int* getLayers(char* fileName);
 	SUPEREXPORT int getLayer_count(char* fileName);

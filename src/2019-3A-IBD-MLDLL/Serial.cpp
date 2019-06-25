@@ -1,6 +1,70 @@
 #include "Serial.h"
 
 extern "C" {
+	
+	SUPEREXPORT void saveLinearModel(double* W, int inputCountPerSample, char* fileName)
+	{
+		std::ofstream myfile;
+		myfile.open(fileName);
+
+		myfile << inputCountPerSample << "\n";
+
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			myfile << W[i] << ",";
+
+		myfile.close();
+	}
+
+	SUPEREXPORT int getInputCountPerSample(char* fileName)
+	{
+		std::ifstream  myfile;
+		myfile.open(fileName);
+		if (!myfile) {
+			std::cout << "Unable to open file: " << fileName;
+			exit(1);
+		}
+		std::string line = "";
+		std::getline(myfile, line);
+		std::string content = "";
+		std::istringstream lineStream(line);
+		
+		std::getline(lineStream, content, ',');
+		std::istringstream number(content);
+		int inputCountPerSample = 0;
+		number >> inputCountPerSample;
+
+		myfile.close();
+		return inputCountPerSample;
+	}
+	SUPEREXPORT double* loadLinearModel(char* fileName)
+	{
+		std::ifstream  myfile;
+		myfile.open(fileName);
+		if (!myfile) {
+			std::cout << "Unable to open file: " << fileName;
+			exit(1);
+		}
+		std::string line = "";
+		std::getline(myfile, line);
+		std::string content = "";
+		std::istringstream lineStream(line);
+		
+		std::getline(lineStream, content, ',');
+		std::istringstream number(content);
+		int inputCountPerSample = 0;
+		number >> inputCountPerSample;
+
+		double* W = new double[inputCountPerSample + 1];
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+		{
+			myfile >> W[i];
+			myfile.get();
+		}
+
+		myfile.close();
+		return W;
+	}
+	
 	SUPEREXPORT void saveModel(double*** W, int* layers, int layer_count, char* fileName)
 	{
 		std::ofstream myfile;
@@ -19,7 +83,7 @@ extern "C" {
 					myfile << W[l][j][i] << ",";
 			}
 		}
-		myfile.close();
+		
 	}
 
 	SUPEREXPORT int getLayer_count(char* fileName)
