@@ -49,6 +49,14 @@ myDll.predict_mlp_regression.restype = POINTER(ct.c_double)
 # saveModel
 myDll.saveModel.argtypes = [ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_void_p]
 
+# getLayer_count
+myDll.getLayer_count.argtypes = [ct.c_void_p]
+myDll.getLayer_count.restype = ct.c_int
+
+# getLayers
+myDll.getLayers.argtypes = [ct.c_void_p]
+myDll.getLayers.restype = POINTER(ct.c_int)
+
 # loadModel
 myDll.loadModel.argtypes = [ct.c_void_p]
 myDll.loadModel.restype = ct.c_void_p
@@ -146,10 +154,22 @@ def flatten(items):
 def saveModel(W, pyLayers, pyLayer_count, pyFileName):
     layers = (ct.c_int * len(pyLayers))(*pyLayers)
     layer_count = ct.c_int(pyLayer_count)
-    #fileName = (ct.c_char * len(pyFileName))(*pyFileName)
     fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
     myDll.saveModel(W, layers, layer_count, fileName)
 
+def getLayer_count(pyFileName):
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    return myDll.getLayer_count(fileName)
+
+def getLayers(pyFileName):
+    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    return myDll.getLayers(fileName)
+
 def loadModel(pyFileName):
     fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
-    return myDll.loadModel(fileName)
+    layer_countC = getLayer_count(pyFileName)
+    layer_count = int(layer_countC)
+    layersC = getLayers(pyFileName)
+    layers = [layersC[i] for i in range(layer_count)]
+    return layer_count, layers, myDll.loadModel(fileName)
+

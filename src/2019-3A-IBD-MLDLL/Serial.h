@@ -12,5 +12,7 @@
 
 extern "C" {
 	SUPEREXPORT void saveModel(double*** W, int* layers, int layer_count, char* fileName);
+	SUPEREXPORT int* getLayers(char* fileName);
+	SUPEREXPORT int getLayer_count(char* fileName);
 	SUPEREXPORT double*** loadModel(char* fileName);
 }

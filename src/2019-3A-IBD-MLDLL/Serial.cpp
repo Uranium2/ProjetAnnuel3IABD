@@ -22,6 +22,54 @@ extern "C" {
 		myfile.close();
 	}
 
+	SUPEREXPORT int getLayer_count(char* fileName)
+	{
+		int layer_count = 0;
+		std::ifstream  myfile;
+		myfile.open(fileName);
+		if (!myfile) {
+			std::cout << "Unable to open file: " << fileName;
+			exit(1);
+		}
+		std::string line = "";
+		std::getline(myfile, line);
+		std::string content = "";
+		std::istringstream lineStream(line);
+		std::istringstream lineStreamCopy(line);
+		while (std::getline(lineStream, content, ',')) // Get nb layers
+			layer_count++;
+
+		myfile.close();	
+		return layer_count;
+	}
+	SUPEREXPORT int* getLayers(char* fileName)
+	{
+
+		int layer_count = 0;
+		std::ifstream  myfile;
+		myfile.open(fileName);
+		if (!myfile) {
+			std::cout << "Unable to open file: " << fileName;
+			exit(1);
+		}
+		std::string line = "";
+		std::getline(myfile, line);
+		std::string content = "";
+		std::istringstream lineStream(line);
+		std::istringstream lineStreamCopy(line);
+		while (std::getline(lineStream, content, ',')) // Get nb layers
+			layer_count++;
+
+		int* layers = new int[layer_count];
+		int i = 0;
+		while (std::getline(lineStreamCopy, content, ',')) // Insert to array
+		{
+			std::istringstream number(content);
+			number >> layers[i++];
+		}
+		myfile.close();
+		return layers;
+	}
 	SUPEREXPORT double*** loadModel(char* fileName)
 	{
 		int layer_count = 0;
