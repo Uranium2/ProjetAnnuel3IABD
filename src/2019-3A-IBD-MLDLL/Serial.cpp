@@ -7,8 +7,9 @@ extern "C" {
 		std::ofstream myfile;
 		myfile.open(fileName);
 
-		myfile << inputCountPerSample << "\n";
-
+		myfile << inputCountPerSample << ",";
+		myfile << "\n";
+		
 		for (int i = 0; i < inputCountPerSample + 1; i++)
 			myfile << W[i] << ",";
 
