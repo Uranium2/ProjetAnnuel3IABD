@@ -64,6 +64,7 @@ extern "C" {
 					Xn2[i] = XTrain[(inputCountPerSample * y) + i];
 				}
 				phi(x, y) = gauss(Xn1, Xn2, gamma, inputCountPerSample);
+	
 			}
 		}
 

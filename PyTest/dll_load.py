@@ -115,7 +115,7 @@ myDll.get_Kmeans.argtypes = [
     ct.c_int,
     ct.c_int,
 ]
-myDll.get_Kmeans.restype =  ct.c_void_p   
+myDll.get_Kmeans.restype =  POINTER(ct.c_double)
 
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
@@ -290,4 +290,6 @@ def get_Kmeans(pyK, pyXTrain, pySampleCount, pyInputCountPerSample, pyEpochs):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     sampleCount = ct.c_int(pySampleCount)
     epochs = ct.c_int(pyEpochs)
-    return myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
+    kmeansC =  myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
+    kmeans = [kmeansC[i] for i in range(pyK * pyInputCountPerSample)]
+    return kmeans
