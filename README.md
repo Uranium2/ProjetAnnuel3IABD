@@ -47,6 +47,6 @@ Lancer le back/front en Flask
     
 Ouvrir le serveur Web:
 
-    http://127.0.0.1:4555/
+    http://127.0.0.1:5000/
     
 
