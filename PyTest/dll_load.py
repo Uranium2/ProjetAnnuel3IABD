@@ -108,14 +108,8 @@ myDll.predict_reg_RBF_naive.argtypes = [
 myDll.predict_reg_RBF_naive.restype = ct.c_double
 
 # get_Kmeans
-myDll.get_Kmeans.argtypes = [
-    ct.c_int,
-    ct.c_void_p,
-    ct.c_int,
-    ct.c_int,
-    ct.c_int,
-]
-myDll.get_Kmeans.restype =  POINTER(ct.c_double)
+myDll.get_Kmeans.argtypes = [ct.c_int, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int]
+myDll.get_Kmeans.restype = POINTER(ct.c_double)
 
 # saveLinearModel
 myDll.saveLinearModel.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
@@ -143,6 +137,7 @@ myDll.getLayers.restype = POINTER(ct.c_int)
 myDll.loadModel.argtypes = [ct.c_void_p]
 myDll.loadModel.restype = ct.c_void_p
 
+
 def create_linear_model(pyInputCountPerSample):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     return myDll.create_linear_model(inputCountPerSample)
@@ -160,7 +155,6 @@ def fit_classification_rosenblatt_rule(
     myDll.fit_classification_rosenblatt_rule(
         W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs
     )
-
 
 
 def predict_classification_rosenblatt(W, pyX, pyInputCountPerSample):
@@ -284,6 +278,7 @@ def flatten(items):
         else:
             yield x
 
+
 def fit_reg_RBF_naive(
     pyXTrain, pyGamma, pyYTrain, pySampleCount, pyInputCountPerSample
 ):
@@ -309,47 +304,55 @@ def predict_reg_RBF_naive(
         W, XTrain, Xpredict, inputCountPerSample, gamma, sampleCount
     )
 
+
 def get_Kmeans(pyK, pyXTrain, pySampleCount, pyInputCountPerSample, pyEpochs):
     K = ct.c_int(pyK)
     XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
     sampleCount = ct.c_int(pySampleCount)
     epochs = ct.c_int(pyEpochs)
-    kmeansC =  myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
+    kmeansC = myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
     kmeans = [kmeansC[i] for i in range(pyK * pyInputCountPerSample)]
     return kmeans
 
+
 def saveLinearModel(W, pyInputCountPerSample, pyFileName):
     inputCountPerSample = ct.c_int(pyInputCountPerSample)
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     myDll.saveLinearModel(W, inputCountPerSample, fileName)
 
+
 def getInputCountPerSample(pyFileName):
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     return myDll.getInputCountPerSample(fileName)
 
+
 def loadLinearModel(pyFileName):
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     inputCountPerSampleC = getInputCountPerSample(pyFileName)
     inputCountPerSample = int(inputCountPerSampleC)
     return inputCountPerSample, myDll.loadLinearModel(fileName)
 
+
 def saveModel(W, pyLayers, pyLayer_count, pyFileName):
     layers = (ct.c_int * len(pyLayers))(*pyLayers)
     layer_count = ct.c_int(pyLayer_count)
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     myDll.saveModel(W, layers, layer_count, fileName)
 
+
 def getLayer_count(pyFileName):
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     return myDll.getLayer_count(fileName)
 
+
 def getLayers(pyFileName):
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     return myDll.getLayers(fileName)
 
+
 def loadModel(pyFileName):
-    fileName = ctypes.c_char_p(pyFileName.encode('utf-8'))
+    fileName = ctypes.c_char_p(pyFileName.encode("utf-8"))
     layer_countC = getLayer_count(pyFileName)
     layer_count = int(layer_countC)
     layersC = getLayers(pyFileName)

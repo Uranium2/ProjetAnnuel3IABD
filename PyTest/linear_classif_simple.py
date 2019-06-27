@@ -9,19 +9,9 @@ if __name__ == "__main__":
     alpha = 0.02
     epochs = 200
     YTrain = []
-    XTrain = [
-        0, 0,
-        0, 0.5,
-        0.5, 0,
-        0.5, 0.5,
-        1, 1,
-        1, 1.5,
-        1.5, 1,
-        1.5, 1.5
-    ]
+    XTrain = [0, 0, 0, 0.5, 0.5, 0, 0.5, 0.5, 1, 1, 1, 1.5, 1.5, 1, 1.5, 1.5]
     YTrainKmeans = []
     K = 2
-
 
     for val in np.arange(0, sampleCount / 2):
         YTrain.append(-1)
@@ -33,12 +23,15 @@ if __name__ == "__main__":
     W = create_linear_model(inputCountPerSample)
     WKmeans = create_linear_model(inputCountPerSample)
 
-    XTrainKmeans = get_Kmeans(K,  XTrain, sampleCount, inputCountPerSample, 2)
+    XTrainKmeans = get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, 2)
 
-    fit_classification_rosenblatt_rule(W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs)
+    fit_classification_rosenblatt_rule(
+        W, XTrain, sampleCount, inputCountPerSample, YTrain, alpha, epochs
+    )
 
-    fit_classification_rosenblatt_rule(WKmeans, XTrainKmeans, K, inputCountPerSample, YTrainKmeans, alpha, epochs)
+    fit_classification_rosenblatt_rule(
+        WKmeans, XTrainKmeans, K, inputCountPerSample, YTrainKmeans, alpha, epochs
+    )
 
     predict_2D(W, inputCountPerSample, XTrain, YTrain, 0, 2)
     predict_2D(WKmeans, inputCountPerSample, XTrainKmeans, YTrainKmeans, 0, 2)
-
