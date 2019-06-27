@@ -1,25 +1,123 @@
-﻿<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | TestForTheWebBuild</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="{{ url_for('static', filename='TemplateData/style.css') }}">
-    <script src="{{ url_for('static', filename='TemplateData/UnityProgress.js') }}"></script>  
-    <script src="{{ url_for('static', filename='Build/UnityLoader.js') }}"></script>
-    <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "{{ url_for('static', filename='Build/Desktop.json') }}", {onProgress: UnityProgress});
-    </script>
-  </head>
-  <body>
-    <div class="webgl-content">
-      <div id="gameContainer" style="width: 960px; height: 600px"></div>
-      <div class="footer">
-        <div class="webgl-logo"></div>
-        <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
-        <div class="title">TestForTheWebBuild</div>
-      </div>
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Projet Annuel - Groupe 6</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body style="background-color:powderblue;">
+  <style type="text/css">
+    #col-1 {
+      position: relative;
+      width: 50%;
+      float: left;
+      height: 100%;
+      z-index: 1010101010
+    }
+
+    #col-2 {
+      position: relative;
+      width: 50%;
+      float: left;
+      height: 100%;
+      z-index: 1010101010
+    }
+
+
+    .tg {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+      border-color: black;
+    }
+
+    .tg th {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+      border-color: black;
+    }
+
+    .tg .tg-0lax {
+      text-align: left;
+      vertical-align: top
+    }
+  </style>
+  <center>
+
+    </style>
+    <div id="col-1">
+      <h1>Train Model</h1>
+      <form action="{{ url_for('handle_data') }}" method="post">
+        Alpha:<br>
+        <input type="number" step="0.01" min="0" name="Alpha">
+        <br>
+        Epochs:<br>
+        <input type="number" min="0" name="Epochs">
+        <br>
+        Data set size:<br>
+        <input type="number" min="0" name="Data set size">
+        <br>
+        Image size:<br>
+        <input type="number" min="0" name="Image size">
+        <br>
+        <input type="submit" value="Launch model training">
+      </form>
     </div>
-  </body>
+    <div id="col-2">
+      <h1>Predict Model</h1>
+      <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" multiple>
+        <br>
+        <br>
+        <input type="submit" value="Launch image prediction">
+        <p style="margin-bottom:5cm;"></p>
+      </form>
+
+    </div>
+  </center>
+  <p style="margin-bottom:3cm;"></p>
+
+  <center>
+  <p>Best Models with Settings</p>
+
+    <table class="tg">
+      <tr>
+        <th class="tg-0lax">Model\Settings</th>
+        <th class="tg-0lax">Epochs</th>
+        <th class="tg-0lax">Alpha</th>
+        <th class="tg-0lax">Image Size</th>
+        <th class="tg-0lax">Data set size</th>
+        <th class="tg-0lax">Accuracy</th>
+      </tr>
+      <tr>
+        <th class="tg-0lax">Single Neuron</th>
+        <th class="tg-0lax"></th>
+        <th class="tg-0lax"></th>
+        <th class="tg-0lax">24 x 24</th>
+        <th class="tg-0lax">3000</th>
+        <th class="tg-0lax">0%</th>
+      </tr>
+    </table>
+  </center>
+</body>
+
 </html>
