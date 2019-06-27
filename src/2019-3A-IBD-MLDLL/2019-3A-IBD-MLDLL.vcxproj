@@ -88,7 +88,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
@@ -128,18 +128,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
+<ClCompile Include="Kmeans.cpp" />
     <ClCompile Include="Linear.cpp" />
     <ClCompile Include="Mlp.cpp" />
     <ClCompile Include="Serial.cpp" />
+    <ClCompile Include="RBF.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Kmeans.h" />
     <ClInclude Include="Linear.h" />
     <ClInclude Include="Mlp.h" />
     <ClInclude Include="Serial.h" />
+    <ClInclude Include="RBF.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

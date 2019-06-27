@@ -11,7 +11,11 @@
 #include <algorithm>
 #include <iostream>
 #include <Eigen/Dense>
+<<<<<<< HEAD
+#include <Eigen/QR>
+=======
 #include <Eigen/QR>    
+>>>>>>> master
 
 extern "C" {
 	SUPEREXPORT double* create_linear_model(int inputCountPerSample);

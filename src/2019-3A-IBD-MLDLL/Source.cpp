@@ -29,4 +29,11 @@ int main() {
 	auto predict3 = predict_mlp_classification(W, layers, layer_count, inputCountPerSample, Xpredict3);
 	std::cout << predict3[1] << "\n";
 	return 0;
+	int inputCountPerSample = 2;
+	int sampleCount = 4;
+	double X[4][2] = { {0, 0},
+						{1, 1},
+						{2, 2},
+						{3, 3} };
+	double Xpredict[1][2] = { {0,0} };
 }

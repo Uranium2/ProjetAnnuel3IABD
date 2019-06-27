@@ -11,8 +11,18 @@ if __name__ == "__main__":
     YTrain = [-1, 1, 1, 1]
     XTrain = [0, 0, 0, 1, 1, 0, 1, 1]
 
-    W = create_mlp_model(layers, layer_count, inputCountPerSample)
+    W = create_mlp_model(layers, layer_count)
 
-    fit_mlp_classification(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
+    fit_mlp_classification(
+        W,
+        XTrain,
+        YTrain,
+        layers,
+        layer_count,
+        sampleCount,
+        inputCountPerSample,
+        alpha,
+        epochs,
+    )
 
     predict_2D_mlp(W, layers, layer_count, inputCountPerSample, XTrain, YTrain, 0, 1)
