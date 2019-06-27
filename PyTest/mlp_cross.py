@@ -17,7 +17,7 @@ if __name__ == "__main__":
     XTrain = list(flatten(X))
     YTrain = list(flatten(Y))
 
-    W = create_mlp_model(layers, layer_count, inputCountPerSample)
+    W = create_mlp_model(layers, layer_count)
 
     fit_mlp_classification(
         W,
