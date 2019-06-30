@@ -24,14 +24,10 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="Serial.cpp">
-=======
-    <ClCompile Include="RBF.cpp">
+    <ClCompile Include="Kmeans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Kmeans.cpp">
->>>>>>> master
+    <ClCompile Include="RBF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,23 +38,14 @@
     <ClInclude Include="Mlp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="Serial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-=======
-    <ClInclude Include="RBF.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Kmeans.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RBF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
->>>>>>> master
   </ItemGroup>
 </Project>
