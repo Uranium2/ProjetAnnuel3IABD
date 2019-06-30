@@ -5,18 +5,19 @@ from PIL import Image
 
 if __name__ == "__main__":
     def fit_save():
-        img_per_folder = 100
-        h = 100
-        w = 100
+        img_per_folder = 10
+        h = 50
+        w = 50
         inputCountPerSample = h * w * 3
-        layers = [inputCountPerSample, 32, 32, 64, 64, 3]
-        layer_count = 6
+        layers = [inputCountPerSample, 60, 10, 3]
+        layer_count = 4
         sampleCount = img_per_folder * 3
         
         alpha = 0.04
-        epochs = 5000
+        epochs = 500
 
         XTrain, YTrain = getDataSet("../img", img_per_folder, h, w)
+        print(YTrain)
 
         W = create_mlp_model(layers, layer_count)
 
@@ -39,11 +40,11 @@ if __name__ == "__main__":
         saveModel(W, layers, layer_count, file_name)
 
     def load_predict():
-        h = 500
-        w = 500
-        layer_count, layers, W = loadModel("mlp_dataset_16_16.model")
+        h = 50
+        w = 50
+        layer_count, layers, W = loadModel("mlp_dataset_7500_60_10_3.model")
         XTest = []
-        im = Image.open('../img/FPS/FPS_0000.png') 
+        im = Image.open('../img/RTS_Test/RTS_0108.png') 
         imResize = im.resize((h, w), Image.ANTIALIAS)
         imgLoad = imResize.load()
         for x in range(h):
@@ -57,5 +58,5 @@ if __name__ == "__main__":
         res.pop(0)
         print(res)
     
-    fit_save()
+    #fit_save()
     load_predict()
