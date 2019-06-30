@@ -225,13 +225,13 @@ extern "C" {
 				YT[k] = (double)YTrain[k];
 
 			double loss0 = mse_loss_mlp(YT, Xout0, sampleCount);
-			if (e % 1000 == 0 || e == epochs - 1)
+			if (e % 100 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss0);
 			double loss1 = mse_loss_mlp(YT, Xout1, sampleCount);
-			if (e % 1000 == 0 || e == epochs - 1)
+			if (e % 100 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss1);
 			double loss2 = mse_loss_mlp(YT, Xout2, sampleCount);
-			if (e % 1000 == 0 || e == epochs - 1)
+			if (e % 100 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss2);
 		}
 		//delete[] X, myImageIndex, Xout, YT, delta;

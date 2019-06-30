@@ -6,8 +6,8 @@ from PIL import Image
 if __name__ == "__main__":
     def fit_save():
         img_per_folder = 100
-        h = 10
-        w = 10
+        h = 100
+        w = 100
         inputCountPerSample = h * w * 3
         layers = [inputCountPerSample, 32, 32, 64, 64, 3]
         layer_count = 6
@@ -33,14 +33,14 @@ if __name__ == "__main__":
         )
         file_name = "mlp_dataset"
         for i in layers:
-            file_name = file_name + "_" + layers[i]
+            file_name = file_name + "_" + str(i)
         file_name = file_name + ".model"
 
         saveModel(W, layers, layer_count, file_name)
 
     def load_predict():
-        h = 10
-        w = 10
+        h = 500
+        w = 500
         layer_count, layers, W = loadModel("mlp_dataset_16_16.model")
         XTest = []
         im = Image.open('../img/FPS/FPS_0000.png') 
