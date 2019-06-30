@@ -132,6 +132,7 @@
     <ClCompile Include="Linear.cpp" />
     <ClCompile Include="Mlp.cpp" />
     <ClCompile Include="RBF.cpp" />
+    <ClCompile Include="Serial.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="Linear.h" />
     <ClInclude Include="Mlp.h" />
     <ClInclude Include="RBF.h" />
+    <ClInclude Include="Serial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
