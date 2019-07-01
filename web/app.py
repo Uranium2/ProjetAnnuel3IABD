@@ -47,12 +47,19 @@ def upload():
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
+    #(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
     alpha = request.form['Alpha']
+    alpha = float(alpha)
     epochs = request.form['Epochs']
+    epochs = int(epochs)
     dataSetSize = request.form['Data set size']
+    dataSetSize = int(int(dataSetSize) / 3)
     imageSize = request.form['Image size']
+    imageSize = int(int(imageSize) / 2)
+    prefix = request.form['Model Name']
 
     # Lancer un train
+    fit_save_classif(dataSetSize, imageSize, imageSize, alpha, epochs, prefix)
     return render_template("trained.html")
     
 

@@ -39,9 +39,9 @@ def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
     fit_classification_rosenblatt_rule(W_MOBA, XTrain, sampleCount, inputCountPerSample, YTrain_MOBA, alpha, epochs)
     fit_classification_rosenblatt_rule(W_RTS, XTrain, sampleCount, inputCountPerSample, YTrain_RTS, alpha, epochs)
     file_name_FPS = "Models\Linear\\" + prefix + "_FPS.model"
-    file_name_MOBA = "Models\Linear\\" + prefix + "MOBA.model"
-    file_name_RTS = "Models\Linear\\" + prefix + "RTS.model"
-
+    file_name_MOBA = "Models\Linear\\" + prefix + "_MOBA.model"
+    file_name_RTS = "Models\Linear\\" + prefix + "_RTS.model"
+    print(file_name_RTS)
     saveLinearModel(W_FPS, inputCountPerSample, file_name_FPS)
     saveLinearModel(W_MOBA, inputCountPerSample, file_name_MOBA)
     saveLinearModel(W_RTS, inputCountPerSample, file_name_RTS)
