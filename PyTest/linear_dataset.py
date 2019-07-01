@@ -42,9 +42,9 @@ if __name__ == "__main__":
         fit_classification_rosenblatt_rule(W_FPS, XTrain, sampleCount, inputCountPerSample, YTrain_FPS, alpha, epochs)
         fit_classification_rosenblatt_rule(W_MOBA, XTrain, sampleCount, inputCountPerSample, YTrain_MOBA, alpha, epochs)
         fit_classification_rosenblatt_rule(W_RTS, XTrain, sampleCount, inputCountPerSample, YTrain_RTS, alpha, epochs)
-        file_name_FPS = "linear_dataset_FPS_rendu3_18_30_" + str(img_per_folder) + ".model"
-        file_name_MOBA = "linear_dataset_MOBA_rendu3_18_30_" + str(img_per_folder) + ".model"
-        file_name_RTS = "linear_dataset_RTS_rendu3_18_30_" + str(img_per_folder) + ".model"
+        file_name_FPS = "Models\Linear\linear_dataset_FPS_rendu3_18_30_" + str(img_per_folder) + ".model"
+        file_name_MOBA = "Models\Linear\linear_dataset_MOBA_rendu3_18_30_" + str(img_per_folder) + ".model"
+        file_name_RTS = "Models\Linear\linear_dataset_RTS_rendu3_18_30_" + str(img_per_folder) + ".model"
 
         saveLinearModel(W_FPS, inputCountPerSample, file_name_FPS)
         saveLinearModel(W_MOBA, inputCountPerSample, file_name_MOBA)
@@ -52,8 +52,8 @@ if __name__ == "__main__":
 
     def load_predict():
         img_per_folder = 60
-        h = 25
-        w = 25
+        h = 100
+        w = 100
 
         Xpredict = []
 
@@ -61,9 +61,9 @@ if __name__ == "__main__":
         Ypredict_MOBA = []
         Ypredict_RTS = []
 
-        inputCountPerSample, WFPS = loadLinearModel("linear_dataset_FPS_rendu3_18_30_1200.model")
-        inputCountPerSample, WMOBA = loadLinearModel("linear_dataset_MOBA_rendu3_18_30_1200.model")
-        inputCountPerSample, WRTS = loadLinearModel("linear_dataset_RTS_rendu3_18_30_1200.model")
+        inputCountPerSample, WFPS = loadLinearModel("Models\Linear\linear_dataset_FPS_rendu3_18_30_1200.model")
+        inputCountPerSample, WMOBA = loadLinearModel("Models\Linear\linear_dataset_MOBA_rendu3_18_30_1200.model")
+        inputCountPerSample, WRTS = loadLinearModel("Models\Linear\linear_dataset_RTS_rendu3_18_30_1200.model")
 
         XTest, Y = getDataSetTest("../img", img_per_folder, h, w)
         for img in range(img_per_folder * 3):
@@ -99,5 +99,5 @@ if __name__ == "__main__":
         
 
 
-    fit_save()
+    #fit_save()
     load_predict()
