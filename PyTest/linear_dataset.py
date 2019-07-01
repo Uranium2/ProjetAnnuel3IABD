@@ -4,15 +4,11 @@ from PIL import Image
 
 
 if __name__ == "__main__":
-    def fit_save():
-        img_per_folder = 1200
-        h = 100
-        w = 100
+    def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
+
         inputCountPerSample = h * w * 3
         sampleCount = img_per_folder * 3
-        
-        alpha = 0.05
-        epochs = 500
+
 
         XTrain, Y = getDataSet("../img", img_per_folder, h, w)
 
@@ -42,28 +38,24 @@ if __name__ == "__main__":
         fit_classification_rosenblatt_rule(W_FPS, XTrain, sampleCount, inputCountPerSample, YTrain_FPS, alpha, epochs)
         fit_classification_rosenblatt_rule(W_MOBA, XTrain, sampleCount, inputCountPerSample, YTrain_MOBA, alpha, epochs)
         fit_classification_rosenblatt_rule(W_RTS, XTrain, sampleCount, inputCountPerSample, YTrain_RTS, alpha, epochs)
-        file_name_FPS = "Models\Linear\linear_dataset_FPS_rendu3_18_30_" + str(img_per_folder) + ".model"
-        file_name_MOBA = "Models\Linear\linear_dataset_MOBA_rendu3_18_30_" + str(img_per_folder) + ".model"
-        file_name_RTS = "Models\Linear\linear_dataset_RTS_rendu3_18_30_" + str(img_per_folder) + ".model"
+        file_name_FPS = "Models\Linear\\" + prefix + "_FPS.model"
+        file_name_MOBA = "Models\Linear\\" + prefix + "MOBA.model"
+        file_name_RTS = "Models\Linear\\" + prefix + "RTS.model"
 
         saveLinearModel(W_FPS, inputCountPerSample, file_name_FPS)
         saveLinearModel(W_MOBA, inputCountPerSample, file_name_MOBA)
         saveLinearModel(W_RTS, inputCountPerSample, file_name_RTS)
 
-    def load_predict():
-        img_per_folder = 60
-        h = 100
-        w = 100
-
+    def load_predict_classif_stat(img_per_folder, h, w, pathFPS, pathMOBA, pathRTS):
         Xpredict = []
 
         Ypredict_FPS = []
         Ypredict_MOBA = []
         Ypredict_RTS = []
 
-        inputCountPerSample, WFPS = loadLinearModel("Models\Linear\linear_dataset_FPS_rendu3_18_30_1200.model")
-        inputCountPerSample, WMOBA = loadLinearModel("Models\Linear\linear_dataset_MOBA_rendu3_18_30_1200.model")
-        inputCountPerSample, WRTS = loadLinearModel("Models\Linear\linear_dataset_RTS_rendu3_18_30_1200.model")
+        inputCountPerSample, WFPS = loadLinearModel(pathFPS)
+        inputCountPerSample, WMOBA = loadLinearModel(pathMOBA)
+        inputCountPerSample, WRTS = loadLinearModel(pathRTS)
 
         XTest, Y = getDataSetTest("../img", img_per_folder, h, w)
         for img in range(img_per_folder * 3):
@@ -74,7 +66,6 @@ if __name__ == "__main__":
             Ypredict_RTS.append(predict_regression(WRTS, Xpredict, inputCountPerSample))
             Xpredict.clear()
 
-        #Predict FPS
         result = []
         for y in range(len(Ypredict_FPS)):
             if Ypredict_FPS[y] > Ypredict_MOBA[y] and Ypredict_FPS[y] > Ypredict_RTS[y]:
@@ -97,7 +88,43 @@ if __name__ == "__main__":
                 stat.append(False)
         print( sum(stat)/ len(stat) * 100)
         
+    def load_predict_classif(h, w, pathFPS, pathMOBA, pathRTS, imageToPredict):
+        Xpredict = []
+
+        Ypredict_FPS = []
+        Ypredict_MOBA = []
+        Ypredict_RTS = []
+
+        inputCountPerSample, WFPS = loadLinearModel(pathFPS)
+        inputCountPerSample, WMOBA = loadLinearModel(pathMOBA)
+        inputCountPerSample, WRTS = loadLinearModel(pathRTS)
+        
+        im = Image.open(imageToPredict)
+        imResize = im.resize((h, w), Image.ANTIALIAS)
+        imgLoad = imResize.load()
+        for x in range(h):
+            for y in range(w):
+                R,G,B = imgLoad[x, y]
+                Xpredict.append(R)
+                Xpredict.append(G)
+                Xpredict.append(B)
+        im.close()
+
+        Ypredict_FPS.append(predict_regression(WFPS, Xpredict, inputCountPerSample))
+        Ypredict_MOBA.append(predict_regression(WMOBA, Xpredict, inputCountPerSample))
+        Ypredict_RTS.append(predict_regression(WRTS, Xpredict, inputCountPerSample))
+
+        for y in range(len(Ypredict_FPS)):
+            if Ypredict_FPS[y] > Ypredict_MOBA[y] and Ypredict_FPS[y] > Ypredict_RTS[y]:
+                return 0
+            if Ypredict_MOBA[y] > Ypredict_FPS[y] and Ypredict_MOBA[y] > Ypredict_RTS[y]:
+                return 1
+            if Ypredict_RTS[y] > Ypredict_MOBA[y] and Ypredict_RTS[y] > Ypredict_FPS[y]:
+                return 2
+        return 3 # Error
 
 
-    #fit_save()
-    load_predict()
+    fit_save_classif(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
+    load_predict_classif_stat(60, 100, 100, "Models\\Linear\\linear_dataset_FPS_rendu3_18_30_1200.model",
+                               "Models\\Linear\\linear_dataset_MOBA_rendu3_18_30_1200.model",
+                                "Models\\Linear\\linear_dataset_RTS_rendu3_18_30_1200.model" )

@@ -1,5 +1,8 @@
 from flask import Flask, request, render_template, send_from_directory
 import os
+import sys
+
+from linear_dataset import fit_save_classif, load_predict_classif
 
 app = Flask(__name__)
 
@@ -25,7 +28,22 @@ def upload():
         file.save(dest)
     # Lancer une prédiction avec le bon model.
     # return le bon template (if [1,0,0] return FPS, [0,1,0] MOBA stc)
+    #h, w, pathFPS, pathMOBA, pathRTS, imageToPredict
+
+    result = load_predict_classif(25, 25, "../PyTest/Models/Linear/linear_dataset_FPS_rendu3_15_30_500.model",
+                                "../PyTest/Models/Linear/linear_dataset_MOBA_rendu3_15_30_500.model",
+                                "../PyTest/Models/Linear/linear_dataset_RTS_rendu3_15_30_500.model",
+                                dest)
+    print(result)
+    if result == 0:
+        return render_template("resultFPS.html")
+    if result == 1:
+        return render_template("resultMOBA.html")
+    if result == 2:
+        return render_template("resultRTS.html")
+    
     return render_template("resultFPS.html")
+    
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
