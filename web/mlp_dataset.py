@@ -8,7 +8,7 @@ from dll_load import (
 )
 from load_img import getDataSet
 from PIL import Image
-
+import math
 
 def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
     inputCountPerSample = h * w * 3
@@ -75,31 +75,35 @@ def load_predict_mlp_stat(img_per_folder, h, w, pathModel):
     print(sum(stat) / len(stat) * 100)
 
 
-def load_predict_mlp(img_per_folder, h, w, pathModel, imageToPredict):
+def load_predict_mlp(pathModel, imageToPredict):
+
     layer_count, layers, W = loadModel(pathModel)
+    inputCountPerSample = layers[0]
+    size = inputCountPerSample / 3
+    size = int(math.sqrt( size ))
     XTest = []
     Xpredict = []
     Ypredict = []
 
     im = Image.open(imageToPredict)
     im = im.convert("RGB")
-    imResize = im.resize((h, w), Image.ANTIALIAS)
+    imResize = im.resize((size, size), Image.ANTIALIAS)
     imgLoad = imResize.load()
-    for x in range(h):
-        for y in range(w):
+    for x in range(size):
+        for y in range(size):
             R, G, B = imgLoad[x, y]
             Xpredict.append(R)
             Xpredict.append(G)
             Xpredict.append(B)
     im.close()
 
-    Ypredict.append(predict_mlp_regression(W, layers, layer_count, h * w * 3, Xpredict))
+    Ypredict.append(predict_mlp_regression(W, layers, layer_count, inputCountPerSample, Xpredict))
     Ypredict[0].pop(0)
     print(Ypredict[0])
 
     index = Ypredict[0].index(max(Ypredict[0]))
     print(index)
-    return index
+    return Ypredict, index
 
 
 # fit_save_mlp(50, 25, 25, 0.01, 1000, "Test_remove_me", [5, 5])

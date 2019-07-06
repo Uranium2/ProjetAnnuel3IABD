@@ -1,7 +1,7 @@
 from dll_load import create_linear_model, fit_classification_rosenblatt_rule, saveLinearModel, loadLinearModel, predict_regression
 from load_img import getDataSet, getDataSetTest
 from PIL import Image
-
+import math
 
 
 def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
@@ -90,24 +90,29 @@ def load_predict_classif_stat(img_per_folder, h, w, pathFPS, pathMOBA, pathRTS):
             stat.append(False)
     print( sum(stat)/ len(stat) * 100)
     
-def load_predict_classif(h, w, pathFPS, pathMOBA, pathRTS, imageToPredict):
+def load_predict_classif(pathFPS, pathMOBA, pathRTS, imageToPredict):
     Xpredict = []
 
     Ypredict_FPS = []
     Ypredict_MOBA = []
     Ypredict_RTS = []
 
+
     inputCountPerSample, WFPS = loadLinearModel(pathFPS)
     inputCountPerSample, WMOBA = loadLinearModel(pathMOBA)
     inputCountPerSample, WRTS = loadLinearModel(pathRTS)
 
+    size = inputCountPerSample / 3
+    size = int(math.sqrt( size ))
+
+
     im = Image.open(imageToPredict)
     im = im.convert("RGB")
-    imResize = im.resize((h, w), Image.ANTIALIAS)
+    imResize = im.resize((size, size), Image.ANTIALIAS)
     imgLoad = imResize.load()
     
-    for x in range(h):
-        for y in range(w):
+    for x in range(size):
+        for y in range(size):
             R,G,B = imgLoad[x, y]
             Xpredict.append(R)
             Xpredict.append(G)
@@ -129,6 +134,6 @@ def load_predict_classif(h, w, pathFPS, pathMOBA, pathRTS, imageToPredict):
 
 
 #fit_save_classif(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
-#load_predict_classif_stat(60, 100, 100, "Models\\Linear\\linear_dataset_FPS_rendu3_18_30_1200.model",
+#load_predict_classif_stat(100, "Models\\Linear\\linear_dataset_FPS_rendu3_18_30_1200.model",
 #                            "Models\\Linear\\linear_dataset_MOBA_rendu3_18_30_1200.model",
 #                            "Models\\Linear\\linear_dataset_RTS_rendu3_18_30_1200.model" )

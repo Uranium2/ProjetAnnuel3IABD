@@ -33,10 +33,28 @@
               <td>{{ res }}</td>
           </div>
       </div>
-      <div class="row">
-          <div class="col s12 center">
-              <td>{{ data }}</td>
+            <div class="row">
+        <div class="col s12 center">
+          <div class="card green darken-1">
+            <div class="card-content white-text">
+              <span class="card-title "><b><u>Prediction overall</u></b></span>
+              <table class="centered">
+                <thread>
+                    <tr>
+                        <th class="center">FPS</th>
+                        <th class="center">MOBA</th>
+                        <th class="center">RTS</th>
+                    </tr>
+                </thread>
+                <tbody id="tbodyResults">
+                    <td>{{ data[0][0] }}</td>
+                    <td>{{ data[1][0] }}</td>
+                    <td>{{ data[2][0] }}</td>
+                </tbody>
+              </table>
+            </div>
           </div>
+        </div>
       </div>
 
       <div class="row">

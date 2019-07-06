@@ -3,7 +3,7 @@ import os
 import sys
 from flask_material import Material
 from linear_dataset import fit_save_classif, load_predict_classif
-from mlp_dataset import fit_save_mlp
+from mlp_dataset import fit_save_mlp, load_predict_mlp
 from os import listdir
 from os.path import isfile, join
 import csv
@@ -50,30 +50,34 @@ def upload():
         print(dest)
         file.save(dest)
     imgPath = "./static/images/tempImg.PNG"
-    # Lancer une prédiction avec le bon model.
-    # return le bon template (if [1,0,0] return FPS, [0,1,0] MOBA stc)
-    #h, w, pathFPS, pathMOBA, pathRTS, imageToPredict
 
+
+    stat = []
     model = request.form['model']
     if model == "Linear Model":
         fps = request.form['file1']
         moba = request.form['file2']
         rts = request.form['file3']
         print("LINEAR PREDICT")
-        Ypredict_FPS, Ypredict_MOBA, Ypredict_RTS, result = load_predict_classif(250, 250, "Models/Linear/" + fps,
+        Ypredict_FPS, Ypredict_MOBA, Ypredict_RTS, result = load_predict_classif("Models/Linear/" + fps,
                                                                              "Models/Linear/" + moba,
                                                                              "Models/Linear/" + rts,
                                                                              dest)
+        stat.append(Ypredict_FPS)
+        stat.append(Ypredict_MOBA)
+        stat.append(Ypredict_RTS)
+        print(stat)
     elif model == "Multilayer perceptron":
         print("MLP PREDICT")
+        mlp = request.form['file4']
+        Ypredict, result = load_predict_mlp("Models/MLP/" + mlp, dest)
+        for y in Ypredict[0]:
+            stat.append([y])
+        print(stat)
     elif model == "RBF":
         print("RBF PREDICT")
-    
 
-    stat = []
-    stat.append(Ypredict_FPS)
-    stat.append(Ypredict_MOBA)
-    stat.append(Ypredict_RTS)
+
     if result == 0:
         return render_template("result.html", data=stat, res="I think this game is a FPS", oldpredict=res[0], user_image=imgPath)
     if result == 1:
@@ -98,13 +102,16 @@ def handle_data():
     imageSize = int(int(imageSize) / 2)
     prefix = request.form['Model Name']
 
+    mlp_struct = request.form['mlp_struct']
+    struct = [int(x.strip()) for x in mlp_struct.split(',')]
+
     # Lancer un train
     if model == "Linear Model":
         fit_save_classif(dataSetSize, imageSize,
                          imageSize, alpha, epochs, prefix)
     elif model == "Multilayer perceptron":
         fit_save_mlp(dataSetSize, imageSize, imageSize,
-                     alpha, epochs, prefix, [5, 5])
+                     alpha, epochs, prefix, struct)
     elif model == "RBF":
         print("RBF")
     return render_template("trained.html")
