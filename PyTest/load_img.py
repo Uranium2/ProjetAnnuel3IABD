@@ -5,10 +5,8 @@ import os
 def getDataSet(path="..\img", limit=10, h=10, w=10):
     i = 1
     files = []
-    exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
-    output = [[1,-1,-1],
-                [-1,1,-1],
-                [-1,-1,1]]
+    exclude = ["FPS_Test", "MOBA_Test", "RTS_Test"]
+    output = [[1, -1, -1], [-1, 1, -1], [-1, -1, 1]]
     YTrain = []
     yindex = 0
 
@@ -18,9 +16,9 @@ def getDataSet(path="..\img", limit=10, h=10, w=10):
         for file in f:
             if i % (limit + 1) == 0:
                 i = 1
-                yindex  = yindex + 1
+                yindex = yindex + 1
                 break
-            if '.png' in file:
+            if ".png" in file:
                 files.append(os.path.join(r, file))
                 i = i + 1
                 for y in range(3):
@@ -33,7 +31,7 @@ def getDataSet(path="..\img", limit=10, h=10, w=10):
         imgLoad = imResize.load()
         for x in range(h):
             for y in range(w):
-                R,G,B = imgLoad[x, y]
+                R, G, B = imgLoad[x, y]
                 XTrain.append(R)
                 XTrain.append(G)
                 XTrain.append(B)
@@ -41,13 +39,12 @@ def getDataSet(path="..\img", limit=10, h=10, w=10):
 
     return XTrain, YTrain
 
+
 def getDataSetTest(path="..\img", limit=10, h=10, w=10):
     i = 1
     files = []
-    exclude = ['FPS', 'MOBA', 'RTS']
-    output = [[1,-1,-1],
-                [-1,1,-1],
-                [-1,-1,1]]
+    exclude = ["FPS", "MOBA", "RTS"]
+    output = [[1, -1, -1], [-1, 1, -1], [-1, -1, 1]]
     YTrain = []
     yindex = 0
 
@@ -58,9 +55,9 @@ def getDataSetTest(path="..\img", limit=10, h=10, w=10):
         for file in f:
             if i % (limit + 1) == 0:
                 i = 1
-                yindex  = yindex + 1
+                yindex = yindex + 1
                 break
-            if '.png' in file:
+            if ".png" in file:
                 files.append(os.path.join(r, file))
                 i = i + 1
                 for y in range(3):
@@ -73,7 +70,7 @@ def getDataSetTest(path="..\img", limit=10, h=10, w=10):
         imgLoad = imResize.load()
         for x in range(h):
             for y in range(w):
-                R,G,B = imgLoad[x, y]
+                R, G, B = imgLoad[x, y]
                 XTrain.append(R)
                 XTrain.append(G)
                 XTrain.append(B)

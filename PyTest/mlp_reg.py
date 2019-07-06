@@ -16,13 +16,7 @@ if __name__ == "__main__":
     XTrain = list(flatten(X))
     YTrain = list(flatten(Y))
 
-<<<<<<< HEAD
     W = create_mlp_model(layers, layer_count, inputCountPerSample)
-=======
-    W = create_mlp_model(layers, layer_count)
-    
-    fit_mlp_regression(W, XTrain, YTrain, layers, layer_count, sampleCount, inputCountPerSample, alpha, epochs)
->>>>>>> master
 
     fit_mlp_regression(
         W,

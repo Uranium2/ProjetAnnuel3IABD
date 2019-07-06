@@ -11,19 +11,34 @@ Xk = []
 Yk = []
 
 K = 3
-XTrain = [0, 0,
-        0.3, 1,
-        0.5, 0.5,
-        0, 0.5,
-        1, 1,
-        4, 4,
-        4, 5,
-        4.5, 6,
-        0, 6,
-        0.5, 7,
-        0.2, 6.5,
-        0.5, 7.1,
-        0, 5]
+XTrain = [
+    0,
+    0,
+    0.3,
+    1,
+    0.5,
+    0.5,
+    0,
+    0.5,
+    1,
+    1,
+    4,
+    4,
+    4,
+    5,
+    4.5,
+    6,
+    0,
+    6,
+    0.5,
+    7,
+    0.2,
+    6.5,
+    0.5,
+    7.1,
+    0,
+    5,
+]
 inputCountPerSample = 2
 sampleCount = int(len(XTrain) / inputCountPerSample)
 epochs = 400
@@ -39,10 +54,9 @@ for x, y in zip(Kmeans[0::2], Kmeans[1::2]):
     Xk.append(x)
     Yk.append(y)
 
-plt.scatter(X, Y, c = 'red')
-plt.scatter(Xk, Yk, c = 'green')
+plt.scatter(X, Y, c="red")
+plt.scatter(Xk, Yk, c="green")
 plt.show()
-
 
 
 print(Kmeans)

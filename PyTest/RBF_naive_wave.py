@@ -16,7 +16,6 @@ for i in YTrain0:
         YTrain.append(1)
 
 
-
 gamma = 500
 sampleCount = 200
 inputCountPerSample = 2
