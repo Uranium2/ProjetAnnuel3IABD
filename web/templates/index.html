@@ -40,22 +40,22 @@
                 <option value="RBF">
               </datalist>
               Alpha:<br>
-              <input type="number" step="0.01" min="0" name="Alpha" required>
+              <input type="number" step="0.01" min="0" name="Alpha" value="0.01" required>
               <br>
               Epochs:<br>
-              <input type="number" min="0" name="Epochs" required>
+              <input type="number" min="0" name="Epochs" value="1000" required>
               <br>
               Data set size:<br>
-              <input type="number" min="0" name="Data set size" required>
+              <input type="number" min="0" name="Data set size" value="1000" required>
               <br>
               Image size:<br>
-              <input type="number" min="0" name="Image size" required>
+              <input type="number" min="0" name="Image size" value="50" required>
               <br>
-              Multilayer perceptron Structure:<br>
-              <input type="text"  name="mlp_struct" required>
+              Multilayer perceptron Structure (comma separated):<br>
+              <input type="text"  name="mlp_struct" value="5,5" required>
               <br>
               Model Name:<br>
-              <input name="Model Name">
+              <input type="text" name="Model Name" required>
               <br>
               <input type="submit" value="Launch model training" required>
             </form>

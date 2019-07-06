@@ -41,12 +41,10 @@ def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
     file_name_FPS = "Models\Linear\\" + prefix + "_FPS.model"
     file_name_MOBA = "Models\Linear\\" + prefix + "_MOBA.model"
     file_name_RTS = "Models\Linear\\" + prefix + "_RTS.model"
-    print(file_name_FPS)
-    print(file_name_MOBA)
-    print(file_name_RTS)
     saveLinearModel(W_FPS, inputCountPerSample, file_name_FPS)
     saveLinearModel(W_MOBA, inputCountPerSample, file_name_MOBA)
     saveLinearModel(W_RTS, inputCountPerSample, file_name_RTS)
+    return  prefix + "_FPS.model", prefix + "_MOBA.model", prefix + "_RTS.model"
 
 def load_predict_classif_stat(img_per_folder, h, w, pathFPS, pathMOBA, pathRTS):
     Xpredict = []

@@ -103,7 +103,7 @@ def upload():
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
-    #(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
+    res = getOldPredict()
     model = request.form['model']
     alpha = request.form['Alpha']
     alpha = float(alpha)
@@ -119,15 +119,17 @@ def handle_data():
     struct = [int(x.strip()) for x in mlp_struct.split(',')]
 
     # Lancer un train
+    file_name = ""
     if model == "Linear Model":
-        fit_save_classif(dataSetSize, imageSize,
+        file_name = fit_save_classif(dataSetSize, imageSize,
                          imageSize, alpha, epochs, prefix)
     elif model == "Multilayer perceptron":
-        fit_save_mlp(dataSetSize, imageSize, imageSize,
+        file_name = fit_save_mlp(dataSetSize, imageSize, imageSize,
                      alpha, epochs, prefix, struct)
     elif model == "RBF":
         print("RBF")
-    return render_template("trained.html")
+    
+    return render_template("trained.html", oldpredict=res[0], filename=file_name)
 
 
 if __name__ == '__main__':

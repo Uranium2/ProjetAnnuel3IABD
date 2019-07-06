@@ -32,12 +32,16 @@ def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
         alpha,
         epochs,
     )
+    file_return = prefix
     file_name = "Models/MLP/" + prefix
     for i in layers:
         file_name = file_name + "_" + str(i)
+        file_return = file_return + "_" + str(i)
     file_name = file_name + ".model"
+    file_return = file_return + ".model"
 
     saveModel(W, layers, layer_count, file_name)
+    return file_return
 
 
 def load_predict_mlp_stat(img_per_folder, h, w, pathModel):
