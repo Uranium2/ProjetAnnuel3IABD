@@ -13,6 +13,18 @@ Material(app)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+
+def buildModelFolders():
+    pathModelLinear = APP_ROOT + "\Models\\Linear\\"
+    pathModelMLP = APP_ROOT + "\Models\\MLP\\"
+    pathModelRBF = APP_ROOT + "\Models\\RBF\\"
+    if not os.path.exists(pathModelLinear):
+        os.makedirs(pathModelLinear)
+    if not os.path.exists(pathModelMLP):
+        os.makedirs(pathModelMLP)
+    if not os.path.exists(pathModelRBF):
+        os.makedirs(pathModelRBF)
+
 def getOldPredict():
     res = []
     with open('static/prediction.csv') as csvfile:
@@ -22,6 +34,7 @@ def getOldPredict():
 
 @app.route('/')
 def index():
+    buildModelFolders()
     myLinearPath = "Models/Linear/"
     myMlpPath = "Models/MLP/"
     myRBFPath = "Models/RBF/"
@@ -118,4 +131,5 @@ def handle_data():
 
 
 if __name__ == '__main__':
+    buildModelFolders()
     app.run(debug=True)
