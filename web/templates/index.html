@@ -1,150 +1,173 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Projet Annuel - Groupe 6</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+  <title>3IABD</title>
 
+  <!-- CSS  -->
+  <link href="{{ url_for('static', filename='css/materialize.min.css') }}" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body style="background-color:powderblue;">
-  <style type="text/css">
-    #col-1 {
-      position: relative;
-      width: 50%;
-      float: left;
-      height: 100%;
-      z-index: 1010101010
-    }
-
-    #col-2 {
-      position: relative;
-      width: 50%;
-      float: left;
-      height: 100%;
-      z-index: 1010101010
-    }
-
-
-    .tg {
-      border-collapse: collapse;
-      border-spacing: 0;
-    }
-
-    .tg td {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      padding: 10px 5px;
-      border-style: solid;
-      border-width: 1px;
-      overflow: hidden;
-      word-break: normal;
-      border-color: black;
-    }
-
-    .tg th {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      font-weight: normal;
-      padding: 10px 5px;
-      border-style: solid;
-      border-width: 1px;
-      overflow: hidden;
-      word-break: normal;
-      border-color: black;
-    }
-
-    .tg .tg-0lax {
-      text-align: left;
-      vertical-align: top
-    }
-  </style>
-  <center>
-
-    </style>
-    <div id="col-1">
-      <h1>Train Model</h1>
-      <form action="{{ url_for('handle_data') }}" method="post">
-        Alpha:<br>
-        <input type="number" step="0.01" min="0" name="Alpha">
-        <br>
-        Epochs:<br>
-        <input type="number" min="0" name="Epochs">
-        <br>
-        Data set size:<br>
-        <input type="number" min="0" name="Data set size">
-        <br>
-        Image size:<br>
-        <input type="number" min="0" name="Image size">
-        <br>
-        Model Name:<br>
-        <input name="Model Name">
-        <br>
-        <input type="submit" value="Launch model training">
-      </form>
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo center">3IABD Group 6</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+      </ul>
     </div>
-    <div id="col-2">
-      <h1>Predict Model</h1>
-      <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" multiple>
-        <br>
-        <br>
-        <input type="submit" value="Launch image prediction">
-        <p style="margin-bottom:5cm;"></p>
-      </form>
+  </nav>
 
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+            <h5 class="center">Train Model</h5>
+          </div>
+          <div class="row">
+            <form action="{{ url_for('handle_data') }}" method="post">
+              Model:<br>
+              <input type="text" name="model" list="models" required>
+              <datalist id="models">
+                <option value="Linear Model">
+                <option value="Multilayer perceptron">
+                <option value="RBF">
+              </datalist>
+              Alpha:<br>
+              <input type="number" step="0.01" min="0" name="Alpha" required>
+              <br>
+              Epochs:<br>
+              <input type="number" min="0" name="Epochs" required>
+              <br>
+              Data set size:<br>
+              <input type="number" min="0" name="Data set size" required>
+              <br>
+              Image size:<br>
+              <input type="number" min="0" name="Image size" required>
+              <br>
+              Model Name:<br>
+              <input name="Model Name">
+              <br>
+              <input type="submit" value="Launch model training" required>
+            </form>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+            <h5 class="center">Predict Model</h5>
+          </div>
+          <div class="row">
+            <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+              <input type="file" name="file" accept="image/*" required>
+              <br>
+              <br>
+              Model:<br>
+              <input type="text" name="model" list="models" required>
+              <datalist id="models">
+                <option value="Linear Model">
+                <option value="Multilayer perceptron">
+                <option value="RBF">
+              </datalist>
+              File for Linear FPS:<br>
+              <input type="text" name="file1" list="files1">
+              <datalist id="files1">
+                {% for model in linear %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Linear MOBA:<br>
+              <input type="text" name="file2" list="files2">
+              <datalist id="files2">
+                {% for model in linear %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Linear RTS:<br>
+              <input type="text" name="file3" list="files3">
+              <datalist id="files3">
+                {% for model in linear %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Multilayer perceptron:<br>
+              <input type="text" name="file4" list="files4">
+              <datalist id="files4">
+                {% for model in mlp %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for RBF:<br>
+              <input type="text" name="file5" list="files5">
+              <datalist id="files5">
+                {% for model in rbf %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              <input type="submit" value="Launch image prediction">
+              <p style="margin-bottom:5cm;"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12 center">
+          <div class="card blue lighten-1">
+            <div class="card-content white-text">
+              <span class="card-title "><b><u>Prediction history</u></b></span>
+              <table class="centered">
+                <thread>
+                  <!-- <tr>
+                                  <th class="center">Model</th>
+                                  <th class="center">Epochs</th>
+                                  <th class="center">Alpha</th>
+                                  <th class="center">Size</th>
+                                  <th class="center">Data_set_size</th>
+                                  <th class="center">Accuracy_Set</th>
+                                  <th class="center">Accurracy_validation</th>
+                              </tr> -->
+                </thread>
+                <tbody id="tbodyResults">
+                  {% for data in oldpredict %}
+                  <tr>
+
+                    <td>{{ data[0] }}</td>
+                    <td>{{ data[1] }}</td>
+                    <td>{{ data[2] }}</td>
+                    <td>{{ data[3] }}</td>
+                    <td>{{ data[4] }}</td>
+                    <td>{{ data[5] }}</td>
+                    <td>{{ data[6] }}</td>
+
+                  </tr>
+                  {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </center>
-  <p style="margin-bottom:3cm;"></p>
+  </div>
 
-  <center>
-  <p>Best Models with Settings</p>
 
-    <table class="tg">
-      <tr>
-        <th class="tg-0lax">Model\Settings</th>
-        <th class="tg-0lax">Epochs</th>
-        <th class="tg-0lax">Alpha</th>
-        <th class="tg-0lax">Image Size</th>
-        <th class="tg-0lax">Data set size</th>
-        <th class="tg-0lax">Accuracy</th>
-      </tr>
-      <tr>
-        <th class="tg-0lax">Rosenblatt Neuron</th>
-        <th class="tg-0lax">500</th>
-        <th class="tg-0lax">0.05</th>
-        <th class="tg-0lax">24 x 24</th>
-        <th class="tg-0lax">900</th>
-        <th class="tg-0lax">56.67%</th>
-      </tr>
-      <tr>
-        <th class="tg-0lax">Rosenblatt Neuron</th>
-        <th class="tg-0lax">500</th>
-        <th class="tg-0lax">0.05</th>
-        <th class="tg-0lax">100 x 100</th>
-        <th class="tg-0lax">900</th>
-        <th class="tg-0lax">83.33%</th>
-      </tr>
-      <tr>
-        <th class="tg-0lax">Rosenblatt Neuron</th>
-        <th class="tg-0lax">500</th>
-        <th class="tg-0lax">0.05</th>
-        <th class="tg-0lax">24 x 24</th>
-        <th class="tg-0lax">3600</th>
-        <th class="tg-0lax">26.67%</th>
-      </tr>
-      <tr>
-        <th class="tg-0lax">Rosenblatt Neuron</th>
-        <th class="tg-0lax">500</th>
-        <th class="tg-0lax">0.05</th>
-        <th class="tg-0lax">100 x 200</th>
-        <th class="tg-0lax">3600</th>
-        <th class="tg-0lax">80.00%</th>
-      </tr>
-    </table>
-  </center>
+
+  <!--  Scripts-->
+  <script src="{{ url_for('static', filename='js/materialize.min.js') }}"> </script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
 </body>
 
 </html>

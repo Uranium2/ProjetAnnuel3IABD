@@ -118,12 +118,12 @@ def load_predict_classif(h, w, pathFPS, pathMOBA, pathRTS, imageToPredict):
 
     for y in range(len(Ypredict_FPS)):
         if Ypredict_FPS[y] > Ypredict_MOBA[y] and Ypredict_FPS[y] > Ypredict_RTS[y]:
-            return 0
+            return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 0
         if Ypredict_MOBA[y] > Ypredict_FPS[y] and Ypredict_MOBA[y] > Ypredict_RTS[y]:
-            return 1
+            return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 1
         if Ypredict_RTS[y] > Ypredict_MOBA[y] and Ypredict_RTS[y] > Ypredict_FPS[y]:
-            return 2
-    return 3 # Error
+            return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 2
+    return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 3 # Error
 
 
 #fit_save_classif(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
