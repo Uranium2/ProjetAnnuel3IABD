@@ -124,7 +124,7 @@ if __name__ == "__main__":
         return 3 # Error
 
 
-    fit_save_classif(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
+    #fit_save_classif(1200, 100, 100, 0.05, 500, "100x100_1200_22h10")
     load_predict_classif_stat(60, 100, 100, "Models\\Linear\\linear_dataset_FPS_rendu3_18_30_1200.model",
                                "Models\\Linear\\linear_dataset_MOBA_rendu3_18_30_1200.model",
                                 "Models\\Linear\\linear_dataset_RTS_rendu3_18_30_1200.model" )
