@@ -7,11 +7,11 @@ extern "C" {
 		return pow(v_true - v_given, 2);
 	}
 
-	double mse_loss_mlp(double* v_true, double* v_given, int nb_elem)
+	double mse_loss_mlp(double* v_true, double* v_given, int nb_elem, int index, int shift)
 	{
 		double res = 0.0;
 		for (int i = 0; i < nb_elem; i++)
-			res += squared_error_mlp(v_true[i], v_given[i]);
+			res += squared_error_mlp(v_true[index * shift + i], v_given[i]);
 
 		return res / nb_elem;
 	}
@@ -187,7 +187,7 @@ extern "C" {
 
 		int* y = new int[layers[layer_count - 1]];
 
-		double* YT = new double[sampleCount];
+		double* YT = new double[sampleCount * 3];
 
 		double* Xout0 = new double[sampleCount];
 		double* Xout1 = new double[sampleCount];
@@ -221,18 +221,16 @@ extern "C" {
 				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
 			}
 
-			for (int k = 0; k < sampleCount; k++)
+			for (int k = 0; k < sampleCount * 3; k++)
 				YT[k] = (double)YTrain[k];
 
-			double loss0 = mse_loss_mlp(YT, Xout0, sampleCount);
-			if (e % 100 == 0 || e == epochs - 1)
-				printf("Epoch: %d loss: %f\n", e, loss0);
-			double loss1 = mse_loss_mlp(YT, Xout1, sampleCount);
-			if (e % 100 == 0 || e == epochs - 1)
-				printf("Epoch: %d loss: %f\n", e, loss1);
-			double loss2 = mse_loss_mlp(YT, Xout2, sampleCount);
-			if (e % 100 == 0 || e == epochs - 1)
-				printf("Epoch: %d loss: %f\n", e, loss2);
+
+			if (e % 100 == 0 || e == epochs - 1) {
+				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0, 3);
+				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1, 3);
+				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2, 3);
+				printf("Epoch: %d loss: %f\n", e, (loss0 + loss1 + loss2) / 3);
+			}
 		}
 		//delete[] X, myImageIndex, Xout, YT, delta;
 	}
@@ -300,7 +298,7 @@ extern "C" {
 			for (int k = 0; k < sampleCount; k++)
 				YT[k] = (double)YTrain[k];
 
-			double loss = mse_loss_mlp(YT, Xout, sampleCount);
+			double loss = mse_loss_mlp(YT, Xout, sampleCount, 0, 3);
 			if (e % 1000 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
