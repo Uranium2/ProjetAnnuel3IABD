@@ -94,7 +94,7 @@ extern "C" {
 				double res = 0.0;
 				for (int i = 0; i < layers[l - 1] + 1; i++)
 					res += W[l][j][i] * X[l - 1][i];
-				
+
 				X[l][j] = std::tanh(res);
 			}
 		}
@@ -134,13 +134,16 @@ extern "C" {
 		}
 	}
 
-	void update_W(double*** W, double** X, int* layers, int layer_count, int inputCountPerSample, double** delta, double alpha) {
+	void update_W(double*** W, double** X, int* layers, int layer_count, int inputCountPerSample, double** delta, double alpha, double*** prev_corr) {
 		for (int l = 1; l < layer_count; l++) {
 
 			for (int j = 1; j < layers[l] + 1; j++)
 			{
-				for (int i = 0; i < layers[l - 1] + 1; i++)
-					W[l][j][i] -= alpha * X[l - 1][i] * delta[l][j];
+				for (int i = 0; i < layers[l - 1] + 1; i++) {
+					double correction = - alpha * X[l - 1][i] * delta[l][j] + (0.9 * prev_corr[l][j][i]);
+					W[l][j][i] = W[l][j][i] + correction;
+					prev_corr[l][j][i] = correction;
+				}
 			}
 		}
 	}
@@ -149,6 +152,24 @@ extern "C" {
 		int L = layer_count - 1;
 		for (int j = 1; j < layers[L] + 1; j++)
 			delta[L][j] = ((1 - std::pow(X[L][j], 2)) * (X[L][j] - Y[j - 1]));
+	}
+
+	double*** init_prev_corr(int* layers, int layer_count) {
+		double*** oldW = new double** [layer_count];
+
+		int k = 0;
+		for (int l = 1; l < layer_count; l++)
+		{
+			oldW[l] = new double* [layers[l] + 1];
+			for (int j = 1; j < layers[l] + 1; j++)
+			{
+				oldW[l][j] = new double[layers[l - 1] + 1];
+				for (int i = 0; i < (layers[l - 1] + 1); i++)
+					oldW[l][j][i] = 0.0;
+			}
+		}
+
+		return oldW;
 	}
 
 	void get_last_delta_regression(double** X, int* layers, int layer_count, int* Y, double** delta) {
@@ -193,6 +214,7 @@ extern "C" {
 		double* Xout1 = new double[sampleCount];
 		double* Xout2 = new double[sampleCount];
 
+		double*** prev_corr = init_prev_corr(layers, layer_count);
 		for (int e = 0; e < epochs; e++)
 		{
 
@@ -217,8 +239,7 @@ extern "C" {
 				Xout0[myImageIndex[img]] = X[layer_count - 1][1];
 				Xout1[myImageIndex[img]] = X[layer_count - 1][2];
 				Xout2[myImageIndex[img]] = X[layer_count - 1][3];
-
-				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
+				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha, prev_corr);
 			}
 
 			for (int k = 0; k < sampleCount * 3; k++)
@@ -229,6 +250,7 @@ extern "C" {
 				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0, 3);
 				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1, 3);
 				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2, 3);
+				std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
 				printf("Epoch: %d loss: %f\n", e, (loss0 + loss1 + loss2) / 3);
 			}
 		}
@@ -269,7 +291,7 @@ extern "C" {
 		double* YT = new double[sampleCount];
 
 		double* Xout = new double[sampleCount];
-
+		double*** prev_corr = init_prev_corr(layers, layer_count);
 		for (int e = 0; e < epochs; e++)
 		{
 			std::shuffle(std::begin(myImageIndex), std::end(myImageIndex), rng); //shuffle indexes images
@@ -292,7 +314,7 @@ extern "C" {
 
 				Xout[myImageIndex[img]] = X[layer_count - 1][1];
 
-				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha);
+				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha, prev_corr);
 			}
 
 			for (int k = 0; k < sampleCount; k++)
@@ -317,7 +339,7 @@ extern "C" {
 		int k = 0;
 		for (int l = 1; l < layer_count; l++)
 		{
-			W[l] = new double*[layers[l] + 1];
+			W[l] = new double* [layers[l] + 1];
 			for (int j = 1; j < layers[l] + 1; j++)
 			{
 				W[l][j] = new double[layers[l - 1] + 1];
