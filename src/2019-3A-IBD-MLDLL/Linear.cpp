@@ -67,6 +67,9 @@ extern "C" {
 		double alpha,
 		int epochs)
 	{
+		double* prev_corr = new double[inputCountPerSample + 1];
+		for (int i = 0; i < inputCountPerSample + 1; i++)
+			prev_corr[i] = 0.0;
 		double output = 0.0;
 		double* Xactual = new double[inputCountPerSample + 1];
 		Xactual[0] = 1;
@@ -83,7 +86,11 @@ extern "C" {
 				Xout[img] = output;
 
 				for (int i = 0; i < inputCountPerSample + 1; i++)
-					W[i] = W[i] + alpha * (YTrain[img] - output) * Xactual[i];
+				{
+					double correction = alpha * (YTrain[img] - output) * Xactual[i] + (0.9 * prev_corr[i]);
+					W[i] = W[i] + correction;
+					prev_corr[i] = correction;
+				}
 
 			}
 			double loss = mse_loss(YTrain, Xout, sampleCount);
