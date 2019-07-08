@@ -10,8 +10,20 @@ extern "C" {
 	double mse_loss_mlp(double* v_true, double* v_given, int nb_elem, int index, int shift)
 	{
 		double res = 0.0;
+		double* v_trueN0 = new double[nb_elem];
+
+		for (int i = 0; i < nb_elem; i++) {
+			v_trueN0[i] = -1.0;
+			if (index == 0 && i < nb_elem / 3)
+				v_trueN0[i] = 1.0;
+			if (index == 1 && i >= nb_elem / 3 && i < 2 * nb_elem / 3)
+				v_trueN0[i] = 1.0;
+			if (index == 2 && i >= 2 * nb_elem / 3)
+				v_trueN0[i] = 1.0;
+		}
+
 		for (int i = 0; i < nb_elem; i++)
-			res += squared_error_mlp(v_true[index * shift + i], v_given[i]);
+			res += squared_error_mlp(v_trueN0[i], v_given[i]);
 
 		return res / nb_elem;
 	}
@@ -140,7 +152,7 @@ extern "C" {
 			for (int j = 1; j < layers[l] + 1; j++)
 			{
 				for (int i = 0; i < layers[l - 1] + 1; i++) {
-					double correction = - alpha * X[l - 1][i] * delta[l][j] + (0.9 * prev_corr[l][j][i]);
+					double correction = -alpha * X[l - 1][i] * delta[l][j] + (0.9 * prev_corr[l][j][i]);
 					W[l][j][i] = W[l][j][i] + correction;
 					prev_corr[l][j][i] = correction;
 				}
@@ -250,7 +262,7 @@ extern "C" {
 				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0, 3);
 				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1, 3);
 				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2, 3);
-				std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
+				//std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
 				printf("Epoch: %d loss: %f\n", e, (loss0 + loss1 + loss2) / 3);
 			}
 		}
