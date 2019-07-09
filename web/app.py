@@ -121,9 +121,20 @@ def handle_data():
     # Lancer un train
     file_name = ""
     if model == "Linear Model":
+        print("Linear Model Launching: \n\t" + " Nb images: " + str(dataSetSize * 3) + 
+                                        "\n\t Image size: " + str(imageSize) + "x" + str(imageSize) +
+                                        "\n\t Learning rate: " + str(alpha) + 
+                                        "\n\t Epochs: " + str(epochs) + 
+                                        "\n\t File name: " + prefix)
         file_name = fit_save_classif(dataSetSize, imageSize,
                          imageSize, alpha, epochs, prefix)
     elif model == "Multilayer perceptron":
+        print("Multilayer perceptron Launching: \n\t" + " Nb images: " + str(dataSetSize * 3) + 
+                                        "\n\t Image size: " + str(imageSize) + "x" + str(imageSize) +
+                                        "\n\t Learning rate: " + str(alpha) + 
+                                        "\n\t Epochs: " + str(epochs) + 
+                                        "\n\t Layers: " + str(struct) +
+                                        "\n\t File name: " + prefix)
         file_name = fit_save_mlp(dataSetSize, imageSize, imageSize,
                      alpha, epochs, prefix, struct)
     elif model == "RBF":
