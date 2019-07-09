@@ -69,3 +69,9 @@ def getImgPath(path, limit, h, w, isValidation):
                 i = i + 1
 
     return files
+
+def save_stats(Model, Epochs, Alpha, Size, Data_set_size, Accuracy_Set, Accurracy_validation):
+    myCsvRow = "\n" + str(Model) + "," + str(Epochs) + "," + str(Alpha) + "," + str(Size) + "," + str(Data_set_size) + "," +  "{:.2f}".format(Accuracy_Set) + "%," + "{:.2f}".format(Accurracy_validation) + "%,"
+
+    with open('static/prediction.csv','a') as fd:
+        fd.write(myCsvRow)

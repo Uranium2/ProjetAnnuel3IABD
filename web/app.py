@@ -7,6 +7,8 @@ from mlp_dataset import fit_save_mlp, load_predict_mlp
 from os import listdir
 from os.path import isfile, join
 import csv
+import pandas as pd
+
 
 app = Flask(__name__)
 Material(app)
@@ -30,6 +32,9 @@ def getOldPredict():
     with open('static/prediction.csv') as csvfile:
         rows = csv.reader(csvfile)
         res.append(list(zip(*rows)))
+
+    res = list(map(list, zip(*res[0])))
+
     return res
 
 @app.route('/')
@@ -44,7 +49,7 @@ def index():
         myLinearPath) if isfile(join(myLinearPath, f))]
     mlpFiles = [f for f in listdir(myMlpPath) if isfile(join(myMlpPath, f))]
     RBFFiles = [f for f in listdir(myRBFPath) if isfile(join(myRBFPath, f))]
-    return render_template('index.html', linear=linearFiles, mlp=mlpFiles, rbf=RBFFiles, oldpredict=res[0])
+    return render_template('index.html', linear=linearFiles, mlp=mlpFiles, rbf=RBFFiles, oldpredict=res)
 
 
 @app.route("/upload", methods=['POST'])

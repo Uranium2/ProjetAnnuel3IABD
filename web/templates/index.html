@@ -52,7 +52,7 @@
               <input type="number" min="0" name="Image size" value="50" required>
               <br>
               Multilayer perceptron Structure (comma separated):<br>
-              <input type="text"  name="mlp_struct" value="5,5" required>
+              <input type="text" name="mlp_struct" value="5,5" required>
               <br>
               Model Name:<br>
               <input type="text" name="Model Name" required>
@@ -131,27 +131,22 @@
               <span class="card-title "><b><u>Prediction history</u></b></span>
               <table class="centered">
                 <thread>
-                  <!-- <tr>
-                                  <th class="center">Model</th>
+                  <tr>
+                                  <th class="center">Model and Name</th>
                                   <th class="center">Epochs</th>
                                   <th class="center">Alpha</th>
                                   <th class="center">Size</th>
                                   <th class="center">Data_set_size</th>
                                   <th class="center">Accuracy_Set</th>
                                   <th class="center">Accurracy_validation</th>
-                              </tr> -->
+                              </tr>
                 </thread>
                 <tbody id="tbodyResults">
                   {% for data in oldpredict %}
                   <tr>
-
-                    <td>{{ data[0] }}</td>
-                    <td>{{ data[1] }}</td>
-                    <td>{{ data[2] }}</td>
-                    <td>{{ data[3] }}</td>
-                    <td>{{ data[4] }}</td>
-                    <td>{{ data[5] }}</td>
-                    <td>{{ data[6] }}</td>
+                    {% for d in data %}
+                    <td>{{ d }}</td>
+                    {% endfor %}
 
                   </tr>
                   {% endfor %}

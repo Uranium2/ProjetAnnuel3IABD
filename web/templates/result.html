@@ -58,34 +58,38 @@
       </div>
 
       <div class="row">
-        <div class="col s12 center">
-          <div class="card blue lighten-1">
-            <div class="card-content white-text">
-              <span class="card-title "><b><u>Prediction history</u></b></span>
-              <table class="centered">
-                <thread>
-                </thread>
-                <tbody id="tbodyResults">
-                  {% for data in oldpredict %}
-                  <tr>
-
-                    <td>{{ data[0] }}</td>
-                    <td>{{ data[1] }}</td>
-                    <td>{{ data[2] }}</td>
-                    <td>{{ data[3] }}</td>
-                    <td>{{ data[4] }}</td>
-                    <td>{{ data[5] }}</td>
-                    <td>{{ data[6] }}</td>
-
-                  </tr>
-                  {% endfor %}
-
-                </tbody>
-              </table>
+          <div class="col s12 center">
+            <div class="card blue lighten-1">
+              <div class="card-content white-text">
+                <span class="card-title "><b><u>Prediction history</u></b></span>
+                <table class="centered">
+                  <thread>
+                    <tr>
+                                    <th class="center">Model and Name</th>
+                                    <th class="center">Epochs</th>
+                                    <th class="center">Alpha</th>
+                                    <th class="center">Size</th>
+                                    <th class="center">Data_set_size</th>
+                                    <th class="center">Accuracy_Set</th>
+                                    <th class="center">Accurracy_validation</th>
+                                </tr>
+                  </thread>
+                  <tbody id="tbodyResults">
+                    {% for data in oldpredict %}
+                    <tr>
+                      {% for d in data %}
+                      <td>{{ d }}</td>
+                      {% endfor %}
+  
+                    </tr>
+                    {% endfor %}
+  
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 
