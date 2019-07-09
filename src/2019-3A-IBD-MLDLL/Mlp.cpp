@@ -25,6 +25,7 @@ extern "C" {
 		for (int i = 0; i < nb_elem; i++)
 			res += squared_error_mlp(v_trueN0[i], v_given[i]);
 
+
 		return res / nb_elem;
 	}
 
@@ -251,18 +252,16 @@ extern "C" {
 				Xout0[myImageIndex[img]] = X[layer_count - 1][1];
 				Xout1[myImageIndex[img]] = X[layer_count - 1][2];
 				Xout2[myImageIndex[img]] = X[layer_count - 1][3];
+				YT[myImageIndex[img]] = YTrain[myImageIndex[img] + 3];
 				update_W(W, X, layers, layer_count, inputCountPerSample, delta, alpha, prev_corr);
 			}
-
-			for (int k = 0; k < sampleCount * 3; k++)
-				YT[k] = (double)YTrain[k];
 
 
 			if (e % 100 == 0 || e == epochs - 1) {
 				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0);
 				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1);
 				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2);
-				//std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
+				std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
 				printf("Epoch: %d loss: %f\n", e, (loss0 + loss1 + loss2) / 3);
 			}
 		}
