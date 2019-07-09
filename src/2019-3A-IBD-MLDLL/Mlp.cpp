@@ -7,7 +7,7 @@ extern "C" {
 		return pow(v_true - v_given, 2);
 	}
 
-	double mse_loss_mlp(double* v_true, double* v_given, int nb_elem, int index, int shift)
+	double mse_loss_mlp(double* v_true, double* v_given, int nb_elem, int index)
 	{
 		double res = 0.0;
 		double* v_trueN0 = new double[nb_elem];
@@ -259,9 +259,9 @@ extern "C" {
 
 
 			if (e % 100 == 0 || e == epochs - 1) {
-				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0, 3);
-				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1, 3);
-				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2, 3);
+				double loss0 = mse_loss_mlp(YT, Xout0, sampleCount, 0);
+				double loss1 = mse_loss_mlp(YT, Xout1, sampleCount, 1);
+				double loss2 = mse_loss_mlp(YT, Xout2, sampleCount, 2);
 				//std::cout << loss0 << " \n" << loss1 << " \n" << loss2 << "\n";
 				printf("Epoch: %d loss: %f\n", e, (loss0 + loss1 + loss2) / 3);
 			}
@@ -332,7 +332,7 @@ extern "C" {
 			for (int k = 0; k < sampleCount; k++)
 				YT[k] = (double)YTrain[k];
 
-			double loss = mse_loss_mlp(YT, Xout, sampleCount, 0, 3);
+			double loss = mse_loss_mlp(YT, Xout, sampleCount, 0);
 			if (e % 1000 == 0 || e == epochs - 1)
 				printf("Epoch: %d loss: %f\n", e, loss);
 		}
