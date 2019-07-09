@@ -54,7 +54,7 @@ def index():
 
 @app.route("/upload", methods=['POST'])
 def upload():
-    res = getOldPredict()
+    
     target = os.path.join(APP_ROOT, 'static/images')
     print(target)
 
@@ -95,7 +95,7 @@ def upload():
     elif model == "RBF":
         print("RBF PREDICT")
 
-
+    res = getOldPredict()
     if result == 0:
         return render_template("result.html", data=stat, res="I think this game is a FPS", oldpredict=res, user_image=imgPath)
     if result == 1:
@@ -108,7 +108,6 @@ def upload():
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
-    res = getOldPredict()
     model = request.form['model']
     alpha = request.form['Alpha']
     alpha = float(alpha)
@@ -123,6 +122,7 @@ def handle_data():
     mlp_struct = request.form['mlp_struct']
     struct = [int(x.strip()) for x in mlp_struct.split(',')]
 
+    
     # Lancer un train
     file_name = ""
     if model == "Linear Model":
@@ -144,7 +144,7 @@ def handle_data():
                      alpha, epochs, prefix, struct)
     elif model == "RBF":
         print("RBF")
-    
+    res = getOldPredict()
     return render_template("trained.html", oldpredict=res, filename=file_name)
 
 
