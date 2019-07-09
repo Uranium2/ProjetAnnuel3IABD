@@ -49,7 +49,7 @@ def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
     accuracy_Set = load_predict_classif_stat(img_per_folder, file_name_FPS, file_name_MOBA, file_name_RTS, False)
     accurracy_validation = load_predict_classif_stat(img_per_folder, file_name_FPS, file_name_MOBA, file_name_RTS, True)
 
-    save_stats(prefix, epochs, alpha, str(h) + "x" + str(w), img_per_folder, accuracy_Set, accurracy_validation)
+    save_stats(prefix, epochs, alpha, str(h) + "x" + str(w), img_per_folder * 3, accuracy_Set, accurracy_validation)
 
     return  prefix + "_FPS.model", prefix + "_MOBA.model", prefix + "_RTS.model"
 

@@ -97,13 +97,13 @@ def upload():
 
 
     if result == 0:
-        return render_template("result.html", data=stat, res="I think this game is a FPS", oldpredict=res[0], user_image=imgPath)
+        return render_template("result.html", data=stat, res="I think this game is a FPS", oldpredict=res, user_image=imgPath)
     if result == 1:
-        return render_template("result.html", data=stat, res="I think this game is a MOBA", oldpredict=res[0], user_image=imgPath)
+        return render_template("result.html", data=stat, res="I think this game is a MOBA", oldpredict=res, user_image=imgPath)
     if result == 2:
-        return render_template("result.html", data=stat, res="I think this game is a RTS", oldpredict=res[0], user_image=imgPath)
+        return render_template("result.html", data=stat, res="I think this game is a RTS", oldpredict=res, user_image=imgPath)
 
-    return render_template("result.html", data=stat, res="Error during prediction", oldpredict=res[0], user_image=imgPath)
+    return render_template("result.html", data=stat, res="Error during prediction", oldpredict=res, user_image=imgPath)
 
 
 @app.route('/handle_data', methods=['POST'])
@@ -145,7 +145,7 @@ def handle_data():
     elif model == "RBF":
         print("RBF")
     
-    return render_template("trained.html", oldpredict=res[0], filename=file_name)
+    return render_template("trained.html", oldpredict=res, filename=file_name)
 
 
 if __name__ == '__main__':
