@@ -6,7 +6,7 @@ from dll_load import (
     saveModel,
     loadModel,
 )
-from load_img import getDataSet
+from load_img import getDataSet, getImgPath, save_stats
 from PIL import Image
 import math
 
@@ -17,7 +17,7 @@ def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
     layer_count = len(layers)
     sampleCount = img_per_folder * 3
 
-    XTrain, YTrain = getDataSet("../img", img_per_folder, h, w)
+    XTrain, YTrain = getDataSet("../img", img_per_folder, h, w, False)
 
     W = create_mlp_model(layers, layer_count)
 
@@ -41,29 +41,34 @@ def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
     file_return = file_return + ".model"
 
     saveModel(W, layers, layer_count, file_name)
+
+    accuracy_Set = load_predict_mlp_stat(img_per_folder, file_name, False)
+    accurracy_validation = load_predict_mlp_stat(img_per_folder, file_name, True)
+    print(accuracy_Set)
+    print(accurracy_validation)
+    save_stats( "Multilayer perceptron : " + prefix, epochs, alpha, str(h) + "x" + str(w), img_per_folder * 3, accuracy_Set, accurracy_validation)
+
     return file_return
 
 
-def load_predict_mlp_stat(img_per_folder, h, w, pathModel):
+def load_predict_mlp_stat(img_per_folder, pathModel, isValidation):
+    if isValidation :
+        img_per_folder = 50
     layer_count, layers, W = loadModel(pathModel)
+    inputCountPerSample = layers[0]
+    size = inputCountPerSample / 3
+    size = int(math.sqrt( size ))
     XTest = []
     Xpredict = []
     Ypredict = []
 
-    XTrain, Y = getDataSet("../img", img_per_folder, h, w)
-    for img in range(img_per_folder * 3):
-        for i in range(h * w * 3):
-            Xpredict.append(XTrain[img * i])
-        res = predict_mlp_regression(W, layers, layer_count, h * w * 3, Xpredict)
-        res.pop(0)
-        # print(res)
-        Ypredict.append(res)
-        Xpredict.clear()
-
+    files = getImgPath("../img", img_per_folder, size, size, isValidation)
+    
     result = []
-    for res3 in Ypredict:
-        index = res3.index(max(res3))
+    for img in files:
+        y, index = load_predict_mlp(pathModel, img)
         result.append(index)
+
 
     stat = []
     for i in range(len(result)):
@@ -76,7 +81,8 @@ def load_predict_mlp_stat(img_per_folder, h, w, pathModel):
         else:
             stat.append(False)
 
-    print(sum(stat) / len(stat) * 100)
+    return (sum(stat) / len(stat) * 100)
+
 
 
 def load_predict_mlp(pathModel, imageToPredict):
@@ -103,10 +109,10 @@ def load_predict_mlp(pathModel, imageToPredict):
 
     Ypredict.append(predict_mlp_regression(W, layers, layer_count, inputCountPerSample, Xpredict))
     Ypredict[0].pop(0)
-    print(Ypredict[0])
+    #print(Ypredict[0])
 
     index = Ypredict[0].index(max(Ypredict[0]))
-    print(index)
+    #print(index)
     return Ypredict, index
 
 
