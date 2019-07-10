@@ -9,3 +9,7 @@
 #include <Eigen/QR>
 
 #include <iostream>
+
+extern "C" {
+	SUPEREXPORT double* fit_regRBF_Kmeans(double* Kmeans, int K, double* X, double* YTrain, int sampleCount, int inputCountPerSample, double gamma);
+}

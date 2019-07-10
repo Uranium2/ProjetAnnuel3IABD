@@ -111,6 +111,10 @@ myDll.predict_reg_RBF_naive.restype = ct.c_double
 myDll.get_Kmeans.argtypes = [ct.c_int, ct.c_void_p, ct.c_int, ct.c_int, ct.c_int]
 myDll.get_Kmeans.restype = POINTER(ct.c_double)
 
+# fit_regRBF_Kmeans
+myDll.fit_regRBF_Kmeans.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p, ct.c_void_p, ct.c_int, ct.c_int, ct.c_double]
+myDll.fit_regRBF_Kmeans.restype = POINTER(ct.c_double)
+
 # saveLinearModel
 myDll.saveLinearModel.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
 
@@ -314,6 +318,18 @@ def get_Kmeans(pyK, pyXTrain, pySampleCount, pyInputCountPerSample, pyEpochs):
     kmeansC = myDll.get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
     kmeans = [kmeansC[i] for i in range(pyK * pyInputCountPerSample)]
     return kmeans
+
+def fit_regRBF_Kmeans(pyKmeans, pyK, pyXTrain, pyYTrain, pySampleCount, pyInputCountPerSample, pyGamma):
+    K = ct.c_int(pyK)
+    gamma = ct.c_double(pyGamma)
+    XTrain = (ct.c_double * len(pyXTrain))(*pyXTrain)
+    YTrain = (ct.c_double * len(pyYTrain))(*pyYTrain)
+    inputCountPerSample = ct.c_int(pyInputCountPerSample)
+    sampleCount = ct.c_int(pySampleCount)
+    Kmeans = (ct.c_double * len(pyKmeans))(*pyKmeans)
+    WC = myDll.fit_regRBF_Kmeans(Kmeans, K, XTrain, YTrain, sampleCount,inputCountPerSample, gamma)
+    W = [WC[i] for i in range(pyK * pyInputCountPerSample)]
+    return W
 
 
 def saveLinearModel(W, pyInputCountPerSample, pyFileName):

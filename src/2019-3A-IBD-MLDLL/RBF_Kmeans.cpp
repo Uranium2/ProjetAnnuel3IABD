@@ -17,17 +17,18 @@ extern "C" {
 		return norm;
 	}
 
-	SUPEREXPORT double* fit_regRBF_Kmeans(double* Kmeans, int K, double* X, double* YTrain, int sampleCount, int inputCountPerSample, double* colors, double gamma) {
+	SUPEREXPORT double* fit_regRBF_Kmeans(double* Kmeans, int K, double* X, double* YTrain, int sampleCount, int inputCountPerSample, double gamma) {
 
 		Eigen::MatrixXd phi(sampleCount, K);
 		Eigen::MatrixXd Y(sampleCount, 1);
 		double* Kn = new double[inputCountPerSample];
 		double* Xn = new double[inputCountPerSample]; // Init with big int?
-
+		
 		//convert array YTrain to matrix 
 		for (int x = 0; x < sampleCount; x++)
 			Y(x, 0) = YTrain[x];
 
+		std::cout << K << " Hello \n";
 		for (int k = 0; k < K; k++)
 		{
 			// get one K
@@ -51,15 +52,14 @@ extern "C" {
 		}
 
 		//Formula RBF + Kmeans
-
-		auto mult = phi.transpose() * phi;
+		auto phi_t = phi.transpose();
+		auto mult = phi_t * phi;
 		auto inv = mult.completeOrthogonalDecomposition().pseudoInverse();
-		auto mult2 = inv * phi.transpose();
+		auto mult2 = inv * phi_t;
 		auto matW = mult2 * Y;
-
 		double* arrW = new double[sampleCount];
 
-		for (int i = 0; i < sampleCount; i++)
+		for (int i = 0; i < K; i++)
 			arrW[i] = matW(i);
 
 		return arrW;

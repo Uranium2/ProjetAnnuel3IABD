@@ -1,4 +1,5 @@
-from dll_load import get_Kmeans, flatten
+from dll_load import get_Kmeans, flatten, fit_regRBF_Kmeans
+from pretty_print import predict_2D_RBF_K
 import matplotlib.pyplot as plt
 from sklearn.datasets.samples_generator import make_blobs
 import numpy
@@ -11,13 +12,14 @@ Yk = []
 XTrain = []
 
 K = 4
+gamma = 1
 
 # generate 2d classification dataset
-Xx, y = make_blobs(n_samples=200, centers=K, cluster_std=0.4, random_state=1)
-print(Xx)
+Xx, YTrain = make_blobs(n_samples=200, centers=K, cluster_std=0.4, random_state=1)
+
 
 XTrain = list(flatten(Xx))
-print(XTrain)
+
 
 inputCountPerSample = 2
 sampleCount = int(len(XTrain) / inputCountPerSample)
@@ -37,7 +39,6 @@ for x, y in zip(Kmeans[0::2], Kmeans[1::2]):
 plt.scatter(X, Y, c = 'red')
 plt.scatter(Xk, Yk, c = 'green')
 plt.show()
-
-
-
-print(Kmeans)
+W = fit_regRBF_Kmeans(Kmeans, K, XTrain, YTrain, sampleCount, inputCountPerSample, gamma)
+print(W)
+predict_2D_RBF_K(W, XTrain, YTrain, inputCountPerSample, gamma, sampleCount, 0, 10, K)

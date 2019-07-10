@@ -367,3 +367,31 @@ def predict_2D_RBF(W, XTrain, YTrain, inputCountPerSample, gamma, sampleCount, l
     plt.scatter(x11, y11, c="magenta")
     plt.scatter(x12, y12, c="yellow")
     plt.show()
+
+def predict_2D_RBF_K(W, XTrain, YTrain, inputCountPerSample, gamma, sampleCount, low, up, K):
+    yK = []
+    x1 = []
+    x2 = []
+    y1 = []
+    y2 = []
+
+    for i in range(K):
+        pos = 0
+        yK.append([])
+        for y in range(sampleCount):
+            if YTrain[pos] == i:
+                yK[i].append(YTrain[pos])
+            pos = pos + 1
+
+    for x in range(-10, 10):
+        for y in range(-10, 10):
+            dot = []
+            dot.append(x / 100)
+            dot.append(y / 100)
+            res = predict_reg_RBF_naive(
+                W, XTrain, dot, inputCountPerSample, gamma, sampleCount
+            )
+
+    plt.scatter(x1, y1, c="green")
+    plt.scatter(x2, y2, c="red")
+    plt.show()
