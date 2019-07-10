@@ -150,4 +150,4 @@ def handle_data():
 
 if __name__ == '__main__':
     buildModelFolders()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
