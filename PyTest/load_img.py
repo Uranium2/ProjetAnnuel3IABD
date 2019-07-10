@@ -34,9 +34,9 @@ def getDataSet(path="..\img", limit=10, h=10, w=10):
         for x in range(h):
             for y in range(w):
                 R,G,B = imgLoad[x, y]
-                XTrain.append(R)
-                XTrain.append(G)
-                XTrain.append(B)
+                XTrain.append(R / 255)
+                XTrain.append(G / 255)
+                XTrain.append(B / 255)
         im.close()
 
     return XTrain, YTrain

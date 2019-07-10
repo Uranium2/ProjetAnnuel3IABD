@@ -1,27 +1,32 @@
 from dll_load import get_Kmeans, flatten
 import matplotlib.pyplot as plt
-from sklearn.datasets.samples_generator import make_blobs
-import numpy
+from sklearn.datasets import make_moons
 
 # generate 2d classification dataset
+Xx, Y = make_moons(n_samples=100, noise=0)
+Xy = list(flatten(Xx))
 X = []
 Y = []
 Xk = []
 Yk = []
-XTrain = []
 
-K = 4
-
-# generate 2d classification dataset
-Xx, y = make_blobs(n_samples=200, centers=K, cluster_std=0.4, random_state=1)
-print(Xx)
-
-XTrain = list(flatten(Xx))
-print(XTrain)
-
+K = 3
+XTrain = [0, 0,
+        0.3, 1,
+        0.5, 0.5,
+        0, 0.5,
+        1, 1,
+        4, 4,
+        4, 5,
+        4.5, 6,
+        0, 6,
+        0.5, 7,
+        0.2, 6.5,
+        0.5, 7.1,
+        0, 5]
 inputCountPerSample = 2
 sampleCount = int(len(XTrain) / inputCountPerSample)
-epochs = 1000
+epochs = 400
 
 Kmeans = get_Kmeans(K, XTrain, sampleCount, inputCountPerSample, epochs)
 
