@@ -11,6 +11,7 @@ from PIL import Image
 import math
 
 def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
+    oldLayers = layers.copy()
     inputCountPerSample = h * w * 3
     layers.append(3)
     layers.insert(0, inputCountPerSample)
@@ -44,9 +45,8 @@ def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
 
     accuracy_Set = load_predict_mlp_stat(img_per_folder, file_name, False)
     accurracy_validation = load_predict_mlp_stat(img_per_folder, file_name, True)
-    print(accuracy_Set)
-    print(accurracy_validation)
-    save_stats( "Multilayer perceptron : " + prefix, epochs, alpha, str(h) + "x" + str(w), img_per_folder * 3, accuracy_Set, accurracy_validation)
+
+    save_stats( "Multilayer perceptron : " + prefix, epochs, alpha, str(h) + "x" + str(w), img_per_folder * 3, oldLayers, accuracy_Set, accurracy_validation)
 
     return file_return
 
