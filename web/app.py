@@ -8,6 +8,8 @@ from os import listdir
 from os.path import isfile, join
 import csv
 import pandas as pd
+import uuid
+
 
 
 app = Flask(__name__)
@@ -63,11 +65,11 @@ def upload():
 
     for file in request.files.getlist("file"):
         print(file)
-        filename = file.filename
-        dest = "\\".join([target, "tempImg.PNG"])
+        unique_filename = str(uuid.uuid4()) + ".PNG"
+        dest = "/".join([target, unique_filename])
         print(dest)
         file.save(dest)
-    imgPath = "./static/images/tempImg.PNG"
+    imgPath = "./static/images/" + unique_filename
 
 
     stat = []

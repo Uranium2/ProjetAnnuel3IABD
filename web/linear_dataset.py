@@ -25,12 +25,12 @@ def fit_save_classif(img_per_folder, h, w, alpha, epochs, prefix):
         else:
             YTrain_FPS.append(-1)
     for i in range(img_per_folder * 3):
-        if i > img_per_folder and i < 2 * img_per_folder:
+        if i >= img_per_folder and i < 2 * img_per_folder:
             YTrain_MOBA.append(1)
         else:
             YTrain_MOBA.append(-1)
     for i in range(img_per_folder * 3):
-        if i > 2 * img_per_folder and i < 3 * img_per_folder:
+        if i >= 2 * img_per_folder and i < 3 * img_per_folder:
             YTrain_RTS.append(1)
         else:
             YTrain_RTS.append(-1)
@@ -75,9 +75,9 @@ def load_predict_classif_stat(img_per_folder, pathFPS, pathMOBA, pathRTS, isVali
     for i in range(img_per_folder * 3):
         if result[i] == 0 and i < img_per_folder:
             stat.append(True)
-        elif result[i] == 1 and i > img_per_folder and i < 2 * img_per_folder:
+        elif result[i] == 1 and i >= img_per_folder and i < 2 * img_per_folder:
             stat.append(True)
-        elif result[i] == 2 and i > 2 * img_per_folder and i < 3 * img_per_folder:
+        elif result[i] == 2 and i >= 2 * img_per_folder and i < 3 * img_per_folder:
             stat.append(True)
         else :
             stat.append(False)
