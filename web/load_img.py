@@ -7,7 +7,7 @@ def getDataSet(path, limit, h, w, isValidation):
     files = []
     exclude = []
     if not isValidation:
-        exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
+        exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
         limit = 50
         exclude = ['FPS', 'MOBA', 'RTS']
@@ -50,7 +50,7 @@ def getImgPath(path, limit, h, w, isValidation):
     files = []
     exclude = []
     if not isValidation:
-        exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
+        exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
         limit = 50
         exclude = ['FPS', 'MOBA', 'RTS']
