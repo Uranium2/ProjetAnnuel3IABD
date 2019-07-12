@@ -3,7 +3,7 @@ import random
 
 def renameAllinOne():
     i = 0
-    folder = "FPS"
+    folder = "RTS_Validation"
     fdir = "./" + folder
 
     #name = folder + "_" + str(j) + "/"
@@ -11,7 +11,7 @@ def renameAllinOne():
     random.shuffle(ldir)
     print(ldir)
     for filename in ldir: 
-        dst = fdir + "/" + folder + "_" + format(i, '05') + ".png"
+        dst = fdir + "/" + folder + "_" + format(i, '04') + ".png"
         src = fdir + "/" + filename 
         os.rename(src, dst) 
         i += 1
