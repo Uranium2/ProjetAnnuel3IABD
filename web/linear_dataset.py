@@ -265,7 +265,6 @@ def predict_linear_tf(FPS_model, MOBA_model, RTS_model, imageToPredict, inputCou
 
     Xpredict = np.array(Xpredict)
     Xpredict = Xpredict.reshape(1, inputCountPerSample)
-    print(Xpredict)
     fps = FPS_model.predict(Xpredict)[0][0]
     moba = MOBA_model.predict(Xpredict)[0][0]
     rts = RTS_model.predict(Xpredict)[0][0]

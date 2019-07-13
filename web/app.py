@@ -99,9 +99,13 @@ def upload():
         moba = request.form['filestf2']
         rts = request.form['filestf2']
         Ypredict_FPS, Ypredict_MOBA, Ypredict_RTS, result = web_predict_linear_tf(fps, moba, rts, dest, 7500)
-        stat.append(Ypredict_FPS)
-        stat.append(Ypredict_MOBA)
-        stat.append(Ypredict_RTS)
+        print(Ypredict_FPS)
+        print(Ypredict_MOBA)
+        print(Ypredict_RTS)
+        print(result)
+        stat.append([Ypredict_FPS])
+        stat.append([Ypredict_MOBA])
+        stat.append([Ypredict_RTS])
         print(stat)
     elif model == "Multilayer perceptron":
         print("MLP PREDICT")
