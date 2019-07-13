@@ -13,6 +13,7 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import math
 import h5py
+from keras import backend as K 
 
 
 
@@ -234,10 +235,13 @@ def get_stats_linear_tf(img_per_folder, pathFPS, pathMOBA, pathRTS, isValidation
             stat.append(False)
     return (sum(stat)/ len(stat) * 100)
     
-def web_predict_linear_tf(FPS_path, MOBA_path, RTS_path, imageToPredict, inputCountPerSample):
+def web_predict_linear_tf(FPS_path, MOBA_path, RTS_path, imageToPredict):
+    K.clear_session()
     FPS_model = load_linear_model("models/LinearTF/" + FPS_path)
     MOBA_model = load_linear_model("models/LinearTF/" + MOBA_path)
     RTS_model = load_linear_model("models/LinearTF/" + RTS_path)
+    inputCountPerSample = int(FPS_path.split("_")[1])
+    print(inputCountPerSample)
     return predict_linear_tf(FPS_model, MOBA_model, RTS_model, imageToPredict, inputCountPerSample)
 
 def predict_linear_tf(FPS_model, MOBA_model, RTS_model, imageToPredict, inputCountPerSample):

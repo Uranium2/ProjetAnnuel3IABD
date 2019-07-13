@@ -104,7 +104,7 @@ def upload():
         fps = request.form['filestf1']
         moba = request.form['filestf2']
         rts = request.form['filestf2']
-        Ypredict_FPS, Ypredict_MOBA, Ypredict_RTS, result = web_predict_linear_tf(fps, moba, rts, dest, 7500)
+        Ypredict_FPS, Ypredict_MOBA, Ypredict_RTS, result = web_predict_linear_tf(fps, moba, rts, dest)
         stat.append([Ypredict_FPS])
         stat.append([Ypredict_MOBA])
         stat.append([Ypredict_RTS])
@@ -119,7 +119,7 @@ def upload():
     elif model == "Multilayer perceptron Tensorflow":
         print("MLP TF PREDICT")
         mlp = request.form['filestf4']
-        Ypredict = web_predict_mlp_tf("Models/MLPTF/" + mlp, dest, 7500)
+        Ypredict = web_predict_mlp_tf("Models/MLPTF/" + mlp, dest)
         print(Ypredict)
         result = np.argmax(Ypredict)
         for y in Ypredict:

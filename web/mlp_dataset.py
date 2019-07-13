@@ -20,6 +20,7 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import tensorflow.python.util.deprecation as deprecation
+from keras import backend as K 
 
 deprecation._PRINT_DEPRECATION_WARNINGS = False
 
@@ -206,8 +207,10 @@ def get_stats_mlp_tf(img_per_folder, model_path, isValidation):
             stat.append(False)
     return (sum(stat)/ len(stat) * 100)
 
-def web_predict_mlp_tf(model_path, imageToPredict, inputCountPerSample):
+def web_predict_mlp_tf(model_path, imageToPredict):
+    K.clear_session()
     W_MLP = load_mlp_model(model_path)
+    inputCountPerSample = int(model_path.split("_")[1])
     return predict_mlp_tf(W_MLP, imageToPredict, inputCountPerSample)
 
 def predict_mlp_tf(W_MLP, imageToPredict, inputCountPerSample):
