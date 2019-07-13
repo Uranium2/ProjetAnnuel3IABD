@@ -139,12 +139,9 @@ def load_predict_classif(pathFPS, pathMOBA, pathRTS, imageToPredict):
             return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 2
     return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 3 # Error
 
-
-
 def load_linear_model(model_path):
     model = load_model_tf(model_path)
     return model
-
 
 def linear_keras(filename, img_per_folder, h, w, epochs):
 
@@ -206,10 +203,9 @@ def linear_keras(filename, img_per_folder, h, w, epochs):
 
     accuracy_Set = get_stats_linear_tf(img_per_folder, fps_path, moba_path, rts_path, False)
     accurracy_validation = get_stats_linear_tf(img_per_folder, fps_path, moba_path, rts_path, True)
-    save_stats( "Linear Model : " + filename + "_" + str(inputCountPerSample), epochs, "", str(h) + "x" + str(w), img_per_folder * 3, "", accuracy_Set, accurracy_validation)
+    save_stats( "Linear Model Tensorflow : " + filename + "_" + str(inputCountPerSample), epochs, "", str(h) + "x" + str(w), img_per_folder * 3, "", accuracy_Set, accurracy_validation)
 
     return  filename + "_" + str(inputCountPerSample) + "_FPS.model", filename + "_" + str(inputCountPerSample) + "_MOBA.model", filename + "_" + str(inputCountPerSample) + "_RTS.model"
-
 
 def get_stats_linear_tf(img_per_folder, pathFPS, pathMOBA, pathRTS, isValidation):
     FPS_model = load_linear_model(pathFPS)
