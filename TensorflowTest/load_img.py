@@ -8,7 +8,7 @@ def getDataSet(path, limit, h, w, isValidation):
     files = []
     exclude = []
     if not isValidation:
-        exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
+        exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
         limit = 50
         exclude = ['FPS', 'MOBA', 'RTS']
@@ -76,3 +76,4 @@ def save_stats(Model, Epochs, Alpha, Size, Data_set_size, struct, Accuracy_Set, 
 
     with open('static/prediction.csv','a') as fd:
         fd.write(myCsvRow)
+
