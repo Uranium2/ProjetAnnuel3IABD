@@ -53,7 +53,7 @@ def fit_save_mlp(img_per_folder, h, w, alpha, epochs, prefix, layers):
 
 def load_predict_mlp_stat(img_per_folder, pathModel, isValidation):
     if isValidation :
-        img_per_folder = 50
+        img_per_folder = 200
     layer_count, layers, W = loadModel(pathModel)
     inputCountPerSample = layers[0]
     size = inputCountPerSample / 3
