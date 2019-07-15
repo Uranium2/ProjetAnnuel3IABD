@@ -1,6 +1,5 @@
 from PIL import Image
 import os
-import numpy as np
 
 
 def getDataSet(path, limit, h, w, isValidation):
@@ -8,9 +7,9 @@ def getDataSet(path, limit, h, w, isValidation):
     files = []
     exclude = []
     if not isValidation:
-        exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
+        exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
-        limit = 50
+        limit = 200
         exclude = ['FPS', 'MOBA', 'RTS']
     output = [[1,-1,-1],
                 [-1,1,-1],
@@ -51,7 +50,7 @@ def getImgPath(path, limit, h, w, isValidation):
     files = []
     exclude = []
     if not isValidation:
-        exclude = ['FPS_Test', 'MOBA_Test', 'RTS_Test']
+        exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
         limit = 50
         exclude = ['FPS', 'MOBA', 'RTS']

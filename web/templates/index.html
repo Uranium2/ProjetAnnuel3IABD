@@ -36,18 +36,19 @@
               <input type="text" name="model" list="models" required>
               <datalist id="models">
                 <option value="Linear Model">
+                <option value="Linear Model Tensorflow">
                 <option value="Multilayer perceptron">
+                <option value="Multilayer perceptron Tensorflow">
                 <option value="RBF">
               </datalist>
               Alpha:<br>
-              <input type="number" step="0.001" min="0" max="0.5" name="Alpha" value="0.01" required>
-
+              <input type="number" step="0.0001" min="0" max="0.5" name="Alpha" value="0.01" required>
               <br>
               Epochs:<br>
               <input type="number" min="1" name="Epochs" value="1000" required>
               <br>
               Data set size:<br>
-              <input type="number" min="3" max="3600" name="Data set size" value="1000" required>
+              <input type="number" min="3" max="6000" name="Data set size" value="1000" required>
               <br>
               Image size:<br>
               <input type="number" min="10" name="Image size" value="50" required>
@@ -104,10 +105,38 @@
                 <option value={{ model }}></option>
                 {% endfor %}
               </datalist>
+              File for Linear Tensorflow FPS:<br>
+              <input type="text" name="filestf1" list="filestf1">
+              <datalist id="filestf1">
+                {% for model in lineartf %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Linear Tensorflow MOBA:<br>
+              <input type="text" name="filestf2" list="filestf2">
+              <datalist id="filestf2">
+                {% for model in lineartf %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Linear Tensorflow RTS:<br>
+              <input type="text" name="filestf3" list="filestf3">
+              <datalist id="filestf3">
+                {% for model in lineartf %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
               File for Multilayer perceptron:<br>
               <input type="text" name="file4" list="files4">
               <datalist id="files4">
                 {% for model in mlp %}
+                <option value={{ model }}></option>
+                {% endfor %}
+              </datalist>
+              File for Multilayer perceptron Tensorflow:<br>
+              <input type="text" name="filestf4" list="filestf4">
+              <datalist id="filestf4">
+                {% for model in mlptf %}
                 <option value={{ model }}></option>
                 {% endfor %}
               </datalist>
@@ -133,15 +162,15 @@
               <table class="centered">
                 <thread>
                   <tr>
-                                  <th class="center">Model and Name</th>
-                                  <th class="center">Epochs</th>
-                                  <th class="center">Alpha</th>
-                                  <th class="center">Size</th>
-                                  <th class="center">Data_set_size</th>
-                                  <th class="center">Struct</th>
-                                  <th class="center">Accuracy_Set</th>
-                                  <th class="center">Accurracy_validation</th>
-                              </tr>
+                    <th class="center">Model and Name</th>
+                    <th class="center">Epochs</th>
+                    <th class="center">Alpha</th>
+                    <th class="center">Size</th>
+                    <th class="center">Data_set_size</th>
+                    <th class="center">Struct</th>
+                    <th class="center">Accuracy_Set</th>
+                    <th class="center">Accurracy_validation</th>
+                  </tr>
                 </thread>
                 <tbody id="tbodyResults">
                   {% for data in oldpredict %}
