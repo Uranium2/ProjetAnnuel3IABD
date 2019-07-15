@@ -51,6 +51,7 @@ def getImgPath(path, limit, h, w, isValidation):
     if not isValidation:
         exclude = ['FPS_Validation', 'MOBA_Validation', 'RTS_Validation']
     else:
+        limit = 200
         exclude = ['FPS', 'MOBA', 'RTS']
 
 
