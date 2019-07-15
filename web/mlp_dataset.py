@@ -184,6 +184,8 @@ def mlp_keras(filename, img_per_folder, h, w, layers, epochs):
     return file_return
 
 def get_stats_mlp_tf(img_per_folder, model_path, isValidation):
+    if isValidation:
+        img_per_folder = 200
     W_MLP = load_mlp_model(model_path)
     inputCountPerSample = int(model_path.split("_")[1])
     size = inputCountPerSample / 3
