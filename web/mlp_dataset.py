@@ -138,6 +138,7 @@ def load_predict_mlp(pathModel, imageToPredict):
     return Ypredict, index
 
 def load_mlp_model(model_path):
+    K.clear_session()
     model = load_model_tf(model_path)
     return model
 

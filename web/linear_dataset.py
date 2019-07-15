@@ -141,6 +141,7 @@ def load_predict_classif(pathFPS, pathMOBA, pathRTS, imageToPredict):
     return Ypredict_FPS ,Ypredict_MOBA , Ypredict_RTS, 3 # Error
 
 def load_linear_model(model_path):
+    K.clear_session()
     model = load_model_tf(model_path)
     return model
 
@@ -236,7 +237,6 @@ def get_stats_linear_tf(img_per_folder, pathFPS, pathMOBA, pathRTS, isValidation
     return (sum(stat)/ len(stat) * 100)
     
 def web_predict_linear_tf(FPS_path, MOBA_path, RTS_path, imageToPredict):
-    K.clear_session()
     FPS_model = load_linear_model("models/LinearTF/" + FPS_path)
     MOBA_model = load_linear_model("models/LinearTF/" + MOBA_path)
     RTS_model = load_linear_model("models/LinearTF/" + RTS_path)
